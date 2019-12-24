@@ -57,7 +57,7 @@ export default connect(
                 type:'simClient/selectDevice',
                 device: device
             });
-            router.push("/md-page/")
+            router.push("/md-page/msg-recv/")
         });
     }
 

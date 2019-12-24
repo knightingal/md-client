@@ -9,7 +9,8 @@ const config: IConfig =  {
       component: '../layouts/mdpage',
       routes:[
         {path:'/md-page/', component:'../pages/register'},
-        {path:'/md-page/terminal-list', component:'../pages/terminalList'}
+        {path:'/md-page/terminal-list', component:'../pages/terminalList'},
+        {path:'/md-page/msg-recv', component:'../pages/msgRecv'}
       ]
     },
     {

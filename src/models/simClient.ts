@@ -1,5 +1,6 @@
 import {Reducer, Action} from 'redux';
 
+import { router } from "umi";
 interface SelectDeviceAction extends Action {
     device: Device
 }
@@ -34,6 +35,7 @@ const SimClientModel: SimClientModelType = {
     reducers:{
         selectDevice(state: SimClientModelState|undefined, action:SelectDeviceAction) {
             console.log(action);
+            // router.push("/md-page/")
             return {currentDevice: action.device};
         }
     }
