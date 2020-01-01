@@ -20,6 +20,7 @@ export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
     dataList:Array<ITEM_TYPE>;
     parentComp:PARENT_COMP_TYPE;
     scrollTop:number;
+    height:number;
 }
 
 export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>>(
@@ -99,6 +100,11 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
 
         componentDidUpdate(prevProps:LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>, prevState:LazyState) {
             console.log("lazyLoader.componentDidUpdate");
+            if (prevProps.height != this.props.height) {
+                this.setState({
+                    currentButtonPicIndex:this.checkPostionInPic((this.divRefs.current as HTMLDivElement).clientHeight),
+                })
+            }
             if (this.props.dataList.length != prevProps.dataList.length) {
                 if (this.props.scrollTop >= 0 && this.divRefs.current != null) {
                     this.divRefs.current.scrollTop = this.props.scrollTop;
@@ -129,6 +135,7 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
         }
 
         componentDidMount() {
+            console.log("lazyLoader.componentDidMount");
             this.setState({
                 currentTopPicIndex:0,
                 currentButtonPicIndex:this.checkPostionInPic((this.divRefs.current as HTMLDivElement).clientHeight),
@@ -151,7 +158,7 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
         }
 
         render() {
-            return <div className={className} onScroll={(e)=>this.scrollHandler(e)} ref={this.divRefs} style={{height:"100%",willChange:"transform", overflowY:"scroll"}}>
+            return <div className={className} onScroll={(e)=>this.scrollHandler(e)} ref={this.divRefs} style={{height:`${this.props.height}px`,willChange:"transform", overflowY:"scroll"}}>
                 <this.TopPadding self={this} />
                 {this.props.dataList.map((itemBean:ITEM_TYPE, index: number) => {
                     if (this.state.currentButtonPicIndex != null && this.state.currentTopPicIndex  != null) {
