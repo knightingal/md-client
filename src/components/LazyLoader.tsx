@@ -158,7 +158,7 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
         }
 
         render() {
-            return <div className={className} onScroll={(e)=>this.scrollHandler(e)} ref={this.divRefs} style={{height:`${this.props.height}px`,willChange:"transform", overflowY:"scroll"}}>
+            return <div className={className} onScroll={(e)=>this.scrollHandler(e)} ref={this.divRefs} style={{height:`${this.props.height}px`,willChange:"transform", overflowY:"scroll", overflowX:"hidden"}}>
                 <this.TopPadding self={this} />
                 {this.props.dataList.map((itemBean:ITEM_TYPE, index: number) => {
                     if (this.state.currentButtonPicIndex != null && this.state.currentTopPicIndex  != null) {
