@@ -10,6 +10,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
 import {lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
+import {ImgComponent } from '../../components/ImgComponent';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
     },
     media: {
-      height: '100px',
+      height: '200px',
     },
     gridItem: {
         // height: 360,
@@ -44,11 +45,12 @@ function RecipeReviewCard(props: {title:string, imgSrc:string}) {
           title={props.title}
           subheader="sub"
         />
-        <CardMedia
+        <ImgComponent src={props.imgSrc} password="yjmK14040842$000"/>
+        {/* <CardMedia
           className={classes.media}
           component="img"
           image={props.imgSrc}
-        />
+        /> */}
         <CardActions disableSpacing>
           <IconButton aria-label="add to favorites">
             <FavoriteIcon />
@@ -66,9 +68,10 @@ class SectionInfo {
 
     title:string;
 
-    constructor(value:string) {
-        this.imgSrc = "http://127.0.0.1/tarsylia_resources/120.jpg";
-        this.title = value;
+    constructor(value : PicIndex) {
+        // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
+        this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
+        this.title = value.name.substring(14);
     }
 }
 
@@ -81,8 +84,8 @@ class SectionBean   implements HeightType{
     section3:SectionInfo|null;
 
 
-    constructor(value0:string, value1:string, value2:string, value3:string) {
-        this.height = 260;
+    constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
+        this.height = 360;
         this.section0 = new SectionInfo(value0);
         this.section1 = value1 != null ? new SectionInfo(value1) : null;
         this.section2 = value2 != null ? new SectionInfo(value2) : null;
@@ -109,7 +112,7 @@ const GridLine = (props:{sectionBean:SectionBean}) => {
     const section3 = props.sectionBean.section3 != null ? (<Grid item xs={3}>
         <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
     </Grid>): null;
-    return <div style={{height:"260px"}}>
+    return <div style={{height:"360px"}}>
       <Grid container spacing={1} className={classes.gridItem} >
           <Grid item xs={3}>
               <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
@@ -138,7 +141,7 @@ const GridLine2 = (props:{sectionBean:SectionBean}) => {
       <h2>{props.sectionBean.section3.title}</h2>
         {/* <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/> */}
     </Grid>): null;
-    return <div style={{height:"260px"}}>
+    return <div style={{height:"360px"}}>
       <Grid container spacing={1} className={classes.gridItem} >
           <Grid item xs={3}>
             <h2>{props.sectionBean.section0.title}</h2>
@@ -170,6 +173,11 @@ const LazyLoader: React.ComponentClass<
 > 
 = lazyLoader(SectionItem, "SectionList");
 
+interface PicIndex {
+  name: string;
+  cover: string;
+}
+
 class GridContainer extends React.Component<{height:number}, {sectionList:Array<SectionBean>}> {
     constructor(props:{height:number}) {
       super(props);
@@ -178,45 +186,45 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
 
     
     fecthSectionList() {
-      // fetchUrl = this.battleShipPage ? "/local1000/picIndexAjax?album=BattleShips" : "/local1000/picIndexAjax";
-      const fetchUrl = "/local1000/picIndexAjax";
+      const battleShipPage = true;
+      const fetchUrl = battleShipPage ? "/local1000/picIndexAjax?album=BattleShips" : "/local1000/picIndexAjax";
 
       console.log("fetchUrl is " + fetchUrl);
       fetch(fetchUrl)
       .then((resp: Response) => {
           return resp.json();
       })
-      .then((json: Array<any>) => {
-
-          const subRest = json;
-          const sub0 = subRest.filter((value:any, index:number) => {
+      .then((json: Array<PicIndex>) => {
+          let subRest: Array<PicIndex>;
+          if (battleShipPage) {
+            subRest = json.concat(json, json, json, json, json, json, json, json);
+          } else {
+            subRest = json;
+          }
+          const sub0 = subRest.filter((_: PicIndex, index: number) => {
             return index % 4 == 0;
           });
-          const sub1 = subRest.filter((value:any, index:number) => {
+          const sub1 = subRest.filter((_: PicIndex, index: number) => {
             return index % 4 == 1;
           });
-          const sub2 = subRest.filter((value:any, index:number) => {
+          const sub2 = subRest.filter((_: PicIndex, index: number) => {
             return index % 4 == 2;
           });
-          const sub3 = subRest.filter((value:any, index:number) => {
+          const sub3 = subRest.filter((_: PicIndex, index: number) => {
             return index % 4 == 3;
           });
 
-          const splitRest = sub0.map((value:any, index:number) => {
-            return [value.name.substring(14), 
-              index < sub1.length ? sub1[index].name.substring(14) : null,
-              index < sub2.length ? sub2[index].name.substring(14) : null,
-              index < sub3.length ? sub3[index].name.substring(14) : null,
+          const splitRest = sub0.map((value: PicIndex, index: number) => {
+            return [value, 
+              index < sub1.length ? sub1[index] : null,
+              index < sub2.length ? sub2[index] : null,
+              index < sub3.length ? sub3[index] : null,
             ]
           });
 
-          const sectionList = splitRest.map((value:any) => {
-            return new SectionBean(value[0], value[1], value[2], value[3]);
+          const sectionList = splitRest.map((value: (PicIndex | null)[]) => {
+            return new SectionBean(value[0] as PicIndex, value[1], value[2], value[3]);
           })
-
-          // const sectionList:Array<SectionBean> = subRest.map((value:any, index:number, array:any[]) => {
-          //     return new SectionBean((value.name as string).substr(14));
-          // });
 
           this.setState({
               sectionList: sectionList
@@ -229,8 +237,8 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
 
     render() {
         // const sectionList: Array<SectionBean> = genSectionList();
-        return <div style={{ height: `${this.props.height-64}px`}}>
-            <LazyLoader dataList={this.state.sectionList} scrollTop={0} parentComp={this} height={this.props.height-64}/>
+        return <div style={{ height: `${this.props.height - 64}px`}}>
+            <LazyLoader dataList={this.state.sectionList} scrollTop={0} parentComp={this} height={this.props.height - 64}/>
         </div>
     }
 }

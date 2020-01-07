@@ -43,6 +43,14 @@ const config: IConfig =  {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
+      '/tarsylia_resources/': {
+        target: 'http://127.0.0.1:80',
+        changeOrigin: true,
+      },
+      '/static/': {
+        target: 'http://127.0.0.1:80',
+        changeOrigin: true,
+      },
       '/message/': {
         target: 'http://127.0.0.1:8080',
         changeOrigin: false,
