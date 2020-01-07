@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {LazyContainer} from './LazyContainer'
 
 interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
     item: ITEM_TYPE;
@@ -185,27 +184,3 @@ export class SectionBean implements HeightType {
         this.height = 21;
     }
 }
-
-class WrappedDiv extends React.Component<{item:SectionBean, parentComp:LazyContainer}> {
-    constructor(props:{item:SectionBean, parentComp:LazyContainer}) {
-        super(props);
-    }
-
-    render() {
-        return <div style={{height:"21px"}}>
-            <a style={{fontFamily:"DejaVu Sans"}} >
-            {this.props.item.name}
-            </a>
-        </div>
-    }
-}
-function initSectionList(count: number) {
-    const sectionList:Array<SectionBean> = [];
-    for (let i=0;i<count;i++) {
-        sectionList.push(new SectionBean(`${i}`));
-    }
-    return sectionList;
-}
-export const sectionList:Array<SectionBean> = initSectionList(500);
-
-export const LazyDiv:React.ComponentClass<LazyProps<SectionBean, {}, {sectionList: Array<SectionBean>}, LazyContainer>> = lazyLoader(WrappedDiv, "");
