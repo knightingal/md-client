@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-function RecipeReviewCard(props: {title:string, imgSrc:string}) {
+function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean}) {
     const classes = useStyles();
   
     return (
@@ -45,7 +45,7 @@ function RecipeReviewCard(props: {title:string, imgSrc:string}) {
           title={props.title}
           subheader="sub"
         />
-        <ImgComponent src={props.imgSrc} password="yjmK14040842$000"/>
+        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount}/>
         {/* <CardMedia
           className={classes.media}
           component="img"
@@ -99,23 +99,23 @@ interface SectionListProps {}
 
 interface SectionListStatus {}
 
-const GridLine = (props:{sectionBean:SectionBean}) => {
+const GridLine = (props:{sectionBean:SectionBean; mount: boolean}) => {
 
     const classes = useStyles();
 
     const section1 = props.sectionBean.section1 != null ? (<Grid item xs={3}>
-        <RecipeReviewCard title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
+        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
     </Grid>): null;
     const section2 = props.sectionBean.section2 != null ? (<Grid item xs={3}>
-        <RecipeReviewCard title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
+        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
     </Grid>): null;
     const section3 = props.sectionBean.section3 != null ? (<Grid item xs={3}>
-        <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
+        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
     </Grid>): null;
     return <div style={{height:"360px"}}>
       <Grid container spacing={1} className={classes.gridItem} >
           <Grid item xs={3}>
-              <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
+              <RecipeReviewCard mount={props.mount} title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
           </Grid> 
           {section1}
           {section2}
@@ -155,12 +155,12 @@ const GridLine2 = (props:{sectionBean:SectionBean}) => {
     </div>
 }
 
-class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer}> {
-    constructor(props:{item:SectionBean, parentComp: GridContainer}) {
+class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer, mount: boolean}> {
+    constructor(props:{item:SectionBean, parentComp: GridContainer, mount: boolean}) {
       super(props);
     }
     render() {
-        return <GridLine sectionBean={this.props.item} />
+        return <GridLine sectionBean={this.props.item} mount={this.props.mount}/>
     }
 }
 const LazyLoader: React.ComponentClass<

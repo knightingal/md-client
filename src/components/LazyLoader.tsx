@@ -2,12 +2,14 @@ import * as React from 'react';
 
 interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
     item: ITEM_TYPE;
+    mount: boolean;
     parentComp:PARENT_COMP_TYPE;
 }
 
 interface LazyState {
     currentTopPicIndex:number|null; 
     currentButtonPicIndex:number|null;
+    mount: boolean;
 }
 
 export interface HeightType {
@@ -44,19 +46,35 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
             this.state = {
                 currentButtonPicIndex:null,
                 currentTopPicIndex:null,
+                mount:true
             };
 
             this.divRefs = React.createRef();
+            this.lastTimeStampe = -1;
         }
 
         divRefs:React.RefObject<HTMLDivElement>;
         itemHeightStep:Array<number>;
 
+        lastTimeStampe:number;
+
         scrollHandler(e: React.UIEvent) {
+            if (this.state.mount == true) {
+                this.setState({
+                    mount:false
+                });
+            }
+            this.lastTimeStampe = e.timeStamp;
             const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
             const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
             // calculate the index of top picture after scroll
             const refreshTopPicIndex = this.checkPostionInPic(scrollTop);
+            setTimeout((timeStamp:number) => {
+                if (this.lastTimeStampe == timeStamp) {
+                    console.log("scroll stoped");
+                    this.setState({mount:true})
+                }
+            }, 300, e.timeStamp);
 
             if (refreshTopPicIndex !== this.state.currentTopPicIndex) {
                 console.log(`change top to pic index: ${refreshTopPicIndex}`);
@@ -163,7 +181,7 @@ export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PAREN
                     if (this.state.currentButtonPicIndex != null && this.state.currentTopPicIndex  != null) {
                         const display = index >= this.state.currentTopPicIndex - preLoadOffSet && index <= this.state.currentButtonPicIndex + preLoadOffSet;
                         return display ?
-                        (<WrappedComponent key={index} item={itemBean} parentComp={this.props.parentComp}/>)
+                        (<WrappedComponent key={index} item={itemBean} parentComp={this.props.parentComp} mount={this.state.mount} />)
                         : null;
                     }
                     return null;

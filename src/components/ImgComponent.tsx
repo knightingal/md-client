@@ -2,8 +2,8 @@ import * as React from 'react';
 import {decryptArray} from '../lib/decryptoArray';
 
 
-export class ImgComponent extends React.Component<{src: string, password: string}, {url: string | null}> {
-    constructor(props:{src: string,  password: string}) {
+export class ImgComponent extends React.Component<{src: string, password: string, mount:boolean}, {url: string | null}> {
+    constructor(props:{src: string,  password: string, mount:boolean}) {
         super(props);
         this.state = {
             url:null
@@ -24,7 +24,7 @@ export class ImgComponent extends React.Component<{src: string, password: string
     }
 
     componentDidMount() {
-        if (this.props.src != null) {
+        if (this.props.src != null && this.props.mount == true) {
             this.fetchImgByUrl(this.props.src);
             this.setState({
                 url: null
@@ -33,13 +33,30 @@ export class ImgComponent extends React.Component<{src: string, password: string
 
     }
 
-    componentDidUpdate(prevProps: {src: string}) {
-        if (this.props.src !== prevProps.src) {
+    componentDidUpdate(prevProps: {src: string, mount:boolean}) {
+        if (this.props.src !== prevProps.src && this.props.mount == true
+            // || (this.props.mount == true && prevProps.mount == false)
+            ) {
             if(this.props.src != null) {
                 this.fetchImgByUrl(this.props.src);
                 this.setState({
                     url: null
                 });
+            }
+        }
+
+        if (this.props.mount != prevProps.mount) {
+            if (this.props.mount == false) {
+                this.setState({
+                    url: null
+                });
+            } else {
+                if(this.props.src != null) {
+                    this.fetchImgByUrl(this.props.src);
+                    this.setState({
+                        url: null
+                    });
+                }
             }
         }
     }
