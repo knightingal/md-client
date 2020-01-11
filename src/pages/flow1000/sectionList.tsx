@@ -51,7 +51,7 @@ function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean}) 
           component="img"
           image={props.imgSrc}
         /> */}
-        <CardActions disableSpacing>
+        <CardActions disableSpacing={true}>
           <IconButton aria-label="add to favorites">
             <FavoriteIcon />
           </IconButton>
@@ -103,18 +103,18 @@ const GridLine = (props:{sectionBean:SectionBean; mount: boolean}) => {
 
     const classes = useStyles();
 
-    const section1 = props.sectionBean.section1 != null ? (<Grid item xs={3}>
+    const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
         <RecipeReviewCard mount={props.mount} title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
     </Grid>): null;
-    const section2 = props.sectionBean.section2 != null ? (<Grid item xs={3}>
+    const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
         <RecipeReviewCard mount={props.mount} title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
     </Grid>): null;
-    const section3 = props.sectionBean.section3 != null ? (<Grid item xs={3}>
+    const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
         <RecipeReviewCard mount={props.mount} title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
     </Grid>): null;
     return <div style={{height:"360px"}}>
-      <Grid container spacing={1} className={classes.gridItem} >
-          <Grid item xs={3}>
+      <Grid container={true} spacing={1} className={classes.gridItem} >
+          <Grid item={true} xs={3}>
               <RecipeReviewCard mount={props.mount} title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
           </Grid> 
           {section1}
@@ -129,21 +129,21 @@ const GridLine2 = (props:{sectionBean:SectionBean}) => {
 
     const classes = useStyles();
 
-    const section1 = props.sectionBean.section1 != null ? (<Grid item xs={3}>
+    const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
       <h2>{props.sectionBean.section1.title}</h2>
         {/* <RecipeReviewCard title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/> */}
     </Grid>): null;
-    const section2 = props.sectionBean.section2 != null ? (<Grid item xs={3}>
+    const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
       <h2>{props.sectionBean.section2.title}</h2>
         {/* <RecipeReviewCard title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/> */}
     </Grid>): null;
-    const section3 = props.sectionBean.section3 != null ? (<Grid item xs={3}>
+    const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
       <h2>{props.sectionBean.section3.title}</h2>
         {/* <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/> */}
     </Grid>): null;
     return <div style={{height:"360px"}}>
-      <Grid container spacing={1} className={classes.gridItem} >
-          <Grid item xs={3}>
+      <Grid container={true} spacing={1} className={classes.gridItem} >
+          <Grid item={true} xs={3}>
             <h2>{props.sectionBean.section0.title}</h2>
               {/* <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/> */}
           </Grid> 
