@@ -11,7 +11,7 @@ export class ImgComponent extends React.Component<{src: string, password: string
     }
 
     fetchImgByUrl(url: string) {
-        console.log(`fetch img: ${url}`);
+        // console.log(`fetch img: ${url}`);
         fetch(url).then(response => {
             return response.arrayBuffer();
         }).then(arrayBuffer => {
@@ -62,9 +62,9 @@ export class ImgComponent extends React.Component<{src: string, password: string
     }
 
     render() {
-        return <img 
-            src={this.state.url != null ? this.state.url : ""} 
-            style={{display:"block", objectFit:"cover", height:"200px", width:"100%"}}
-        />
+        const img = this.state.url != null ? 
+        <img src={this.state.url} style={{display:"block", objectFit:"cover", height:"200px", width:"100%"}} /> 
+        : <div style={{height:"200px", width:"100%"}}/>
+        return img;
     }
 }
