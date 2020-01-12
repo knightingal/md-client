@@ -1,9 +1,14 @@
 import * as React from 'react';
 import {decryptArray} from '../lib/decryptoArray';
 
+import { connect } from 'dva';
+import { Dispatch } from 'redux';
 
-export class ImgComponent extends React.Component<{src: string, password: string, mount:boolean}, {url: string | null}> {
-    constructor(props:{src: string,  password: string, mount:boolean}) {
+
+export default connect(
+)(
+class ImgComponent extends React.Component<{index: number, src: string, password: string, mount:boolean, dispatch: Dispatch<any>}, {url: string | null}> {
+    constructor(props:{index: number, src: string,  password: string, mount:boolean, dispatch: Dispatch<any>}) {
         super(props);
         this.state = {
             url:null
@@ -61,10 +66,18 @@ export class ImgComponent extends React.Component<{src: string, password: string
         }
     }
 
+    onMouseOver(e:React.MouseEvent) {
+        this.props.dispatch({
+            type:'flow1000/imgMouseOver',
+            imgIndex: this.props.index
+        });
+    }
+
     render() {
         const img = this.state.url != null ? 
-        <img src={this.state.url} style={{display:"block", objectFit:"cover", height:"200px", width:"100%"}} /> 
+        <img src={this.state.url} style={{display:"block", objectFit:"cover", height:"200px", width:"100%"}} onMouseOver={e=>{this.onMouseOver(e)}}/> 
         : <div style={{height:"200px", width:"100%"}}/>
         return img;
     }
 }
+)

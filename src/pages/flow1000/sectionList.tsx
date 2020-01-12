@@ -10,7 +10,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
 import {lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
-import {ImgComponent } from '../../components/ImgComponent';
+import ImgComponent  from '../../components/ImgComponent';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
@@ -18,6 +18,7 @@ import {Flow1000ModelState} from '../../models/flow1000';
 interface Flow1000Props {
     height:number;
     width:number;
+    expandImgIndex: number;
     children?: ReactNode;
     dispatch: Dispatch<any>;
 }
@@ -32,11 +33,14 @@ const useStyles = makeStyles((theme: Theme) =>
         // height: 360,
         // marginTop: 0,
         // marginBottom: 0,
-        margin:0
+        margin:0,
     },
+    expandGridItem: {
+      backgroundColor: "gray"
+    }
   }),
 );
-function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean}) {
+function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number}) {
     const classes = useStyles();
   
     return (
@@ -45,7 +49,7 @@ function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean}) 
           title={props.title}
           subheader="sub"
         />
-        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount}/>
+        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount} index={props.index}/>
         {/* <CardMedia
           className={classes.media}
           component="img"
@@ -68,15 +72,19 @@ class SectionInfo {
 
     title:string;
 
+    index:number;
+
     constructor(value : PicIndex) {
         // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
         this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
         this.title = value.name.substring(14);
+        this.index = value.index;
     }
 }
 
 class SectionBean   implements HeightType{
     height:number;
+    expand: boolean;
 
     section0:SectionInfo;
     section1:SectionInfo|null;
@@ -86,6 +94,7 @@ class SectionBean   implements HeightType{
 
     constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
         this.height = 360;
+        this.expand = false;
         this.section0 = new SectionInfo(value0);
         this.section1 = value1 != null ? new SectionInfo(value1) : null;
         this.section2 = value2 != null ? new SectionInfo(value2) : null;
@@ -104,18 +113,20 @@ const GridLine = (props:{sectionBean:SectionBean; mount: boolean}) => {
     const classes = useStyles();
 
     const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
+        <RecipeReviewCard index={props.sectionBean.section1.index} mount={props.mount} title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
     </Grid>): null;
     const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
+        <RecipeReviewCard index={props.sectionBean.section2.index} mount={props.mount} title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
     </Grid>): null;
     const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard mount={props.mount} title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
+        <RecipeReviewCard index={props.sectionBean.section3.index} mount={props.mount} title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
     </Grid>): null;
+    const className = !props.sectionBean.expand ? classes.gridItem : `${classes.gridItem} ${classes.expandGridItem}`;
+
     return <div style={{height:"360px"}}>
-      <Grid container={true} spacing={1} className={classes.gridItem} >
+      <Grid container={true} spacing={1} className={className} >
           <Grid item={true} xs={3}>
-              <RecipeReviewCard mount={props.mount} title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
+              <RecipeReviewCard index={props.sectionBean.section0.index} mount={props.mount} title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
           </Grid> 
           {section1}
           {section2}
@@ -176,17 +187,20 @@ const LazyLoader: React.ComponentClass<
 interface PicIndex {
   name: string;
   cover: string;
+  index: number;
 }
 
-class GridContainer extends React.Component<{height:number}, {sectionList:Array<SectionBean>}> {
-    constructor(props:{height:number}) {
+class GridContainer extends React.Component<{height:number, expandImgIndex:number}, {sectionList:Array<SectionBean>}> {
+    constructor(props:{height:number, expandImgIndex:number}) {
       super(props);
       this.state = {sectionList:[]}
+      this.prevExpandIndex = -1;
     }
 
+    prevExpandIndex:number;
     
     fecthSectionList() {
-      const battleShipPage = true;
+      const battleShipPage = false;
       const fetchUrl = battleShipPage ? "/local1000/picIndexAjax?album=BattleShips" : "/local1000/picIndexAjax";
 
       console.log("fetchUrl is " + fetchUrl);
@@ -201,6 +215,9 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
           } else {
             subRest = json;
           }
+          subRest.forEach((picIndex: PicIndex, index: number) => {
+            picIndex.index = index;
+          });
           const sub0 = subRest.filter((_: PicIndex, index: number) => {
             return index % 4 == 0;
           });
@@ -214,17 +231,14 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
             return index % 4 == 3;
           });
 
-          const splitRest = sub0.map((value: PicIndex, index: number) => {
-            return [value, 
+          const sectionList = sub0.map((value: PicIndex, index: number) => {
+            return new SectionBean(
+              value, 
               index < sub1.length ? sub1[index] : null,
               index < sub2.length ? sub2[index] : null,
-              index < sub3.length ? sub3[index] : null,
-            ]
+              index < sub3.length ? sub3[index] : null
+            );
           });
-
-          const sectionList = splitRest.map((value: (PicIndex | null)[]) => {
-            return new SectionBean(value[0] as PicIndex, value[1], value[2], value[3]);
-          })
 
           this.setState({
               sectionList: sectionList
@@ -234,6 +248,24 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
   componentDidMount() {
     this.fecthSectionList();        
   }
+
+    componentDidUpdate(prevProps: {expandImgIndex: number}) {
+      if (this.props.expandImgIndex != prevProps.expandImgIndex) {
+        console.log("expandImgIndexUpdateed");
+        const floorIndex = Math.floor(this.props.expandImgIndex / 4);
+        if (this.state.sectionList[floorIndex] != undefined) {
+          this.state.sectionList[floorIndex].expand = true;
+          if (this.state.sectionList[this.prevExpandIndex] != undefined && this.prevExpandIndex != floorIndex) {
+            this.state.sectionList[this.prevExpandIndex].expand = false;
+          }
+          this.prevExpandIndex = floorIndex;
+          this.setState({
+            sectionList: this.state.sectionList
+          });
+
+        }
+      }
+    }
 
     render() {
         // const sectionList: Array<SectionBean> = genSectionList();
@@ -245,9 +277,9 @@ class GridContainer extends React.Component<{height:number}, {sectionList:Array<
 export default connect(
     ({flow1000}:{flow1000:Flow1000ModelState}) => {
         console.log("sectionList connecting")
-        return {height:flow1000.height, width:flow1000.width}
+        return {height:flow1000.height, width:flow1000.width, expandImgIndex: flow1000.expandImgIndex}
     }
 )
 (function(props:Flow1000Props) {
-    return <GridContainer height={props.height}/>
+    return <GridContainer height={props.height} expandImgIndex={props.expandImgIndex}/>
 })
