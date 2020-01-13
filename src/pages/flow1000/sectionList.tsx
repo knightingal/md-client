@@ -108,33 +108,64 @@ interface SectionListProps {}
 
 interface SectionListStatus {}
 
-const GridLine = (props:{sectionBean:SectionBean; mount: boolean}) => {
+const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
+  const classes = useStyles();
 
-    const classes = useStyles();
-
-    const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard index={props.sectionBean.section1.index} mount={props.mount} title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/>
-    </Grid>): null;
-    const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard index={props.sectionBean.section2.index} mount={props.mount} title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/>
-    </Grid>): null;
-    const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
-        <RecipeReviewCard index={props.sectionBean.section3.index} mount={props.mount} title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/>
-    </Grid>): null;
-    const className = !props.sectionBean.expand ? classes.gridItem : `${classes.gridItem} ${classes.expandGridItem}`;
-
-    return <div style={{height:"360px"}}>
-      <Grid container={true} spacing={1} className={className} >
-          <Grid item={true} xs={3}>
-              <RecipeReviewCard index={props.sectionBean.section0.index} mount={props.mount} title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/>
-          </Grid> 
-          {section1}
-          {section2}
-          {section3}
+  const section1 =
+    props.sectionBean.section1 != null ? (
+      <Grid item={true} xs={3}>
+        <RecipeReviewCard
+          index={props.sectionBean.section1.index}
+          mount={props.mount}
+          title={props.sectionBean.section1.title}
+          imgSrc={props.sectionBean.section1.imgSrc}
+        />
       </Grid>
+    ) : null;
+  const section2 =
+    props.sectionBean.section2 != null ? (
+      <Grid item={true} xs={3}>
+        <RecipeReviewCard
+          index={props.sectionBean.section2.index}
+          mount={props.mount}
+          title={props.sectionBean.section2.title}
+          imgSrc={props.sectionBean.section2.imgSrc}
+        />
+      </Grid>
+    ) : null;
+  const section3 =
+    props.sectionBean.section3 != null ? (
+      <Grid item={true} xs={3}>
+        <RecipeReviewCard
+          index={props.sectionBean.section3.index}
+          mount={props.mount}
+          title={props.sectionBean.section3.title}
+          imgSrc={props.sectionBean.section3.imgSrc}
+        />
+      </Grid>
+    ) : null;
+  const className = !props.sectionBean.expand
+    ? classes.gridItem
+    : `${classes.gridItem} ${classes.expandGridItem}`;
 
+  return (
+    <div style={{ height: '360px' }}>
+      <Grid container={true} spacing={1} className={className}>
+        <Grid item={true} xs={3}>
+          <RecipeReviewCard
+            index={props.sectionBean.section0.index}
+            mount={props.mount}
+            title={props.sectionBean.section0.title}
+            imgSrc={props.sectionBean.section0.imgSrc}
+          />
+        </Grid>
+        {section1}
+        {section2}
+        {section3}
+      </Grid>
     </div>
-}
+  );
+};
 
 const GridLine2 = (props:{sectionBean:SectionBean}) => {
 
@@ -174,15 +205,12 @@ class SectionItem extends React.Component<{item:SectionBean, parentComp: GridCon
         return <GridLine sectionBean={this.props.item} mount={this.props.mount}/>
     }
 }
-const LazyLoader: React.ComponentClass<
-    LazyProps<
-        SectionBean, 
-        SectionListProps, 
-        SectionListStatus, 
-        GridContainer
-    >
-> 
-= lazyLoader(SectionItem, "SectionList");
+const LazyLoader: React.ComponentClass<LazyProps<
+  SectionBean,
+  SectionListProps,
+  SectionListStatus,
+  GridContainer
+>> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
   name: string;
@@ -190,96 +218,112 @@ interface PicIndex {
   index: number;
 }
 
-class GridContainer extends React.Component<{height:number, expandImgIndex:number}, {sectionList:Array<SectionBean>}> {
-    constructor(props:{height:number, expandImgIndex:number}) {
-      super(props);
-      this.state = {sectionList:[]}
-      this.prevExpandIndex = -1;
-    }
+class GridContainer extends React.Component<
+  { height: number; expandImgIndex: number },
+  { sectionList: Array<SectionBean> }
+> {
+  constructor(props: { height: number; expandImgIndex: number }) {
+    super(props);
+    this.state = { sectionList: [] };
+    this.prevExpandIndex = -1;
+  }
 
-    prevExpandIndex:number;
-    
-    fecthSectionList() {
-      const battleShipPage = false;
-      const fetchUrl = battleShipPage ? "/local1000/picIndexAjax?album=BattleShips" : "/local1000/picIndexAjax";
+  prevExpandIndex: number;
 
-      console.log("fetchUrl is " + fetchUrl);
-      fetch(fetchUrl)
+  fecthSectionList() {
+    const battleShipPage = true;
+    const fetchUrl = battleShipPage
+      ? '/local1000/picIndexAjax?album=BattleShips'
+      : '/local1000/picIndexAjax';
+
+    console.log('fetchUrl is ' + fetchUrl);
+    fetch(fetchUrl)
       .then((resp: Response) => {
-          return resp.json();
+        return resp.json();
       })
       .then((json: Array<PicIndex>) => {
-          let subRest: Array<PicIndex>;
-          if (battleShipPage) {
-            subRest = json.concat(json, json, json, json, json, json, json, json);
-          } else {
-            subRest = json;
-          }
-          subRest.forEach((picIndex: PicIndex, index: number) => {
-            picIndex.index = index;
-          });
-          const sub0 = subRest.filter((_: PicIndex, index: number) => {
-            return index % 4 == 0;
-          });
-          const sub1 = subRest.filter((_: PicIndex, index: number) => {
-            return index % 4 == 1;
-          });
-          const sub2 = subRest.filter((_: PicIndex, index: number) => {
-            return index % 4 == 2;
-          });
-          const sub3 = subRest.filter((_: PicIndex, index: number) => {
-            return index % 4 == 3;
-          });
+        let subRest: Array<PicIndex>;
+        if (battleShipPage) {
+          // subRest = json.concat(json, json, json, json, json, json, json, json);
+          subRest = json;
+        } else {
+          subRest = json;
+        }
+        subRest.forEach((picIndex: PicIndex, index: number) => {
+          picIndex.index = index;
+        });
+        const sub0 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 0;
+        });
+        const sub1 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 1;
+        });
+        const sub2 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 2;
+        });
+        const sub3 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 3;
+        });
 
-          const sectionList = sub0.map((value: PicIndex, index: number) => {
-            return new SectionBean(
-              value, 
-              index < sub1.length ? sub1[index] : null,
-              index < sub2.length ? sub2[index] : null,
-              index < sub3.length ? sub3[index] : null
-            );
-          });
+        const sectionList = sub0.map((value: PicIndex, index: number) => {
+          return new SectionBean(
+            value,
+            index < sub1.length ? sub1[index] : null,
+            index < sub2.length ? sub2[index] : null,
+            index < sub3.length ? sub3[index] : null,
+          );
+        });
 
-          this.setState({
-              sectionList: sectionList
-          });
+        this.setState({
+          sectionList: sectionList,
+        });
       });
   }
   componentDidMount() {
-    this.fecthSectionList();        
+    this.fecthSectionList();
   }
 
-    componentDidUpdate(prevProps: {expandImgIndex: number}) {
-      if (this.props.expandImgIndex != prevProps.expandImgIndex) {
-        console.log("expandImgIndexUpdateed");
-        const floorIndex = Math.floor(this.props.expandImgIndex / 4);
-        if (this.state.sectionList[floorIndex] != undefined) {
-          this.state.sectionList[floorIndex].expand = true;
-          if (this.state.sectionList[this.prevExpandIndex] != undefined && this.prevExpandIndex != floorIndex) {
-            this.state.sectionList[this.prevExpandIndex].expand = false;
-          }
-          this.prevExpandIndex = floorIndex;
-          this.setState({
-            sectionList: this.state.sectionList
-          });
-
+  componentDidUpdate(prevProps: { expandImgIndex: number }) {
+    if (this.props.expandImgIndex != prevProps.expandImgIndex) {
+      console.log('expandImgIndexUpdateed');
+      const floorIndex = Math.floor(this.props.expandImgIndex / 4);
+      if (this.state.sectionList[floorIndex] != undefined) {
+        this.state.sectionList[floorIndex].expand = true;
+        if (
+          this.state.sectionList[this.prevExpandIndex] != undefined &&
+          this.prevExpandIndex != floorIndex
+        ) {
+          this.state.sectionList[this.prevExpandIndex].expand = false;
         }
+        this.prevExpandIndex = floorIndex;
+        this.setState({
+          sectionList: this.state.sectionList,
+        });
       }
     }
+  }
 
-    render() {
-        // const sectionList: Array<SectionBean> = genSectionList();
-        return <div style={{ height: `${this.props.height - 64}px`}}>
-            <LazyLoader dataList={this.state.sectionList} scrollTop={0} parentComp={this} height={this.props.height - 64}/>
-        </div>
-    }
+  render() {
+    // const sectionList: Array<SectionBean> = genSectionList();
+    return (
+      <div style={{ height: `${this.props.height - 64}px` }}>
+        <LazyLoader
+          dataList={this.state.sectionList}
+          scrollTop={0}
+          parentComp={this}
+          height={this.props.height - 64}
+        />
+      </div>
+    );
+  }
 }
-export default connect(
-    ({flow1000}:{flow1000:Flow1000ModelState}) => {
-        console.log("sectionList connecting")
-        return {height:flow1000.height, width:flow1000.width, expandImgIndex: flow1000.expandImgIndex}
-    }
-)
-(function(props:Flow1000Props) {
-    return <GridContainer height={props.height} expandImgIndex={props.expandImgIndex}/>
-})
+export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+  console.log('sectionList connecting');
+  return {
+    height: flow1000.height,
+    width: flow1000.width,
+    expandImgIndex: flow1000.expandImgIndex,
+  };
+})(function(props: Flow1000Props) {
+  return <GridContainer height={props.height} expandImgIndex={props.expandImgIndex} />;
+});
