@@ -1,19 +1,25 @@
 import * as React from 'react';
 import {decryptArray} from '../lib/decryptoArray';
 
+import {Flow1000ModelState} from '../models/flow1000';
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
 
 
-export default connect(
-)(
-class ImgComponent extends React.Component<{index: number, src: string, password: string, mount:boolean, dispatch: Dispatch<any>}, {url: string | null}> {
-    constructor(props:{index: number, src: string,  password: string, mount:boolean, dispatch: Dispatch<any>}) {
+export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+  return {
+    expandImgIndex: flow1000.expandImgIndex,
+  };
+})(
+class ImgComponent extends React.Component<{index: number, src: string, password: string, mount:boolean, expandImgIndex: number, dispatch: Dispatch<any>}, {url: string | null}> {
+    constructor(props:{index: number, src: string,  password: string, mount:boolean, expandImgIndex: number, dispatch: Dispatch<any>}) {
         super(props);
+        this.divRefs = React.createRef();
         this.state = {
             url:null
         }
     }
+    divRefs:React.RefObject<HTMLImageElement>;
 
     fetchImgByUrl(url: string) {
         // console.log(`fetch img: ${url}`);
@@ -67,15 +73,29 @@ class ImgComponent extends React.Component<{index: number, src: string, password
     }
 
     onMouseOver(e:React.MouseEvent) {
+        console.log(this.divRefs);
         this.props.dispatch({
             type:'flow1000/imgMouseOver',
             imgIndex: this.props.index
         });
     }
+    onMouseLeave(e:React.MouseEvent) {
+        // this.props.dispatch({
+        //     type:'flow1000/imgMouseOver',
+        //     imgIndex: this.props.index
+        // });
+        this.props.dispatch({
+            type:'flow1000/imgMouseOver',
+            imgIndex: -1
+        });
+    }
 
     render() {
+        const height = this.props.expandImgIndex == this.props.index ? "auto" : "200px";
         const img = this.state.url != null ? 
-        <img src={this.state.url} style={{display:"block", objectFit:"cover", height:"200px", width:"100%"}} onMouseOver={e=>{this.onMouseOver(e)}}/> 
+        <img 
+            src={this.state.url} ref={this.divRefs} style={{display:"block", objectFit:"cover", height:height, width:"100%", transition:"height 0.5s"}} 
+            onMouseOver={e=>{this.onMouseOver(e)} } onMouseLeave={e=>{this.onMouseLeave(e)}}/> 
         : <div style={{height:"200px", width:"100%"}}/>
         return img;
     }

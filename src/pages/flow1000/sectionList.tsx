@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import {ReactNode, useEffect} from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
         margin:0,
     },
     expandGridItem: {
-      backgroundColor: "gray"
+      // backgroundColor: "gray"
     }
   }),
 );
@@ -148,10 +148,13 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     ? classes.gridItem
     : `${classes.gridItem} ${classes.expandGridItem}`;
 
+  const style: CSSProperties = !props.sectionBean.expand
+    ? {height:"360px"}
+    : {}
   return (
-    <div style={{ height: '360px' }}>
-      <Grid container={true} spacing={1} className={className}>
-        <Grid item={true} xs={3}>
+    <div  style={style}>
+      <Grid  container={true} spacing={1} className={className}>
+        <Grid  item={true} xs={3}>
           <RecipeReviewCard
             index={props.sectionBean.section0.index}
             mount={props.mount}
@@ -231,7 +234,7 @@ class GridContainer extends React.Component<
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = true;
+    const battleShipPage = false;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
       : '/local1000/picIndexAjax';
@@ -318,7 +321,6 @@ class GridContainer extends React.Component<
   }
 }
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
-  console.log('sectionList connecting');
   return {
     height: flow1000.height,
     width: flow1000.width,
