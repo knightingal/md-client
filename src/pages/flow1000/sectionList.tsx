@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
-function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number}) {
+function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number, coverHeight: number, coverWidth: number}) {
     const classes = useStyles();
   
     return (
@@ -49,7 +49,7 @@ function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, i
           title={props.title}
           subheader="sub"
         />
-        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount} index={props.index}/>
+        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount} index={props.index} height={props.coverHeight} width={props.coverWidth}/>
         {/* <CardMedia
           className={classes.media}
           component="img"
@@ -74,11 +74,16 @@ class SectionInfo {
 
     index:number;
 
+    coverHeight:number;
+    coverWidth:number;
+
     constructor(value : PicIndex) {
         // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
         this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
         this.title = value.name.substring(14);
         this.index = value.index;
+        this.coverHeight = value.coverHeight;
+        this.coverWidth = value.coverWidth;
     }
 }
 
@@ -119,6 +124,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
           mount={props.mount}
           title={props.sectionBean.section1.title}
           imgSrc={props.sectionBean.section1.imgSrc}
+          coverHeight={props.sectionBean.section1.coverHeight}
+          coverWidth={props.sectionBean.section1.coverWidth}
         />
       </Grid>
     ) : null;
@@ -130,6 +137,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
           mount={props.mount}
           title={props.sectionBean.section2.title}
           imgSrc={props.sectionBean.section2.imgSrc}
+          coverHeight={props.sectionBean.section2.coverHeight}
+          coverWidth={props.sectionBean.section2.coverWidth}
         />
       </Grid>
     ) : null;
@@ -141,6 +150,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
           mount={props.mount}
           title={props.sectionBean.section3.title}
           imgSrc={props.sectionBean.section3.imgSrc}
+          coverHeight={props.sectionBean.section3.coverHeight}
+          coverWidth={props.sectionBean.section3.coverWidth}
         />
       </Grid>
     ) : null;
@@ -160,6 +171,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
             mount={props.mount}
             title={props.sectionBean.section0.title}
             imgSrc={props.sectionBean.section0.imgSrc}
+          coverHeight={props.sectionBean.section0.coverHeight}
+          coverWidth={props.sectionBean.section0.coverWidth}
           />
         </Grid>
         {section1}
@@ -219,6 +232,8 @@ interface PicIndex {
   name: string;
   cover: string;
   index: number;
+  coverWidth: number;
+  coverHeight: number;
 }
 
 class GridContainer extends React.Component<
