@@ -40,14 +40,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
-function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number, coverHeight: number, coverWidth: number}) {
+function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number, coverHeight: number, coverWidth: number, timeStamp:string}) {
     const classes = useStyles();
   
     return (
       <Card className={classes.card}>
         <CardHeader
           title={props.title}
-          subheader="sub"
+          subheader={props.timeStamp}
         />
         <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount} index={props.index} height={props.coverHeight} width={props.coverWidth}/>
         {/* <CardMedia
@@ -71,7 +71,7 @@ class SectionInfo {
     imgSrc:string;
 
     title:string;
-
+    timeStamp: string;
     index:number;
 
     coverHeight:number;
@@ -81,6 +81,7 @@ class SectionInfo {
         // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
         this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
         this.title = value.name.substring(14);
+        this.timeStamp = value.name.substring(0, 14);
         this.index = value.index;
         this.coverHeight = value.coverHeight;
         this.coverWidth = value.coverWidth;
@@ -122,6 +123,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         <RecipeReviewCard
           index={props.sectionBean.section1.index}
           mount={props.mount}
+          timeStamp={props.sectionBean.section1.timeStamp}
           title={props.sectionBean.section1.title}
           imgSrc={props.sectionBean.section1.imgSrc}
           coverHeight={props.sectionBean.section1.coverHeight}
@@ -135,6 +137,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         <RecipeReviewCard
           index={props.sectionBean.section2.index}
           mount={props.mount}
+          timeStamp={props.sectionBean.section2.timeStamp}
           title={props.sectionBean.section2.title}
           imgSrc={props.sectionBean.section2.imgSrc}
           coverHeight={props.sectionBean.section2.coverHeight}
@@ -148,6 +151,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         <RecipeReviewCard
           index={props.sectionBean.section3.index}
           mount={props.mount}
+          timeStamp={props.sectionBean.section3.timeStamp}
           title={props.sectionBean.section3.title}
           imgSrc={props.sectionBean.section3.imgSrc}
           coverHeight={props.sectionBean.section3.coverHeight}
@@ -168,6 +172,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         <Grid  item={true} xs={3}>
           <RecipeReviewCard
             index={props.sectionBean.section0.index}
+          timeStamp={props.sectionBean.section0.timeStamp}
             mount={props.mount}
             title={props.sectionBean.section0.title}
             imgSrc={props.sectionBean.section0.imgSrc}
