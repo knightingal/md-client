@@ -30,9 +30,10 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
       this.state = {
         url: null,
       };
+      this.lastTimestamp = -1;
     }
     divRefs: React.RefObject<HTMLImageElement>;
-
+    lastTimestamp: number;
     fetchImgByUrl(url: string) {
         fetch(url)
         .then(response => {
@@ -70,34 +71,43 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
       }
 
       if (this.props.mount != prevProps.mount) {
-        if (this.props.mount == false) {
-          this.setState({
-            url: null,
-          });
-        } else {
-          if (this.props.src != null) {
+        if (this.props.mount == true && this.props.src != null) {
             this.fetchImgByUrl(this.props.src);
-            this.setState({
-              url: null,
-            });
-          }
-        }
+        }       
       }
     }
 
     onMouseOver(e: React.MouseEvent) {
       console.log(this.divRefs);
       console.log(this.divRefs.current?.offsetWidth)
-      this.props.dispatch({
-        type: 'flow1000/imgMouseOver',
-        imgIndex: this.props.index,
-      });
+      this.lastTimestamp = e.timeStamp;
+      setTimeout((timeStamp:number)=>{
+        if (timeStamp == this.lastTimestamp) {
+          this.props.dispatch({
+            type: 'flow1000/imgMouseOver',
+            imgIndex: this.props.index,
+          });
+        }
+      }, 600, e.timeStamp);
     }
     onMouseLeave(e: React.MouseEvent) {
+      this.lastTimestamp = e.timeStamp;
       this.props.dispatch({
         type: 'flow1000/imgMouseOver',
         imgIndex: -1,
       });
+    }
+    onMouseMove(e: React.MouseEvent) {
+      this.lastTimestamp = e.timeStamp;
+      setTimeout((timeStamp:number)=>{
+        if (timeStamp == this.lastTimestamp) {
+          this.props.dispatch({
+            type: 'flow1000/imgMouseOver',
+            imgIndex: this.props.index,
+          });
+        }
+      }, 600, e.timeStamp);
+
     }
 
     render() {
@@ -122,6 +132,9 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
             }}
             onMouseOver={e => {
               this.onMouseOver(e);
+            }}
+            onMouseMove={e => {
+              this.onMouseMove(e);
             }}
             onMouseLeave={e => {
               this.onMouseLeave(e);
