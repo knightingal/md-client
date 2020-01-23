@@ -9,8 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
-import {lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
-import ImgComponent  from '../../components/ImgComponent';
+import {lazyLoader, LazyProps, HeightType, ParentCompHandler} from '../../components/LazyLoader';
+import ImgComponent  from '../../components/SectionImgComponent';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
@@ -21,6 +21,7 @@ interface Flow1000Props {
     expandImgIndex: number;
     children?: ReactNode;
     dispatch: Dispatch<any>;
+    scrollTop: number;
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,32 +41,41 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
-function RecipeReviewCard(props: {title:string, imgSrc:string, mount: boolean, index: number, coverHeight: number, coverWidth: number, timeStamp:string}) {
-    const classes = useStyles();
-  
-    return (
-      <Card className={classes.card}>
-        <CardHeader
-          title={props.title}
-          subheader={props.timeStamp}
-        />
-        <ImgComponent src={props.imgSrc} password="yjmK14040842$000" mount={props.mount} index={props.index} height={props.coverHeight} width={props.coverWidth}/>
-        {/* <CardMedia
-          className={classes.media}
-          component="img"
-          image={props.imgSrc}
-        /> */}
-        <CardActions disableSpacing={true}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-        </CardActions>
-      </Card>
-    );
-  }
+function RecipeReviewCard(props: {
+  title: string;
+  imgSrc: string;
+  sectionIndex: number;
+  mount: boolean;
+  index: number;
+  coverHeight: number;
+  coverWidth: number;
+  timeStamp: string;
+}) {
+  const classes = useStyles();
+
+  return (
+    <Card className={classes.card}>
+      <CardHeader title={props.title} subheader={props.timeStamp} />
+      <ImgComponent
+        sectionIndex={props.sectionIndex}
+        src={props.imgSrc}
+        password="yjmK14040842$000"
+        mount={props.mount}
+        index={props.index}
+        height={props.coverHeight}
+        width={props.coverWidth}
+      />
+      <CardActions disableSpacing={true}>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton>
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+      </CardActions>
+    </Card>
+  );
+}
 
 class SectionInfo {
     imgSrc:string;
@@ -73,6 +83,7 @@ class SectionInfo {
     title:string;
     timeStamp: string;
     index:number;
+    sectionIndex:number;
 
     coverHeight:number;
     coverWidth:number;
@@ -82,6 +93,7 @@ class SectionInfo {
         this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
         this.title = value.name.substring(14);
         this.timeStamp = value.name.substring(0, 14);
+        this.sectionIndex = value.sectionIndex;
         this.index = value.index;
         this.coverHeight = value.coverHeight;
         this.coverWidth = value.coverWidth;
@@ -121,6 +133,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     props.sectionBean.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          sectionIndex={props.sectionBean.section1.sectionIndex}
           index={props.sectionBean.section1.index}
           mount={props.mount}
           timeStamp={props.sectionBean.section1.timeStamp}
@@ -135,6 +148,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     props.sectionBean.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          sectionIndex={props.sectionBean.section2.sectionIndex}
           index={props.sectionBean.section2.index}
           mount={props.mount}
           timeStamp={props.sectionBean.section2.timeStamp}
@@ -149,6 +163,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     props.sectionBean.section3 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          sectionIndex={props.sectionBean.section3.sectionIndex}
           index={props.sectionBean.section3.index}
           mount={props.mount}
           timeStamp={props.sectionBean.section3.timeStamp}
@@ -171,6 +186,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
       <Grid  container={true} spacing={1} className={className}>
         <Grid  item={true} xs={3}>
           <RecipeReviewCard
+          sectionIndex={props.sectionBean.section0.sectionIndex}
             index={props.sectionBean.section0.index}
           timeStamp={props.sectionBean.section0.timeStamp}
             mount={props.mount}
@@ -234,6 +250,7 @@ const LazyLoader: React.ComponentClass<LazyProps<
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
+  sectionIndex: number;
   name: string;
   cover: string;
   index: number;
@@ -241,14 +258,22 @@ interface PicIndex {
   coverHeight: number;
 }
 
+
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number },
+  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number},
   { sectionList: Array<SectionBean> }
-> {
-  constructor(props: { height: number; expandImgIndex: number }) {
+> implements ParentCompHandler {
+  constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number}) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
+  }
+
+  dispatch(scrollTop: number) {
+    this.props.dispatch({
+        type: 'flow1000/scrollTop',
+        scrollTop: scrollTop,
+    });
   }
 
   prevExpandIndex: number;
@@ -273,6 +298,7 @@ class GridContainer extends React.Component<
           subRest = json;
         }
         subRest.forEach((picIndex: PicIndex, index: number) => {
+          picIndex.sectionIndex = picIndex.index;
           picIndex.index = index;
         });
         const sub0 = subRest.filter((_: PicIndex, index: number) => {
@@ -329,12 +355,13 @@ class GridContainer extends React.Component<
   render() {
     // const sectionList: Array<SectionBean> = genSectionList();
     return (
-      <div style={{ height: `${this.props.height - 64}px` }}>
+      <div style={{ height: `${this.props.height - 64}px` }} >
         <LazyLoader
           dataList={this.state.sectionList}
-          scrollTop={0}
+          scrollTop={this.props.scrollTop}
           parentComp={this}
           height={this.props.height - 64}
+          dispatchHandler={this}
         />
       </div>
     );
@@ -345,7 +372,8 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     height: flow1000.height,
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
+    scrollTop: flow1000.scrollTop,
   };
 })(function(props: Flow1000Props) {
-  return <GridContainer height={props.height} expandImgIndex={props.expandImgIndex} />;
+  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
 });

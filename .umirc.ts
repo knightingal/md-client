@@ -17,7 +17,8 @@ const config: IConfig =  {
       path: '/flow1000',
       component: '../layouts/flow1000',
       routes:[
-        {path:'/flow1000/', component:'../pages/flow1000/sectionList'}
+        {path:'/flow1000/', component:'../pages/flow1000/sectionList'},
+        {path:'/flow1000/sectionContent/', component:'../pages/flow1000/sectionContent'}
       ]
     },
     {
