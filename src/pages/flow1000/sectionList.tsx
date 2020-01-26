@@ -326,6 +326,10 @@ class GridContainer extends React.Component<
         this.setState({
           sectionList: sectionList,
         });
+        this.props.dispatch({
+            type: 'flow1000/sectionList',
+            subRest: subRest,
+        });
       });
   }
   componentDidMount() {

@@ -11,10 +11,23 @@ interface ImgMouseOverAction extends Action{
 }
 interface ImgClickAction extends Action{
     imgIndex: number;
+    index: number;
 }
 
 interface ScrollTopAction extends Action{
     scrollTop: number;
+}
+
+interface PicIndex {
+  sectionIndex: number;
+  name: string;
+  cover: string;
+  index: number;
+  coverWidth: number;
+  coverHeight: number;
+}
+interface SectionListAction extends Action {
+    subRest: Array<PicIndex>;
 }
 
 export interface Flow1000ModelType {
@@ -25,6 +38,7 @@ export interface Flow1000ModelType {
         imgMouseOver: Reducer<Flow1000ModelState, ImgMouseOverAction>;
         imgClick: Reducer<Flow1000ModelState, ImgClickAction>;
         scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
+        sectionList: Reducer<Flow1000ModelState, SectionListAction>; 
     };
 }
 
@@ -43,6 +57,9 @@ interface SectionContent {
 }
 
 export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, SectionContent {
+    title: string;
+    
+    subRest: Array<PicIndex>;
 }
 
 export interface Device {
@@ -56,30 +73,45 @@ export interface Device {
 }
 
 const Flow1000Model: Flow1000ModelType = {
-    namespace: "flow1000",
-    state: {
-        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0
+  namespace: 'flow1000',
+  state: {
+    height: 0,
+    width: 0,
+    expandImgIndex: -1,
+    sectionIndex: -1,
+    scrollTop: 0,
+    title: 'Welcome to use Flow1000',
+    subRest: [],
+  },
+  reducers: {
+    setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
+      return { ...(state as Flow1000ModelState), height: action.height, width: action.width };
     },
-    reducers:{
-        setWindowSize(state: Flow1000ModelState|undefined, action:SetWindowSizeAction) {
-            return {...(state as Flow1000ModelState), height:action.height, width:action.width};
-        },
-        imgMouseOver(state: Flow1000ModelState|undefined, action:ImgMouseOverAction) {
-            const state0 = (state as Flow1000ModelState);
-            console.log(action);
-            return {...state0, expandImgIndex: action.imgIndex};
-        },
-        imgClick(state: Flow1000ModelState|undefined, action:ImgClickAction) {
-            console.log("imgClick");
-            console.log(action);
-            return {...(state as Flow1000ModelState), sectionIndex: action.imgIndex, expandImgIndex: -1}
-        },
-        scrollTop(state: Flow1000ModelState|undefined, action: ScrollTopAction) {
-            console.log("scrollTop");
-            console.log(action)
-            return {...(state as Flow1000ModelState), scrollTop: action.scrollTop}
-        }
-    }
+    imgMouseOver(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
+      const state0 = state as Flow1000ModelState;
+      console.log(action);
+      return { ...state0, expandImgIndex: action.imgIndex };
+    },
+    imgClick(state: Flow1000ModelState | undefined, action: ImgClickAction) {
+      console.log('imgClick');
+      console.log(action);
+      return {
+        ...(state as Flow1000ModelState),
+        sectionIndex: action.imgIndex,
+        expandImgIndex: -1,
+        title: (state as Flow1000ModelState).subRest[action.index].name,
+      };
+    },
+    scrollTop(state: Flow1000ModelState | undefined, action: ScrollTopAction) {
+      console.log('scrollTop');
+      console.log(action);
+      return { ...(state as Flow1000ModelState), scrollTop: action.scrollTop };
+    },
+
+    sectionList(state: Flow1000ModelState | undefined, action: SectionListAction) {
+      return { ...(state as Flow1000ModelState), subRest: action.subRest };
+    },
+  },
 };
 
 export default Flow1000Model;

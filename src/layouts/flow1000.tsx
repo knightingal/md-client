@@ -25,8 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Flow1000Props {
-    height:number;
-    width:number;
+    title: string
     children?: ReactNode;
     dispatch: Dispatch<any>;
 }
@@ -34,7 +33,7 @@ interface Flow1000Props {
 export default connect(
     ({flow1000}:{flow1000:Flow1000ModelState}) => {
         console.log("flow1000 layout connecting")
-        return {height:flow1000.height, width:flow1000.width}
+        return {title: flow1000.title}
     }
 ) ((props: Flow1000Props) => {
     const classes = useStyles();
@@ -57,7 +56,7 @@ export default connect(
                     <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" className={classes.title}>
-                    Welcome to user Flow1000
+                    {props.title}
                 </Typography>
                 <Button color="inherit">About</Button>
                 </Toolbar>

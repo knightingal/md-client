@@ -124,6 +124,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
       this.props.dispatch({
         type: 'flow1000/imgClick',
         imgIndex: this.props.sectionIndex,
+        index: this.props.index
       });
 
       router.push("/flow1000/sectionContent/")
