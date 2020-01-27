@@ -161,9 +161,6 @@ export function lazyLoader<
         });
       }
       if (this.props.dataList.length != prevProps.dataList.length) {
-        // if (this.props.scrollTop >= 0 && this.divRefs.current != null) {
-        //   this.divRefs.current.scrollTop = this.props.scrollTop;
-        // }
         const itemHeightList: Array<number> = this.props.dataList.map(
           (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
             return value.height;

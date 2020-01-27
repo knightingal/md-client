@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '200px',
     },
     gridItem: {
-        margin:0,
+      margin:0,
     },
     expandGridItem: {
     }
@@ -182,14 +182,14 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
       <Grid  container={true} spacing={1} className={className}>
         <Grid  item={true} xs={3}>
           <RecipeReviewCard
-          sectionIndex={props.sectionBean.section0.sectionIndex}
+            sectionIndex={props.sectionBean.section0.sectionIndex}
             index={props.sectionBean.section0.index}
-          timeStamp={props.sectionBean.section0.timeStamp}
+            timeStamp={props.sectionBean.section0.timeStamp}
             mount={props.mount}
             title={props.sectionBean.section0.title}
             imgSrc={props.sectionBean.section0.imgSrc}
-          coverHeight={props.sectionBean.section0.coverHeight}
-          coverWidth={props.sectionBean.section0.coverWidth}
+            coverHeight={props.sectionBean.section0.coverHeight}
+            coverWidth={props.sectionBean.section0.coverWidth}
           />
         </Grid>
         {section1}
@@ -199,36 +199,6 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     </div>
   );
 };
-
-const GridLine2 = (props:{sectionBean:SectionBean}) => {
-
-    const classes = useStyles();
-
-    const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section1.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/> */}
-    </Grid>): null;
-    const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section2.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/> */}
-    </Grid>): null;
-    const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section3.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/> */}
-    </Grid>): null;
-    return <div style={{height:"360px"}}>
-      <Grid container={true} spacing={1} className={classes.gridItem} >
-          <Grid item={true} xs={3}>
-            <h2>{props.sectionBean.section0.title}</h2>
-              {/* <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/> */}
-          </Grid> 
-          {section1}
-          {section2}
-          {section3}
-      </Grid>
-
-    </div>
-}
 
 class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer, mount: boolean}> {
     constructor(props:{item:SectionBean, parentComp: GridContainer, mount: boolean}) {
@@ -274,7 +244,6 @@ class GridContainer extends React.Component<
       ? '/local1000/picIndexAjax?album=BattleShips'
       : '/local1000/picIndexAjax';
 
-    console.log('fetchUrl is ' + fetchUrl);
     fetch(fetchUrl)
       .then((resp: Response) => {
         return resp.json();
@@ -328,7 +297,6 @@ class GridContainer extends React.Component<
 
   componentDidUpdate(prevProps: { expandImgIndex: number }) {
     if (this.props.expandImgIndex != prevProps.expandImgIndex) {
-      console.log('expandImgIndexUpdateed');
       const floorIndex = Math.floor(this.props.expandImgIndex / 4);
       if (this.state.sectionList[floorIndex] != undefined) {
         this.state.sectionList[floorIndex].expand = true;
