@@ -89,12 +89,9 @@ const Flow1000Model: Flow1000ModelType = {
     },
     imgMouseOver(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
       const state0 = state as Flow1000ModelState;
-      console.log(action);
       return { ...state0, expandImgIndex: action.imgIndex };
     },
     imgClick(state: Flow1000ModelState | undefined, action: ImgClickAction) {
-      console.log('imgClick');
-      console.log(action);
       return {
         ...(state as Flow1000ModelState),
         sectionIndex: action.imgIndex,
@@ -103,8 +100,6 @@ const Flow1000Model: Flow1000ModelType = {
       };
     },
     scrollTop(state: Flow1000ModelState | undefined, action: ScrollTopAction) {
-      console.log('scrollTop');
-      console.log(action);
       return { ...(state as Flow1000ModelState), scrollTop: action.scrollTop };
     },
 
