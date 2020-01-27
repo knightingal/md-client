@@ -205,56 +205,45 @@ export function lazyLoader<
         if (currentButtonPicIndex + 1 >= self.props.dataList.length) {
           return <div style={{ height: '0px' }} />;
         }
-        return (
-          <div
-            style={{
-              height: `${self.itemHeightStep[self.itemHeightStep.length - 1] +
-                self.props.dataList[self.props.dataList.length - 1].height -
-                self.itemHeightStep[currentButtonPicIndex + 1]}px`,
-            }}
-          />
-        );
+        const height = `${self.itemHeightStep[self.itemHeightStep.length - 1] 
+          + self.props.dataList[self.props.dataList.length - 1].height 
+          - self.itemHeightStep[currentButtonPicIndex + 1]}px`
+        return <div style={{ height: height, }} /> ;
       }
       return null;
     }
 
     render() {
+      const itemListComp = this.props.dataList.map((itemBean: ITEM_TYPE, index: number) => {
+        if (
+          this.state.currentButtonPicIndex != null &&
+          this.state.currentTopPicIndex != null
+        ) {
+          const display =
+            index >= this.state.currentTopPicIndex - preLoadOffSet &&
+            index <= this.state.currentButtonPicIndex + preLoadOffSet;
+          return display ? (
+            <WrappedComponent
+              key={index}
+              item={itemBean}
+              parentComp={this.props.parentComp}
+              mount={this.state.mount}
+            />
+          ) : null;
+        }
+        return null;
+      }).filter((value: JSX.Element | null, index: number, array: (JSX.Element | null)[]) => {
+        return value != null;
+      });
       return (
         <div
           className={className}
           onScroll={e => this.scrollHandler(e)}
           ref={this.divRefs}
-          style={{
-            height: `${this.props.height}px`,
-            willChange: 'transform',
-            overflowY: 'scroll',
-            overflowX: 'hidden',
-          }}
+          style={{ height: `${this.props.height}px`, willChange: 'transform', overflowY: 'scroll', overflowX: 'hidden', }}
         >
           <this.TopPadding self={this} />
-          {this.props.dataList
-            .map((itemBean: ITEM_TYPE, index: number) => {
-              if (
-                this.state.currentButtonPicIndex != null &&
-                this.state.currentTopPicIndex != null
-              ) {
-                const display =
-                  index >= this.state.currentTopPicIndex - preLoadOffSet &&
-                  index <= this.state.currentButtonPicIndex + preLoadOffSet;
-                return display ? (
-                  <WrappedComponent
-                    key={index}
-                    item={itemBean}
-                    parentComp={this.props.parentComp}
-                    mount={this.state.mount}
-                  />
-                ) : null;
-              }
-              return null;
-            })
-            .filter((value: JSX.Element | null, index: number, array: (JSX.Element | null)[]) => {
-              return value != null;
-            })}
+          {itemListComp}
           <this.BottomPadding self={this} />
         </div>
       );
