@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import {ReactNode, useEffect} from 'react';
+import { ReactNode, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -9,32 +9,30 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
-import {lazyLoader, LazyProps, HeightType, } from '../../components/LazyLoader';
-import ImgComponent  from '../../components/SectionImgComponent';
+import { lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
+import ImgComponent from '../../components/SectionImgComponent';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
-import {Flow1000ModelState} from '../../models/flow1000';
+import { Flow1000ModelState } from '../../models/flow1000';
 interface Flow1000Props {
-    height:number;
-    width:number;
-    expandImgIndex: number;
-    children?: ReactNode;
-    dispatch: Dispatch<any>;
-    scrollTop: number;
+  height: number;
+  width: number;
+  expandImgIndex: number;
+  children?: ReactNode;
+  dispatch: Dispatch<any>;
+  scrollTop: number;
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    card: {
-    },
+    card: {},
     media: {
       height: '200px',
     },
     gridItem: {
-      margin:0,
+      margin: 0,
     },
-    expandGridItem: {
-    }
+    expandGridItem: {},
   }),
 );
 function RecipeReviewCard(props: {
@@ -74,49 +72,51 @@ function RecipeReviewCard(props: {
 }
 
 class SectionInfo {
-    imgSrc:string;
+  imgSrc: string;
 
-    title:string;
-    timeStamp: string;
-    index:number;
-    sectionIndex:number;
+  title: string;
+  timeStamp: string;
+  index: number;
+  sectionIndex: number;
 
-    coverHeight:number;
-    coverWidth:number;
+  coverHeight: number;
+  coverWidth: number;
 
-    constructor(value : PicIndex) {
-        // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-        this.imgSrc=`/static/encrypted/${value.name}/${value.cover}.bin`; 
-        this.title = value.name.substring(14);
-        this.timeStamp = value.name.substring(0, 14);
-        this.sectionIndex = value.sectionIndex;
-        this.index = value.index;
-        this.coverHeight = value.coverHeight;
-        this.coverWidth = value.coverWidth;
-    }
+  constructor(value: PicIndex) {
+    // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
+    this.imgSrc = `/static/encrypted/${value.name}/${value.cover}.bin`;
+    this.title = value.name.substring(14);
+    this.timeStamp = value.name.substring(0, 14);
+    this.sectionIndex = value.sectionIndex;
+    this.index = value.index;
+    this.coverHeight = value.coverHeight;
+    this.coverWidth = value.coverWidth;
+  }
 }
 
-class SectionBean   implements HeightType{
-    height:number;
-    expand: boolean;
+class SectionBean implements HeightType {
+  height: number;
+  expand: boolean;
 
-    section0:SectionInfo;
-    section1:SectionInfo|null;
-    section2:SectionInfo|null;
-    section3:SectionInfo|null;
+  section0: SectionInfo;
+  section1: SectionInfo | null;
+  section2: SectionInfo | null;
+  section3: SectionInfo | null;
 
-
-    constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
-        this.height = 360;
-        this.expand = false;
-        this.section0 = new SectionInfo(value0);
-        this.section1 = value1 != null ? new SectionInfo(value1) : null;
-        this.section2 = value2 != null ? new SectionInfo(value2) : null;
-        this.section3 = value3 != null ? new SectionInfo(value3) : null;
-        
-    }
+  constructor(
+    value0: PicIndex,
+    value1: PicIndex | null,
+    value2: PicIndex | null,
+    value3: PicIndex | null,
+  ) {
+    this.height = 360;
+    this.expand = false;
+    this.section0 = new SectionInfo(value0);
+    this.section1 = value1 != null ? new SectionInfo(value1) : null;
+    this.section2 = value2 != null ? new SectionInfo(value2) : null;
+    this.section3 = value3 != null ? new SectionInfo(value3) : null;
+  }
 }
-
 
 interface SectionListProps {}
 
@@ -174,13 +174,11 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     ? classes.gridItem
     : `${classes.gridItem} ${classes.expandGridItem}`;
 
-  const style: CSSProperties = !props.sectionBean.expand
-    ? {height:"360px"}
-    : {}
+  const style: CSSProperties = !props.sectionBean.expand ? { height: '360px' } : {};
   return (
-    <div  style={style}>
-      <Grid  container={true} spacing={1} className={className}>
-        <Grid  item={true} xs={3}>
+    <div style={style}>
+      <Grid container={true} spacing={1} className={className}>
+        <Grid item={true} xs={3}>
           <RecipeReviewCard
             sectionIndex={props.sectionBean.section0.sectionIndex}
             index={props.sectionBean.section0.index}
@@ -200,13 +198,17 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
   );
 };
 
-class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer, mount: boolean}> {
-    constructor(props:{item:SectionBean, parentComp: GridContainer, mount: boolean}) {
-      super(props);
-    }
-    render() {
-        return <GridLine sectionBean={this.props.item} mount={this.props.mount}/>
-    }
+class SectionItem extends React.Component<{
+  item: SectionBean;
+  parentComp: GridContainer;
+  mount: boolean;
+}> {
+  constructor(props: { item: SectionBean; parentComp: GridContainer; mount: boolean }) {
+    super(props);
+  }
+  render() {
+    return <GridLine sectionBean={this.props.item} mount={this.props.mount} />;
+  }
 }
 const LazyLoader: React.ComponentClass<LazyProps<
   SectionBean,
@@ -224,17 +226,20 @@ interface PicIndex {
   coverHeight: number;
 }
 
-
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number},
+  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number },
   { sectionList: Array<SectionBean> }
 > {
-  constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number}) {
+  constructor(props: {
+    height: number;
+    expandImgIndex: number;
+    dispatch: Dispatch<any>;
+    scrollTop: number;
+  }) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
   }
-
 
   prevExpandIndex: number;
 
@@ -286,8 +291,8 @@ class GridContainer extends React.Component<
           sectionList: sectionList,
         });
         this.props.dispatch({
-            type: 'flow1000/sectionList',
-            subRest: subRest,
+          type: 'flow1000/sectionList',
+          subRest: subRest,
         });
       });
   }
@@ -317,7 +322,7 @@ class GridContainer extends React.Component<
   render() {
     // const sectionList: Array<SectionBean> = genSectionList();
     return (
-      <div style={{ height: `${this.props.height - 64}px` }} >
+      <div style={{ height: `${this.props.height - 64}px` }}>
         <LazyLoader
           dataList={this.state.sectionList}
           scrollTop={this.props.scrollTop}
@@ -337,5 +342,12 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     scrollTop: flow1000.scrollTop,
   };
 })(function(props: Flow1000Props) {
-  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
+  return (
+    <GridContainer
+      scrollTop={props.scrollTop}
+      height={props.height}
+      expandImgIndex={props.expandImgIndex}
+      dispatch={props.dispatch}
+    />
+  );
 });
