@@ -1,21 +1,20 @@
 import {Reducer, Action} from 'redux';
 
-import { router } from "umi";
 interface SetWindowSizeAction extends Action {
-    height:number;
-    width:number;
-}
- 
-interface ImgMouseOverAction extends Action{
-    imgIndex: number;
-}
-interface ImgClickAction extends Action{
-    imgIndex: number;
-    index: number;
+  height: number;
+  width: number;
 }
 
-interface ScrollTopAction extends Action{
-    scrollTop: number;
+interface ImgMouseOverAction extends Action {
+  imgIndex: number;
+}
+interface ImgClickAction extends Action {
+  imgIndex: number;
+  index: number;
+}
+
+interface ScrollTopAction extends Action {
+  scrollTop: number;
 }
 
 interface PicIndex {
@@ -27,49 +26,49 @@ interface PicIndex {
   coverHeight: number;
 }
 interface SectionListAction extends Action {
-    subRest: Array<PicIndex>;
+  subRest: Array<PicIndex>;
 }
 
 export interface Flow1000ModelType {
-    namespace: "flow1000";
-    state: Flow1000ModelState;
-    reducers: {
-        setWindowSize: Reducer<Flow1000ModelState, SetWindowSizeAction>;
-        imgMouseOver: Reducer<Flow1000ModelState, ImgMouseOverAction>;
-        imgClick: Reducer<Flow1000ModelState, ImgClickAction>;
-        scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
-        sectionList: Reducer<Flow1000ModelState, SectionListAction>; 
-    };
+  namespace: 'flow1000';
+  state: Flow1000ModelState;
+  reducers: {
+    setWindowSize: Reducer<Flow1000ModelState, SetWindowSizeAction>;
+    imgMouseOver: Reducer<Flow1000ModelState, ImgMouseOverAction>;
+    imgClick: Reducer<Flow1000ModelState, ImgClickAction>;
+    scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
+    sectionList: Reducer<Flow1000ModelState, SectionListAction>;
+  };
 }
 
 interface WindowSizeState {
-    height: number;
-    width: number;
-    scrollTop: number;
+  height: number;
+  width: number;
+  scrollTop: number;
 }
 
 interface ImgMouseOverState {
-    expandImgIndex:number;
+  expandImgIndex: number;
 }
 
 interface SectionContent {
-    sectionIndex:number;
+  sectionIndex: number;
 }
 
 export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, SectionContent {
-    title: string;
-    
-    subRest: Array<PicIndex>;
+  title: string;
+
+  subRest: Array<PicIndex>;
 }
 
 export interface Device {
-    appKey:string;
-    userId:string;
-    esn:string;
-    outerNetwork:string;
-    id:string;
-    pushToken:string|null;
-    appId:string|null;
+  appKey: string;
+  userId: string;
+  esn: string;
+  outerNetwork: string;
+  id: string;
+  pushToken: string | null;
+  appId: string | null;
 }
 
 const Flow1000Model: Flow1000ModelType = {
