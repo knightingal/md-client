@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Dispatch } from 'redux';
     
 interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
     item: ITEM_TYPE;
@@ -16,16 +17,13 @@ export interface HeightType {
     height: number;
 }
 
-export interface ParentCompHandler {
-  dispatch: (scrollTop: number)=>void
-}
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
 export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>> {
     dataList:Array<ITEM_TYPE>;
     parentComp:PARENT_COMP_TYPE;
     scrollTop:number;
     height:number;
-    dispatchHandler: ParentCompHandler
+    dispatch?: Dispatch<any>
 }
 
 
@@ -86,7 +84,10 @@ export function lazyLoader<
       }
       this.lastTimeStampe = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
-      this.props.dispatchHandler.dispatch(scrollTop);
+      this.props.dispatch?.({
+          type: 'flow1000/scrollTop',
+          scrollTop: scrollTop,
+      });
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
       const refreshTopPicIndex = this.checkPostionInPic(scrollTop);

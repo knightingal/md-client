@@ -1,6 +1,6 @@
 
 import React, { CSSProperties } from 'react';
-import {lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
+import {lazyLoader, LazyProps, HeightType,  } from '../../components/LazyLoader';
 
 import ImgComponent  from '../../components/ImgComponent';
 import {Flow1000ModelState} from '../../models/flow1000';
@@ -29,15 +29,12 @@ class ImgDetail implements HeightType{
     }
 }
 
-class Content extends React.Component<{index:number, password:string, height: number}, {sectionDetail:SectionDetail, scrollTop:number}> implements ParentCompHandler {
+class Content extends React.Component<{index:number, password:string, height: number}, {sectionDetail:SectionDetail, scrollTop:number}>  {
     constructor(props:{index: number, password:string, height: number}) {
         super(props);
         this.state = {sectionDetail: new SectionDetail(), scrollTop:0};
     }
     
-    
-    dispatch: () => void = ()=>{};
-
     fecthSectionList(index: number) {
         if (index <= 0) {
             return;
@@ -68,7 +65,7 @@ class Content extends React.Component<{index:number, password:string, height: nu
     }
 
     render() {
-        return <LazyLoader dispatchHandler={this} height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop}/>
+        return <LazyLoader height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop}/>
     }
 };
 

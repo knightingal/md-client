@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
-import {lazyLoader, LazyProps, HeightType, ParentCompHandler} from '../../components/LazyLoader';
+import {lazyLoader, LazyProps, HeightType, } from '../../components/LazyLoader';
 import ImgComponent  from '../../components/SectionImgComponent';
 
 import { connect } from 'dva';
@@ -31,13 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '200px',
     },
     gridItem: {
-        // height: 360,
-        // marginTop: 0,
-        // marginBottom: 0,
         margin:0,
     },
     expandGridItem: {
-      // backgroundColor: "gray"
     }
   }),
 );
@@ -262,24 +258,18 @@ interface PicIndex {
 class GridContainer extends React.Component<
   { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number},
   { sectionList: Array<SectionBean> }
-> implements ParentCompHandler {
+> {
   constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number}) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
   }
 
-  dispatch(scrollTop: number) {
-    this.props.dispatch({
-        type: 'flow1000/scrollTop',
-        scrollTop: scrollTop,
-    });
-  }
 
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = false;
+    const battleShipPage = true;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
       : '/local1000/picIndexAjax';
@@ -365,7 +355,7 @@ class GridContainer extends React.Component<
           scrollTop={this.props.scrollTop}
           parentComp={this}
           height={this.props.height - 64}
-          dispatchHandler={this}
+          dispatch={this.props.dispatch}
         />
       </div>
     );
