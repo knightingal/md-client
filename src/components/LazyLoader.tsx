@@ -94,7 +94,6 @@ export function lazyLoader<
       setTimeout(
         (timeStamp: number) => {
           if (this.lastTimeStampe == timeStamp) {
-            console.log('scroll stoped');
             this.setState({ mount: true });
           }
         },
@@ -103,14 +102,12 @@ export function lazyLoader<
       );
 
       if (refreshTopPicIndex !== this.state.currentTopPicIndex) {
-        console.log(`change top to pic index: ${refreshTopPicIndex}`);
         if (refreshTopPicIndex != this.props.dataList.length)
           this.setState({ currentTopPicIndex: refreshTopPicIndex });
       }
       // calculate the index of button picture after scroll
       const refreshButtonPicIndex = this.checkPostionInPic(scrollTop + clientHeight);
       if (refreshButtonPicIndex !== this.state.currentButtonPicIndex) {
-        console.log(`change button to pic index: ${refreshButtonPicIndex}`);
         if (refreshButtonPicIndex != this.props.dataList.length)
           this.setState({ currentButtonPicIndex: refreshButtonPicIndex });
       }
@@ -172,8 +169,6 @@ export function lazyLoader<
             return value.height;
           },
         );
-        console.log('itemHeightList:');
-        console.log(itemHeightList);
         this.itemHeightStep = itemHeightList.map(
           (value: number, index: number, array: Array<number>): number => {
             if (index == 0) {
@@ -183,8 +178,6 @@ export function lazyLoader<
             return subArray.reduce((value: number, current: number): number => value + current);
           },
         );
-        console.log('itemHeighStep:');
-        console.log(this.itemHeightStep);
         if (this.divRefs.current != null) {
           const scrollTop: number = this.divRefs.current.scrollTop;
           const clientHeight: number = this.divRefs.current.clientHeight;
@@ -197,7 +190,6 @@ export function lazyLoader<
     }
 
     componentDidMount() {
-      console.log('lazyLoader.componentDidMount');
       this.setState({
         currentTopPicIndex: 0,
         currentButtonPicIndex: this.checkPostionInPic(
