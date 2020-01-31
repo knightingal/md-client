@@ -29,6 +29,10 @@ interface SectionListAction extends Action {
   subRest: Array<PicIndex>;
 }
 
+interface SearchAction extends Action {
+  search: string;
+}
+
 export interface Flow1000ModelType {
   namespace: 'flow1000';
   state: Flow1000ModelState;
@@ -38,6 +42,7 @@ export interface Flow1000ModelType {
     imgClick: Reducer<Flow1000ModelState, ImgClickAction>;
     scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
     sectionList: Reducer<Flow1000ModelState, SectionListAction>;
+    search: Reducer<Flow1000ModelState, SearchAction>;
   };
 }
 
@@ -57,7 +62,7 @@ interface SectionContent {
 
 export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, SectionContent {
   title: string;
-
+  search: string;
   subRest: Array<PicIndex>;
 }
 
@@ -81,6 +86,7 @@ const Flow1000Model: Flow1000ModelType = {
     scrollTop: 0,
     title: 'Welcome to use Flow1000',
     subRest: [],
+    search: ''
   },
   reducers: {
     setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
@@ -105,6 +111,10 @@ const Flow1000Model: Flow1000ModelType = {
     sectionList(state: Flow1000ModelState | undefined, action: SectionListAction) {
       return { ...(state as Flow1000ModelState), subRest: action.subRest };
     },
+
+    search(state: Flow1000ModelState | undefined, action: SearchAction) {
+      return { ...(state as Flow1000ModelState),  search: action.search };
+    }
   },
 };
 

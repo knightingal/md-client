@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { ReactNode, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Flow1000ModelState } from '../models/flow1000';
@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
+import { TextField } from '@material-ui/core';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -30,9 +31,9 @@ interface Flow1000Props {
   dispatch: Dispatch<any>;
 }
 
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
-  return { title: flow1000.title };
-})((props: Flow1000Props) => {
+export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
+  title: flow1000.title,
+}))((props: Flow1000Props) => {
   const classes = useStyles();
   useEffect(() => {
     const width = document.body.clientWidth;
@@ -43,6 +44,18 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
       width: width,
     });
   }, []);
+
+  const changeText = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    // (device as any)[event.target.id] = event.target.value;
+    // setDevice(device);
+    const search = event.target.value;
+    props.dispatch({
+      type: 'flow1000/search',
+      search: search,
+    });
+
+  }
+
   return (
     <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
       <div className={classes.root} style={{ flex: '0 0 64px' }}>
@@ -59,6 +72,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
             <Typography variant="h6" className={classes.title}>
               {props.title}
             </Typography>
+            <TextField onChange={changeText}/>
             <Button color="inherit">About</Button>
           </Toolbar>
         </AppBar>

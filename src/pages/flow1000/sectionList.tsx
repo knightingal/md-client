@@ -22,6 +22,7 @@ interface Flow1000Props {
   children?: ReactNode;
   dispatch: Dispatch<any>;
   scrollTop: number;
+  search: string;
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,7 +84,6 @@ class SectionInfo {
   coverWidth: number;
 
   constructor(value: PicIndex) {
-    // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
     this.imgSrc = `/static/encrypted/${value.name}/${value.cover}.bin`;
     this.title = value.name.substring(14);
     this.timeStamp = value.name.substring(0, 14);
@@ -227,7 +227,7 @@ interface PicIndex {
 }
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number },
+  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; search: string },
   { sectionList: Array<SectionBean> }
 > {
   constructor(props: {
@@ -235,6 +235,7 @@ class GridContainer extends React.Component<
     expandImgIndex: number;
     dispatch: Dispatch<any>;
     scrollTop: number;
+    search: string;
   }) {
     super(props);
     this.state = { sectionList: [] };
@@ -244,10 +245,10 @@ class GridContainer extends React.Component<
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = true;
+    const battleShipPage = false;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
-      : '/local1000/picIndexAjax';
+      : this.props.search === '' ? '/local1000/picIndexAjax' : '/local1000/searchSection?name=' + this.props.search;
 
     fetch(fetchUrl)
       .then((resp: Response) => {
@@ -256,7 +257,6 @@ class GridContainer extends React.Component<
       .then((json: Array<PicIndex>) => {
         let subRest: Array<PicIndex>;
         if (battleShipPage) {
-          // subRest = json.concat(json, json, json, json, json, json, json, json);
           subRest = json;
         } else {
           subRest = json;
@@ -300,7 +300,11 @@ class GridContainer extends React.Component<
     this.fecthSectionList();
   }
 
-  componentDidUpdate(prevProps: { expandImgIndex: number }) {
+  componentDidUpdate(prevProps: { expandImgIndex: number; search: string }) {
+    if (this.props.search != prevProps.search) {
+      this.fecthSectionList();
+    }
+
     if (this.props.expandImgIndex != prevProps.expandImgIndex) {
       const floorIndex = Math.floor(this.props.expandImgIndex / 4);
       if (this.state.sectionList[floorIndex] != undefined) {
@@ -320,7 +324,6 @@ class GridContainer extends React.Component<
   }
 
   render() {
-    // const sectionList: Array<SectionBean> = genSectionList();
     return (
       <div style={{ height: `${this.props.height - 64}px` }}>
         <LazyLoader
@@ -340,6 +343,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
+    search: flow1000.search
   };
 })(function(props: Flow1000Props) {
   return (
@@ -348,6 +352,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
       height={props.height}
       expandImgIndex={props.expandImgIndex}
       dispatch={props.dispatch}
+      search={props.search}
     />
   );
 });
