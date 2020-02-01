@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { ReactNode, useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { Flow1000ModelState } from '../models/flow1000';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,7 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
-import { TextField } from '@material-ui/core';
+import { TextField, InputAdornment } from '@material-ui/core';
+import Search from '@material-ui/icons/Search';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -30,6 +31,26 @@ interface Flow1000Props {
   children?: ReactNode;
   dispatch: Dispatch<any>;
 }
+
+const CssTextField = withStyles({
+  root: {
+    '& .MuiInputBase-root':{
+      color: 'white'
+    },
+    '& .MuiInput-underline:before':{
+      borderBottomColor: 'white'
+    },
+    '& .MuiInput-underline:hover:before':{
+      borderBottomColor: 'white'
+    },
+    '& .MuiInput-underline':{
+      borderBottomColor: 'white'
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'white',
+    },
+  },
+})(TextField);
 
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
   title: flow1000.title,
@@ -56,6 +77,14 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
 
   }
 
+  const inputProps = {
+    startAdornment: (
+      <InputAdornment position="start">
+        <Search />
+      </InputAdornment>
+    ),
+  }
+
   return (
     <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
       <div className={classes.root} style={{ flex: '0 0 64px' }}>
@@ -72,7 +101,10 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
             <Typography variant="h6" className={classes.title}>
               {props.title}
             </Typography>
-            <TextField onChange={changeText}/>
+            <CssTextField 
+              onChange={changeText} 
+              InputProps={inputProps}
+            />
             <Button color="inherit">About</Button>
           </Toolbar>
         </AppBar>
