@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MdpageLayout: React.FC = props => {
     const classes = useStyles();
   return (
-    <div>
+    <div style={{height:"100%"}}>
         <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>

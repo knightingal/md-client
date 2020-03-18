@@ -46,7 +46,7 @@ export default class ImgComponent extends React.Component<{src: string, height: 
     render() {
         return <img 
             src={this.state.url==null?"":this.state.url} 
-            style={{display:"block"}}
+            style={{display:"block", margin:'auto' }}
             height={`${this.props.height}px`} 
             width={`${this.props.width}px`}
         />

@@ -67,10 +67,10 @@ export default connect(
     <Table className={classes.table} aria-label="simple table">
       <TableHead >
         <TableRow >
-          <TableCell align="left" className={classes.tableHeader}>appKey</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>userId</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>esn</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>outerNetwork</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>应用id</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>用户名</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>设备号</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>模式</TableCell>
           <TableCell align='right' className={classes.tableHeader}>操作</TableCell>
         </TableRow>
       </TableHead>

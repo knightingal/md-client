@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import {SimClientModelState, Device} from '../models/simClient';
 import { Dispatch } from 'redux';
 import { router } from "umi";
+import TerminalList from './terminalList';
 import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,44 +76,39 @@ export default connect(
 
   const classes = useStyles();
   return (
-    <form style={{margin:8}} noValidate={true} autoComplete="off">
+    <div style={{display:'flex',height:"100%"}}>
+      <TerminalList />
+    <form style={{margin:8, width:"100%"}} noValidate={true} autoComplete="off">
       <Grid container={true} spacing={2}>
-        <Grid item={true} xs={3} />
-        <Grid item={true} xs={3}>
-          <CustTextField id="esn" label="esn" onChange={changeText} defaultValue={props.currentDevice.esn}/>
-        </Grid>
-        <Grid item={true} xs={3}>
-          <CustTextField id="appKey" label="appKey" onChange={changeText} defaultValue={props.currentDevice.appKey}/>
-        </Grid>
-        <Grid item={true} xs={3} />
-
-        <Grid item={true} xs={3} />
-        <Grid item={true} xs={3}>
-          <CustTextField id="userId" label="userId" onChange={changeText} defaultValue={props.currentDevice.userId}/>
-        </Grid>
-        <Grid item={true} xs={3}>
-          <CustTextField id="outerNetwork" label="outerNetwork" onChange={changeText} defaultValue={props.currentDevice.outerNetwork}/>
-        </Grid>
-        <Grid item={true} xs={3} />
-
-        <Grid item={true} xs={3} />
         <Grid item={true} xs={6}>
-          <CustTextField id="pushToken" label="pushToken" onChange={changeText} defaultValue={props.currentDevice.pushToken}/>
+          <CustTextField id="esn" label="设备号" onChange={changeText} defaultValue={props.currentDevice.esn}/>
         </Grid>
-        <Grid item={true} xs={3} />
+        <Grid item={true} xs={6}>
+          <CustTextField id="appKey" label="应用id" onChange={changeText} defaultValue={props.currentDevice.appKey}/>
+        </Grid>
 
-        <Grid item={true} xs={3} />
-        <Grid item={true} xs={3}>
-          <Button className={classes.button} onClick={handleRegist} variant="outlined">注册</Button>
+        <Grid item={true} xs={6}>
+          <CustTextField id="userId" label="用户名" onChange={changeText} defaultValue={props.currentDevice.userId}/>
         </Grid>
-        <Grid item={true} xs={3}>
-          <Button className={classes.button} onClick={handleTerminalList} variant="outlined" color="primary">
-            终端列表
+        <Grid item={true} xs={6}>
+          <CustTextField id="outerNetwork" label="模式" onChange={changeText} defaultValue={props.currentDevice.outerNetwork}/>
+        </Grid>
+
+        <Grid item={true} xs={12}>
+          <CustTextField id="pushToken" label="token" onChange={changeText} defaultValue={props.currentDevice.pushToken}/>
+        </Grid>
+
+        <Grid item={true} xs={6}>
+          <Button className={classes.button} onClick={handleRegist} variant="outlined" color="primary">注册</Button>
+        </Grid>
+        <Grid item={true} xs={6}>
+          <Button className={classes.button} onClick={handleTerminalList} variant="outlined" color="secondary">
+            清空
           </Button>
         </Grid>
-        <Grid item={true} xs={3} />
       </Grid>
     </form>
+    </div>
   );
 })
 

@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import TextField, { TextFieldProps, } from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { connect } from 'dva';
 import {SimClientModelState, Device} from '../models/simClient';
@@ -14,16 +14,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       '& > *': {
         margin: theme.spacing(1),
-        width: 400,
+        // width: 400,
       },
     },
     button: {
-        width: 192,
+        width: "100%",
+    },
+    textField: {
+      width: '100%',
     },
 
     table: {},
@@ -50,6 +54,11 @@ interface Msg {
     timeStamp:string;
     msg:string;
     id:number;
+}
+
+function CustTextField(props: TextFieldProps) {
+  const classes = useStyles();
+  return <TextField {...props} className={classes.textField} />
 }
 
 export default connect(
@@ -129,18 +138,53 @@ export default connect(
 
 
   const classes = useStyles();
-  return (<>
-    <form className={classes.root} noValidate autoComplete="off">
-      <TextField id="esn" label="esn"  defaultValue={props.currentDevice.esn}/><div></div>
-      <TextField id="appKey" label="appKey"  defaultValue={props.currentDevice.appKey}/><div></div>
-      <TextField id="userId" label="userId"  defaultValue={props.currentDevice.userId}/><div></div>
-      <TextField id="outerNetwork" label="outerNetwork"  defaultValue={props.currentDevice.outerNetwork}/><div></div>
-      <TextField id="pushToken" label="pushToken"  defaultValue={props.currentDevice.pushToken}/><div></div>
-      <Button className={classes.button} onClick={handleTerminalList} variant="outlined" color="primary">
-          注销
-      </Button>
+  return (<div style={{display:"flex", height:"100%"}}>
+    <form style={{flex: "1 1 auto", margin:8, width:350}}  noValidate={true} autoComplete="off">
+      <Grid container={true} spacing={2}>
+        <Grid item={true} xs={12}>
+          <CustTextField 
+            id="esn" 
+            label="设备号" 
+            defaultValue={props.currentDevice.esn}
+          />
+        </Grid>
+        <Grid item={true} xs={12}>
+          <CustTextField 
+            id="appKey" 
+            label="应用id" 
+            defaultValue={props.currentDevice.appKey}
+          />
+        </Grid>
+        <Grid item={true} xs={12}>
+          <CustTextField 
+            id="userId" 
+            label="用户名" 
+            defaultValue={props.currentDevice.userId}
+          />
+        </Grid>
+        <Grid item={true} xs={12}>
+          <CustTextField 
+            id="outerNetwork" 
+            label="模式" 
+            defaultValue={props.currentDevice.outerNetwork}
+          />
+        </Grid>
+        <Grid item={true} xs={12}>
+          <CustTextField 
+            id="pushToken" 
+            label="token" 
+            defaultValue={props.currentDevice.pushToken}
+          />
+        </Grid>
+        <Grid item={true} xs={12}>
+          <Button className={classes.button} onClick={handleTerminalList} variant="outlined" color="primary">
+              注销
+          </Button>
+        </Grid>
+
+      </Grid>
     </form>
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{flex: "4 1 auto"}}>
     <Table className={classes.table} aria-label="simple table">
       <TableHead >
         <TableRow >
@@ -158,6 +202,6 @@ export default connect(
       </TableBody>
     </Table>
   </TableContainer>
-    </>
+    </div>
   );
 })
