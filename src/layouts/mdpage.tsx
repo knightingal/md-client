@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MdpageLayout: React.FC = props => {
     const classes = useStyles();
   return (
-    <div style={{height:"100%"}}>
+    <div style={{height:"100%", overflowY:"hidden"}}>
         <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
@@ -31,7 +31,7 @@ const MdpageLayout: React.FC = props => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Welcome to user Sim-Client
+            Welcome to use Sim-Client
           </Typography>
           <Button color="inherit">About</Button>
         </Toolbar>

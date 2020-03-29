@@ -10,12 +10,17 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import { router } from "umi";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         table: {},
         tableHeader: {
             fontWeight:600
+        },
+        optionHeader: {
+            fontWeight:600,
+            width: 150,
         }
     }),
 );
@@ -63,15 +68,15 @@ export default connect(
 
   const classes = useStyles();
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{overflowY: 'hidden', paddingLeft: 8, paddingRight: 8}}>
     <Table className={classes.table} aria-label="simple table">
       <TableHead >
         <TableRow >
-          <TableCell align="left" className={classes.tableHeader}>应用id</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>应用</TableCell>
           <TableCell align="left" className={classes.tableHeader}>用户名</TableCell>
           <TableCell align="left" className={classes.tableHeader}>设备号</TableCell>
           <TableCell align="left" className={classes.tableHeader}>模式</TableCell>
-          <TableCell align='right' className={classes.tableHeader}>操作</TableCell>
+          <TableCell align='center' className={classes.optionHeader}>操作</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -81,8 +86,9 @@ export default connect(
             <TableCell align="left">{device.userId}</TableCell>
             <TableCell align="left">{device.esn}</TableCell>
             <TableCell align="left">{device.outerNetwork}</TableCell>
-            <TableCell align="right" >
-                <a onClick={(e)=>handleSelectDeivce(device)}>选择</a>
+            <TableCell align="center" >
+                <Button onClick={(e)=>handleSelectDeivce(device)} size="small" variant="outlined" color="primary" style={{padding:0, marginRight:5}}>选择</Button>
+                <Button onClick={(e)=>handleSelectDeivce(device)} size="small" variant="outlined" color="secondary" style={{padding:0}}>删除</Button>
             </TableCell>
           </TableRow>
         ))}

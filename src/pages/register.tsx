@@ -81,10 +81,16 @@ export default connect(
     <form style={{margin:8, width:"100%"}} noValidate={true} autoComplete="off">
       <Grid container={true} spacing={2}>
         <Grid item={true} xs={6}>
+          <CustTextField id="esn" label="服务端IP" onChange={changeText} defaultValue={"127.0.0.1"}/>
+        </Grid>
+        <Grid item={true} xs={6}>
+          <CustTextField id="appKey" label="服务端端口" onChange={changeText} defaultValue={"60018"}/>
+        </Grid>
+        <Grid item={true} xs={6}>
           <CustTextField id="esn" label="设备号" onChange={changeText} defaultValue={props.currentDevice.esn}/>
         </Grid>
         <Grid item={true} xs={6}>
-          <CustTextField id="appKey" label="应用id" onChange={changeText} defaultValue={props.currentDevice.appKey}/>
+          <CustTextField id="appKey" label="应用" onChange={changeText} defaultValue={props.currentDevice.appKey}/>
         </Grid>
 
         <Grid item={true} xs={6}>
@@ -95,7 +101,7 @@ export default connect(
         </Grid>
 
         <Grid item={true} xs={12}>
-          <CustTextField id="pushToken" label="token" onChange={changeText} defaultValue={props.currentDevice.pushToken}/>
+          <CustTextField id="pushToken" label="TOKEN" onChange={changeText} defaultValue={props.currentDevice.pushToken}/>
         </Grid>
 
         <Grid item={true} xs={6}>

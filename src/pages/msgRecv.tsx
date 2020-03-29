@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
     timeStampWidth: {
         fontWeight:600,
       width: 200,
+    },
+    titleWidth: {
+        fontWeight:600,
+      width: 200,
     }
   }),
 );
@@ -52,8 +56,9 @@ interface ReigsterProps  {
 
 interface Msg {
     timeStamp:string;
-    msg:string;
+    content:string;
     id:number;
+    title:string;
 }
 
 function CustTextField(props: TextFieldProps) {
@@ -120,8 +125,15 @@ export default connect(
                 wsConnection?.send(JSON.stringify({"cmd": 1, "pushToken": device.pushToken, "appKey": device.appKey}));
             } else if (msg.cmd == MSG_CMD) {
                 console.log(`recv msg:${msg.msg}`);
+                const msgContent = JSON.parse(JSON.parse(msg.msg).msgContent.replace('mip_cmd_msg:', '')).content;
+                const msgTitle = JSON.parse(msg.msg).title;
+
                 // msgList.push({timeStamp:transDateToDateString(new Date()), msg: msg.msg});
-                const newMsgLisg = localMsgList.concat({id:localMsgList.length, timeStamp:transDateToDateString(new Date()), msg: msg.msg});
+                const newMsgLisg = localMsgList.concat({
+                  id:localMsgList.length, 
+                  timeStamp:transDateToDateString(new Date()), 
+                  content: msgContent, 
+                  title: msgTitle});
                 localMsgList = newMsgLisg;
                 setMsgList(newMsgLisg);
             }
@@ -139,7 +151,7 @@ export default connect(
 
   const classes = useStyles();
   return (<div style={{display:"flex", height:"100%"}}>
-    <form style={{flex: "1 1 auto", margin:8, width:350}}  noValidate={true} autoComplete="off">
+    <form style={{flex: "1 1 auto",  width:350, backgroundColor: 'aliceblue', padding: 8}}  noValidate={true} autoComplete="off">
       <Grid container={true} spacing={2}>
         <Grid item={true} xs={12}>
           <CustTextField 
@@ -151,7 +163,7 @@ export default connect(
         <Grid item={true} xs={12}>
           <CustTextField 
             id="appKey" 
-            label="应用id" 
+            label="应用" 
             defaultValue={props.currentDevice.appKey}
           />
         </Grid>
@@ -172,7 +184,7 @@ export default connect(
         <Grid item={true} xs={12}>
           <CustTextField 
             id="pushToken" 
-            label="token" 
+            label="TOKEN" 
             defaultValue={props.currentDevice.pushToken}
           />
         </Grid>
@@ -184,19 +196,21 @@ export default connect(
 
       </Grid>
     </form>
-    <TableContainer component={Paper} style={{flex: "4 1 auto"}}>
+    <TableContainer component={Paper} style={{flex: "4 1 auto", overflowY: 'hidden', paddingLeft: 8, paddingRight: 8}}>
     <Table className={classes.table} aria-label="simple table">
       <TableHead >
         <TableRow >
-          <TableCell align="left" className={classes.timeStampWidth}>timeStamp</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>msg</TableCell>
+          <TableCell align="left" className={classes.timeStampWidth}>时间戳</TableCell>
+          <TableCell align="left" className={classes.titleWidth}>消息标题</TableCell>
+          <TableCell align="left" className={classes.tableHeader}>消息内容</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {msgList.map(msg => (
           <TableRow key={msg.id}>
             <TableCell align="left">{msg.timeStamp}</TableCell>
-            <TableCell align="left">{msg.msg}</TableCell>
+            <TableCell align="left">{msg.title}</TableCell>
+            <TableCell align="left">{msg.content}</TableCell>
           </TableRow>
         ))}
       </TableBody>
