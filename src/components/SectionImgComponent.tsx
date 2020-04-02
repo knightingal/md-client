@@ -25,6 +25,7 @@ interface ImgComponentState {
 
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
   expandImgIndex: flow1000.expandImgIndex,
+  password: flow1000.pwd,
 }))(
   class ImgComponent extends React.Component<ImgComponentProps, ImgComponentState> {
     constructor(props: ImgComponentProps) {

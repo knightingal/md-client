@@ -88,7 +88,6 @@ class ImgComponentItem extends React.Component<{mount: boolean, item: ImgDetail,
         width={this.props.item.width} 
         height={this.props.item.height} 
         src={`/static/encrypted/${this.props.parentComp.state.sectionDetail.dirName}/${this.props.item.name}.bin`} 
-        password="yjmK14040842$000" 
       /> 
     );
   }

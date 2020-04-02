@@ -33,6 +33,14 @@ interface SearchAction extends Action {
   search: string;
 }
 
+export interface PwdDialogDispAction extends Action {
+  pwdDialogDisp: boolean;
+}
+
+export interface PwdAction extends Action {
+  pwd: string;
+}
+
 export interface Flow1000ModelType {
   namespace: 'flow1000';
   state: Flow1000ModelState;
@@ -43,6 +51,8 @@ export interface Flow1000ModelType {
     scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
     sectionList: Reducer<Flow1000ModelState, SectionListAction>;
     search: Reducer<Flow1000ModelState, SearchAction>;
+    setPwdDialogDisp: Reducer<Flow1000ModelState, PwdDialogDispAction>;
+    setPwd: Reducer<Flow1000ModelState, PwdAction>;
   };
 }
 
@@ -64,6 +74,8 @@ export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, 
   title: string;
   search: string;
   subRest: Array<PicIndex>;
+  pwdDialogDisp: boolean;
+  pwd: string;
 }
 
 export interface Device {
@@ -86,7 +98,9 @@ const Flow1000Model: Flow1000ModelType = {
     scrollTop: 0,
     title: 'Welcome to use Flow1000',
     subRest: [],
-    search: ''
+    search: '',
+    pwdDialogDisp: false,
+    pwd: '',
   },
   reducers: {
     setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
@@ -114,6 +128,15 @@ const Flow1000Model: Flow1000ModelType = {
 
     search(state: Flow1000ModelState | undefined, action: SearchAction) {
       return { ...(state as Flow1000ModelState),  search: action.search };
+    },
+
+    setPwdDialogDisp(state: Flow1000ModelState | undefined, action: PwdDialogDispAction) {
+      console.log(action)
+      return { ...(state as Flow1000ModelState),  pwdDialogDisp: action.pwdDialogDisp };
+    },
+
+    setPwd(state: Flow1000ModelState | undefined, action: PwdAction) {
+      return { ...(state as Flow1000ModelState),  pwd: action.pwd, pwdDialogDisp: false };
     }
   },
 };

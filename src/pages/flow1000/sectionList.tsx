@@ -3,7 +3,6 @@ import { ReactNode, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -11,6 +10,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import Grid from '@material-ui/core/Grid';
 import { lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
 import ImgComponent from '../../components/SectionImgComponent';
+import PwdDialog from '../../components/PwdDialog';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
@@ -22,6 +22,7 @@ interface Flow1000Props {
   children?: ReactNode;
   dispatch: Dispatch<any>;
   scrollTop: number;
+  pwd: string;
   search: string;
 }
 const useStyles = makeStyles((theme: Theme) =>
@@ -54,7 +55,6 @@ function RecipeReviewCard(props: {
       <ImgComponent
         sectionIndex={props.sectionIndex}
         src={props.imgSrc}
-        password="yjmK14040842$000"
         mount={props.mount}
         index={props.index}
         height={props.coverHeight}
@@ -227,7 +227,7 @@ interface PicIndex {
 }
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; search: string },
+  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; search: string; pwd: string },
   { sectionList: Array<SectionBean> }
 > {
   constructor(props: {
@@ -235,6 +235,7 @@ class GridContainer extends React.Component<
     expandImgIndex: number;
     dispatch: Dispatch<any>;
     scrollTop: number;
+    pwd: string;
     search: string;
   }) {
     super(props);
@@ -297,11 +298,21 @@ class GridContainer extends React.Component<
       });
   }
   componentDidMount() {
-    this.fecthSectionList();
+    if (this.props.pwd == null || this.props.pwd.length == 0) {
+      this.props.dispatch({
+        type: "flow1000/setPwdDialogDisp",
+        pwdDialogDisp: true
+      });
+    } else {
+      this.fecthSectionList();
+    }
   }
 
-  componentDidUpdate(prevProps: { expandImgIndex: number; search: string }) {
+  componentDidUpdate(prevProps: { expandImgIndex: number; search: string; pwd: string }) {
     if (this.props.search != prevProps.search) {
+      this.fecthSectionList();
+    }
+    if (this.props.pwd != prevProps.pwd && this.props.pwd != null && this.props.pwd.length != 0) {
       this.fecthSectionList();
     }
 
@@ -333,6 +344,7 @@ class GridContainer extends React.Component<
           height={this.props.height - 64}
           dispatch={this.props.dispatch}
         />
+        <PwdDialog />
       </div>
     );
   }
@@ -343,12 +355,14 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
+    pwd: flow1000.pwd,
     search: flow1000.search
   };
 })(function(props: Flow1000Props) {
   return (
     <GridContainer
       scrollTop={props.scrollTop}
+      pwd={props.pwd}
       height={props.height}
       expandImgIndex={props.expandImgIndex}
       dispatch={props.dispatch}

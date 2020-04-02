@@ -1,8 +1,12 @@
 import * as React from 'react';
 import {decryptArray} from '../lib/decryptoArray';
+import { connect } from 'dva';
+import { Flow1000ModelState } from '@/models/flow1000';
 
-
-export default class ImgComponent extends React.Component<{src: string, height: number, width: number, password: string}, {url: string|null}> {
+export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+  return { password: flow1000.pwd, };
+}) (
+class ImgComponent extends React.Component<{src: string, height: number, width: number, password: string}, {url: string|null}> {
     constructor(props:{src: string, height: number, width: number, password: string}) {
         super(props);
         this.state = {
@@ -52,3 +56,4 @@ export default class ImgComponent extends React.Component<{src: string, height: 
         />
     }
 }
+)
