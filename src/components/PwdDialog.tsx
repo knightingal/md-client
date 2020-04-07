@@ -19,8 +19,7 @@ interface PwdDialogProp {
 
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
   pwdDialogDisp: flow1000.pwdDialogDisp,
-}))(
-function FormDialog(prop: PwdDialogProp) {
+}))((prop: PwdDialogProp) => {
   let pwd:string = "";
   const handleClose = () => {
     prop.dispatch({
@@ -49,13 +48,13 @@ function FormDialog(prop: PwdDialogProp) {
             To decrypt this website, please enter your Password here. 
           </DialogContentText>
           <TextField
-            autoFocus
+            autoFocus={true}
             margin="dense"
             id="password"
             label="Password"
             type="password"
             onChange={onTextFieldChanged}
-            fullWidth
+            fullWidth={true}
           />
         </DialogContent>
         <DialogActions>

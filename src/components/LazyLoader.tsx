@@ -225,7 +225,7 @@ export function lazyLoader<
             index >= this.state.currentTopPicIndex - preLoadOffSet &&
             index <= this.state.currentButtonPicIndex + preLoadOffSet;
 
-          const props1 = {
+          const wrappedProps = {
               key: index,
               item: itemBean,
               parentComp: this.props.parentComp,
@@ -233,7 +233,7 @@ export function lazyLoader<
               itemProps: itemPropMap?.(this.props.itemProps)
           };
           return display ? (
-            <WrappedComponent {...props1} />
+            <WrappedComponent {...wrappedProps} />
           ) : null;
         }
         return null;
