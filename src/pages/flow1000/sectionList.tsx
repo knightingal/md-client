@@ -200,10 +200,9 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 
 class SectionItem extends React.Component<{
   item: SectionBean;
-  parentComp: GridContainer;
   mount: boolean;
 }> {
-  constructor(props: { item: SectionBean; parentComp: GridContainer; mount: boolean }) {
+  constructor(props: { item: SectionBean;  mount: boolean }) {
     super(props);
   }
   render() {
@@ -214,7 +213,8 @@ const LazyLoader: React.ComponentClass<LazyProps<
   SectionBean,
   SectionListProps,
   SectionListStatus,
-  GridContainer
+  GridContainer,
+  null
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
@@ -343,6 +343,7 @@ class GridContainer extends React.Component<
           parentComp={this}
           height={this.props.height - 64}
           dispatch={this.props.dispatch}
+          itemProps={null}
         />
         <PwdDialog />
       </div>

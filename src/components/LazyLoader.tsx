@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
     
-interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
+interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> {
     item: ITEM_TYPE;
     mount: boolean;
-    parentComp:PARENT_COMP_TYPE;
+    parentComp?:PARENT_COMP_TYPE;
+    itemProps?: T_ITEM_PROPS;
 }
 
 interface LazyState {
@@ -18,31 +19,35 @@ export interface HeightType {
 }
 
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
-export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>> {
+export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null, T_ITEM_PROPS> {
     dataList:Array<ITEM_TYPE>;
-    parentComp:PARENT_COMP_TYPE;
+    parentComp?:PARENT_COMP_TYPE ;
     scrollTop:number;
     height:number;
+    itemProps: T_ITEM_PROPS;
     dispatch?: Dispatch<any>
 }
 
+type FunctionalComponentType<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> = (props:WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS>) => JSX.Element;
 
 export function lazyLoader<
   ITEM_TYPE extends HeightType,
   T_PROPS,
   T_STATE,
-  PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>
+  T_ITEM_PROPS,
+  PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null
 >(
-  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>>,
+  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS>> | FunctionalComponentType<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> ,
   className: string,
   preLoadOffSet: number = 1,
-): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>> {
+  itemPropMap?: (prop: T_ITEM_PROPS) => T_ITEM_PROPS
+): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>> {
   
   class LazyLoader extends React.Component<
-    LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
+    LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>,
     LazyState
   > {
-    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>) {
+    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>) {
       super(props);
       const itemHeightList: Array<number> = props.dataList.map(
         (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -145,7 +150,7 @@ export function lazyLoader<
     }
 
     componentDidUpdate(
-      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
+      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>,
       prevState: LazyState,
     ) {
       if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight 
@@ -219,13 +224,16 @@ export function lazyLoader<
           const display =
             index >= this.state.currentTopPicIndex - preLoadOffSet &&
             index <= this.state.currentButtonPicIndex + preLoadOffSet;
+
+          const props1 = {
+              key: index,
+              item: itemBean,
+              parentComp: this.props.parentComp,
+              mount: this.state.mount,
+              itemProps: itemPropMap?.(this.props.itemProps)
+          };
           return display ? (
-            <WrappedComponent
-              key={index}
-              item={itemBean}
-              parentComp={this.props.parentComp}
-              mount={this.state.mount}
-            />
+            <WrappedComponent {...props1} />
           ) : null;
         }
         return null;

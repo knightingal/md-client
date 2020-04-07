@@ -1,5 +1,4 @@
-
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import {lazyLoader, LazyProps, HeightType,  } from '../../components/LazyLoader';
 
 import ImgComponent  from '../../components/ImgComponent';
@@ -17,25 +16,18 @@ class SectionDetail {
   }
 }
 
-class ImgDetail implements HeightType{
+interface ImgDetail extends HeightType{
   name:string;
   width:number;
   height:number;
-
-  constructor(name:string, width:number, height:number) {
-    this.name = name;
-    this.width = width;
-    this.height = height;
-  }
 }
 
-class Content extends React.Component<{index:number, password:string, height: number}, {sectionDetail:SectionDetail, scrollTop:number}>  {
-  constructor(props:{index: number, password:string, height: number}) {
-    super(props);
-    this.state = {sectionDetail: new SectionDetail(), scrollTop:0};
-  }
-  
-  fecthSectionList(index: number) {
+const Content = (props: {index:number, password:string, height: number}) => {
+
+  const [sectionDetail, setDectionDetail] = useState(new SectionDetail());
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const fecthSectionList = (index: number) => {
     if (index <= 0) {
       return;
     }
@@ -45,28 +37,16 @@ class Content extends React.Component<{index:number, password:string, height: nu
     })
     .then((json: any) => {
       const sectionDetail:SectionDetail = json;
-      this.setState({
-        sectionDetail:sectionDetail,
-        scrollTop:0
-      });
+      setDectionDetail(sectionDetail);
+      setScrollTop(0);
     });
   }
 
-  componentDidMount() {
-    this.fecthSectionList(this.props.index);        
-  }
+  fecthSectionList(props.index);
 
+  return <LazyLoader height={props.height - 64} dataList={sectionDetail.pics}  scrollTop={scrollTop} itemProps={sectionDetail.dirName}/>
 
-  componentDidUpdate(prevProps: {index:number}) {
-    if (this.props.index !== prevProps.index) {
-      this.fecthSectionList(this.props.index);        
-    }
-  }
-
-  render() {
-    return <LazyLoader height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop}/>
-  }
-};
+}
 
 export default connect(({flow1000}:{flow1000: Flow1000ModelState}) => {
   const props = {
@@ -77,28 +57,19 @@ export default connect(({flow1000}:{flow1000: Flow1000ModelState}) => {
   return props;
 })(Content);
 
-class ImgComponentItem extends React.Component<{mount: boolean, item: ImgDetail, parentComp:Content}> {
-  constructor(props:{item: ImgDetail, parentComp:Content, mount: boolean}) {
-    super(props);
-  }
+const ImgComponentItem = (props:{mount: boolean, item: ImgDetail, itemProps?: string }) => <ImgComponent 
+  width={props.item.width} 
+  height={props.item.height} 
+  src={`/static/encrypted/${props.itemProps}/${props.item.name}.bin`} 
+/> 
 
-  render() {
-    return (
-      <ImgComponent 
-        width={this.props.item.width} 
-        height={this.props.item.height} 
-        src={`/static/encrypted/${this.props.parentComp.state.sectionDetail.dirName}/${this.props.item.name}.bin`} 
-      /> 
-    );
-  }
-}
-const LazyLoader: 
-  React.ComponentClass<
+const LazyLoader: React.ComponentClass<
     LazyProps<
       ImgDetail, 
       {index:number, password:string}, 
       {}, 
-      Content
+      null,
+      string
     >
   > 
-= lazyLoader(ImgComponentItem, "Content", 2)
+= lazyLoader(ImgComponentItem, "Content", 2, (itemProps:string): string => itemProps)
