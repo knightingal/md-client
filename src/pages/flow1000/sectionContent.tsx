@@ -7,20 +7,23 @@ import { connect } from 'dva';
 import { SectionContentState, SectionDetail, ImgDetail } from './model';
 
 import { Dispatch } from 'redux';
-const Content = (props: {
+/**
+ * props type of Content
+ */
+interface ContentProps {
   dispatch: Dispatch<any>;
   index: number;
   height: number;
-  sectionDetail: SectionDetail | null;
+  sectionDetail?: SectionDetail;
   scrollTop: number;
-}) => {
+}
+
+const Content = (props: ContentProps) => {
   useEffect(() => {
     props.dispatch({ type: 'flow1000SectionContent/fetchSectionList', index: props.index });
   }, []);
 
-  if (props.sectionDetail == null) {
-    return null;
-  } else {
+  if (props.sectionDetail) {
     return (
       <LazyLoader
         height={props.height - 64}
@@ -29,6 +32,8 @@ const Content = (props: {
         itemProps={props.sectionDetail.dirName}
       />
     );
+  } else {
+    return null;
   }
 };
 
@@ -39,16 +44,12 @@ export default connect(
   }: {
     flow1000: Flow1000ModelState;
     flow1000SectionContent: SectionContentState;
-  }) => {
-    console.log(flow1000SectionContent);
-    const props = {
-      height: flow1000.height,
-      index: flow1000.sectionIndex,
-      sectionDetail: flow1000SectionContent.sectionDetail,
-      scrollTop: flow1000SectionContent.scrollTop,
-    };
-    return props;
-  },
+  }) => ({
+    height: flow1000.height,
+    index: flow1000.sectionIndex,
+    sectionDetail: flow1000SectionContent.sectionDetail,
+    scrollTop: flow1000SectionContent.scrollTop,
+  }),
 )(Content);
 
 const ImgComponentItem = (props: { mount: boolean; item: ImgDetail; itemProps?: string }) => (

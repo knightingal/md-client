@@ -17,14 +17,11 @@ import { Dispatch } from 'redux';
 import { Flow1000ModelState } from '../../models/flow1000';
 interface Flow1000Props {
   height: number;
-  width: number;
   expandImgIndex: number;
-  children?: ReactNode;
   dispatch: Dispatch<any>;
   scrollTop: number;
   pwd: string;
   search: string;
-  appKey: string;
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -228,7 +225,7 @@ interface PicIndex {
 }
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; search: string; pwd: string },
+  Flow1000Props,
   { sectionList: Array<SectionBean> }
 > {
   constructor(props: {
@@ -247,7 +244,7 @@ class GridContainer extends React.Component<
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = true;
+    const battleShipPage = false;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
       : this.props.search === '' ? '/local1000/picIndexAjax' : '/local1000/searchSection?name=' + this.props.search;
@@ -351,24 +348,12 @@ class GridContainer extends React.Component<
     );
   }
 }
-export default connect(({ flow1000,  }: { flow1000: Flow1000ModelState, }) => {
-  return {
+export default connect(({flow1000}: { flow1000: Flow1000ModelState, }) => ({
     height: flow1000.height,
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
     pwd: flow1000.pwd,
     search: flow1000.search,
-  };
-})(function(props: Flow1000Props) {
-  return (
-    <GridContainer
-      scrollTop={props.scrollTop}
-      pwd={props.pwd}
-      height={props.height}
-      expandImgIndex={props.expandImgIndex}
-      dispatch={props.dispatch}
-      search={props.search}
-    />
-  );
-});
+  })
+)(GridContainer);

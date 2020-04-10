@@ -17,7 +17,7 @@ export interface ImgDetail extends HeightType{
 }
 
 export interface SectionContentState {
-    sectionDetail: SectionDetail | null;
+    sectionDetail?: SectionDetail;
     scrollTop: number;
 }
 
@@ -29,7 +29,8 @@ export interface Flow1000SectionContentModelType {
     namespace: string,
     state: SectionContentState,
     reducers: {
-        setSectionDetail: Reducer<SectionContentState, SetSectionDetailActoin>
+        setSectionDetail: Reducer<SectionContentState, SetSectionDetailActoin>;
+        clear: Reducer<SectionContentState, Action>;
     },
     effects :{
         fetchSectionList: Effect
@@ -53,13 +54,15 @@ const fecthSectionList = (index: number) => {
 const Flow1000SectionContentModel : Flow1000SectionContentModelType = {
     namespace: "flow1000SectionContent",
     state: {
-        sectionDetail: null,
+        sectionDetail: undefined,
         scrollTop: 0,
     },
     reducers:{
         setSectionDetail(state: SectionContentState, action: AnyAction) {
-            console.log(action);
             return {...state, sectionDetail: action.sectionDetail};
+        },
+        clear(state: SectionContentState, action: Action) {
+            return {scrollTop: 0};
         }
     },
     effects:{
