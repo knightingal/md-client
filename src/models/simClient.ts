@@ -1,6 +1,4 @@
 import {Reducer, Action} from 'redux';
-
-import { router } from "umi";
 interface SelectDeviceAction extends Action {
     device: Device
 }

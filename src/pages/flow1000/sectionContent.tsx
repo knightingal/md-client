@@ -1,58 +1,36 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useState, useEffect } from 'react';
 import {lazyLoader, LazyProps, HeightType,  } from '../../components/LazyLoader';
 
 import ImgComponent  from '../../components/ImgComponent';
 import {Flow1000ModelState} from '../../models/flow1000';
 import { connect } from 'dva';
-class SectionDetail {
-  dirName:string;
-  picPage:string;
-  pics:Array<ImgDetail>;
+import { SectionContentState, SectionDetail, ImgDetail } from './model';
 
-  constructor() {
-    this.dirName = "";
-    this.picPage = "";
-    this.pics = [];
+import { Dispatch } from 'redux';
+const Content = (props: {dispatch: Dispatch<any>, index:number, height: number, sectionDetail: SectionDetail | null, scrollTop: number}) => {
+  useEffect(()=>{
+    props.dispatch({type:"flow1000SectionContent/fetchSectionList", index: props.index})
+  },[]);
+
+  if (props.sectionDetail == null) {
+    return null;
+  } else {
+    return <LazyLoader 
+      height={props.height - 64} 
+      dataList={props.sectionDetail.pics}  
+      scrollTop={props.scrollTop} 
+      itemProps={props.sectionDetail.dirName}
+    />
   }
 }
 
-interface ImgDetail extends HeightType{
-  name:string;
-  width:number;
-  height:number;
-}
-
-const Content = (props: {index:number, password:string, height: number}) => {
-
-  const [sectionDetail, setDectionDetail] = useState(new SectionDetail());
-  const [scrollTop, setScrollTop] = useState(0);
-
-  const fecthSectionList = (index: number) => {
-    if (index <= 0) {
-      return;
-    }
-    fetch(`/local1000/picDetailAjax?id=${index}`)
-    .then((resp: Response) => {
-      return resp.json();
-    })
-    .then((json: any) => {
-      const sectionDetail:SectionDetail = json;
-      setDectionDetail(sectionDetail);
-      setScrollTop(0);
-    });
-  }
-
-  fecthSectionList(props.index);
-
-  return <LazyLoader height={props.height - 64} dataList={sectionDetail.pics}  scrollTop={scrollTop} itemProps={sectionDetail.dirName}/>
-
-}
-
-export default connect(({flow1000}:{flow1000: Flow1000ModelState}) => {
+export default connect(({flow1000, flow1000SectionContent}:{flow1000: Flow1000ModelState, flow1000SectionContent: SectionContentState}) => {
+  console.log(flow1000SectionContent);
   const props = {
     height: flow1000.height,
     index: flow1000.sectionIndex,
-    password: ""
+    sectionDetail: flow1000SectionContent.sectionDetail,
+    scrollTop: flow1000SectionContent.scrollTop
   }
   return props;
 })(Content);

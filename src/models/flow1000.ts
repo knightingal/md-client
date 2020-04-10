@@ -1,4 +1,5 @@
-import {Reducer, Action} from 'redux';
+import { Action} from 'redux';
+import {Reducer, } from 'react';
 
 interface SetWindowSizeAction extends Action {
   height: number;
@@ -103,40 +104,39 @@ const Flow1000Model: Flow1000ModelType = {
     pwd: '',
   },
   reducers: {
-    setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
-      return { ...(state as Flow1000ModelState), height: action.height, width: action.width };
+    setWindowSize(state: Flow1000ModelState, action: SetWindowSizeAction) {
+      return { ...(state ), height: action.height, width: action.width };
     },
-    imgMouseOver(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
-      const state0 = state as Flow1000ModelState;
+    imgMouseOver(state: Flow1000ModelState, action: ImgMouseOverAction) {
+      const state0 = state;
       return { ...state0, expandImgIndex: action.imgIndex };
     },
-    imgClick(state: Flow1000ModelState | undefined, action: ImgClickAction) {
+    imgClick(state: Flow1000ModelState, action: ImgClickAction) {
       return {
-        ...(state as Flow1000ModelState),
+        ...(state),
         sectionIndex: action.imgIndex,
         expandImgIndex: -1,
-        title: (state as Flow1000ModelState).subRest[action.index].name,
+        title: (state).subRest[action.index].name,
       };
     },
-    scrollTop(state: Flow1000ModelState | undefined, action: ScrollTopAction) {
-      return { ...(state as Flow1000ModelState), scrollTop: action.scrollTop };
+    scrollTop(state: Flow1000ModelState, action: ScrollTopAction) {
+      return { ...(state), scrollTop: action.scrollTop };
     },
 
-    sectionList(state: Flow1000ModelState | undefined, action: SectionListAction) {
-      return { ...(state as Flow1000ModelState), subRest: action.subRest };
+    sectionList(state: Flow1000ModelState, action: SectionListAction) {
+      return { ...(state), subRest: action.subRest };
     },
 
-    search(state: Flow1000ModelState | undefined, action: SearchAction) {
-      return { ...(state as Flow1000ModelState),  search: action.search };
+    search(state: Flow1000ModelState, action: SearchAction) {
+      return { ...(state),  search: action.search };
     },
 
-    setPwdDialogDisp(state: Flow1000ModelState | undefined, action: PwdDialogDispAction) {
-      console.log(action)
-      return { ...(state as Flow1000ModelState),  pwdDialogDisp: action.pwdDialogDisp };
+    setPwdDialogDisp(state: Flow1000ModelState, action: PwdDialogDispAction) {
+      return { ...(state),  pwdDialogDisp: action.pwdDialogDisp };
     },
 
-    setPwd(state: Flow1000ModelState | undefined, action: PwdAction) {
-      return { ...(state as Flow1000ModelState),  pwd: action.pwd, pwdDialogDisp: false };
+    setPwd(state: Flow1000ModelState, action: PwdAction) {
+      return { ...(state),  pwd: action.pwd, pwdDialogDisp: false };
     }
   },
 };

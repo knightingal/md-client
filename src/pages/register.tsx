@@ -40,9 +40,10 @@ function CustTextField(props: TextFieldProps) {
 }
 
 export default connect(
-  ({simClient}:{simClient:SimClientModelState}) => (
+  ({simClient}:{simClient:SimClientModelState}) => {console.log(simClient); return (
+    
      {currentDevice:simClient.currentDevice}
-  )
+  )}
 )(function Register (props:ReigsterProps) {
   const handleRegist = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         device.appId = device.appKey;

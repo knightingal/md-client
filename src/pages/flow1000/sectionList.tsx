@@ -24,6 +24,7 @@ interface Flow1000Props {
   scrollTop: number;
   pwd: string;
   search: string;
+  appKey: string;
 }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -246,7 +247,7 @@ class GridContainer extends React.Component<
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = false;
+    const battleShipPage = true;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
       : this.props.search === '' ? '/local1000/picIndexAjax' : '/local1000/searchSection?name=' + this.props.search;
@@ -350,14 +351,14 @@ class GridContainer extends React.Component<
     );
   }
 }
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+export default connect(({ flow1000,  }: { flow1000: Flow1000ModelState, }) => {
   return {
     height: flow1000.height,
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
     pwd: flow1000.pwd,
-    search: flow1000.search
+    search: flow1000.search,
   };
 })(function(props: Flow1000Props) {
   return (
