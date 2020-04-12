@@ -40,7 +40,7 @@ export function lazyLoader<
   WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS>> | FunctionalComponentType<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> ,
   className: string,
   preLoadOffSet: number = 1,
-  itemPropMap?: (prop: T_ITEM_PROPS) => T_ITEM_PROPS
+  itemPropMap?: (...param: any) => T_ITEM_PROPS
 ): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>> {
   
   class LazyLoader extends React.Component<
@@ -230,7 +230,7 @@ export function lazyLoader<
               item: itemBean,
               parentComp: this.props.parentComp,
               mount: this.state.mount,
-              itemProps: itemPropMap?.(this.props.itemProps)
+              itemProps: itemPropMap?.(this.props.itemProps, index)
           };
           return display ? (
             <WrappedComponent {...wrappedProps} />

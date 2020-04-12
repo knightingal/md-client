@@ -52,11 +52,17 @@ export default connect(
   }),
 )(Content);
 
-const ImgComponentItem = (props: { mount: boolean; item: ImgDetail; itemProps?: string }) => (
+interface ImgComponentItemProps {
+  dirName: string;
+  index: number;
+}
+
+const ImgComponentItem = (props: { mount: boolean; item: ImgDetail; itemProps?: ImgComponentItemProps }) => (
   <ImgComponent
     width={props.item.width}
     height={props.item.height}
-    src={`/static/encrypted/${props.itemProps}/${props.item.name}.bin`}
+    index={props.itemProps?.index}
+    // src={props.itemProps ? `/static/encrypted/${props.itemProps?.dirName}/${props.item.name}.bin` : undefined}
   />
 );
 
@@ -65,5 +71,5 @@ const LazyLoader: React.ComponentClass<LazyProps<
   { index: number; password: string },
   {},
   null,
-  string
->> = lazyLoader(ImgComponentItem, 'Content', 2, (itemProps: string): string => itemProps);
+  any
+>> = lazyLoader(ImgComponentItem, 'Content', 2, (dirName:string, index:number): ImgComponentItemProps => ({dirName, index}));

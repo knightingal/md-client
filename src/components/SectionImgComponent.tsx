@@ -89,8 +89,6 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
     }
 
     onMouseOver(e: React.MouseEvent) {
-      console.log(this.divRefs);
-      console.log(this.divRefs.current?.offsetWidth)
       this.lastTimestamp = e.timeStamp;
       setTimeout((timeStamp:number)=>{
         if (timeStamp == this.lastTimestamp) {
