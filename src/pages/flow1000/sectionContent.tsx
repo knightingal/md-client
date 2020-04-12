@@ -62,7 +62,6 @@ const ImgComponentItem = (props: { mount: boolean; item: ImgDetail; itemProps?: 
     width={props.item.width}
     height={props.item.height}
     index={props.itemProps?.index}
-    // src={props.itemProps ? `/static/encrypted/${props.itemProps?.dirName}/${props.item.name}.bin` : undefined}
   />
 );
 
