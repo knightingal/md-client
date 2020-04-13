@@ -1,5 +1,5 @@
-import React, { CSSProperties, useState, useEffect } from 'react';
-import { lazyLoader, LazyProps, HeightType } from '../../components/LazyLoader';
+import React, { useEffect } from 'react';
+import { lazyLoader, LazyProps } from '../../components/LazyLoader';
 
 import ImgComponent from '../../components/ImgComponent';
 import { Flow1000ModelState } from '../../models/flow1000';
@@ -57,8 +57,8 @@ interface ImgComponentItemExtType {
 }
 
 interface ImgComponentItemProps {
-  item: ImgDetail; 
-  index:number ;
+  item: ImgDetail;
+  index: number;
 }
 
 const ImgComponentItem = (props: ImgComponentItemProps) => (
@@ -66,7 +66,7 @@ const ImgComponentItem = (props: ImgComponentItemProps) => (
     width={props.item.width}
     height={props.item.height}
     index={props.index}
-    // index={(props.itemProps as ImgComponentItemProps).index}
+  // index={(props.itemProps as ImgComponentItemProps).index}
   />
 );
 
@@ -76,4 +76,9 @@ const LazyLoader: React.ComponentClass<LazyProps<
   {},
   string,
   null
->> = lazyLoader(ImgComponentItem, 'Content', 2, (dirName: string): ImgComponentItemExtType => ({dirName: dirName}));
+>> = lazyLoader(
+  ImgComponentItem,
+  'Content',
+  2,
+  (dirName: string): ImgComponentItemExtType => ({ dirName: dirName }),
+);
