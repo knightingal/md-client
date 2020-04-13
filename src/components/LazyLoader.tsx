@@ -1,50 +1,45 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
-    
-interface WrappedProps<ITEM_TYPE,  ITEM_EXT_TYPE> {
-    item: ITEM_TYPE;
-    mount: boolean;
-    index: number;
-    itemProps?: ITEM_EXT_TYPE;
+
+interface WrappedProps<ITEM_TYPE, ITEM_EXT_TYPE> {
+  item: ITEM_TYPE;
+  mount: boolean;
+  index: number;
+  itemProps?: ITEM_EXT_TYPE;
 }
 
 interface LazyState {
-    currentTopPicIndex:number|null; 
-    currentButtonPicIndex:number|null;
-    mount: boolean;
+  currentTopPicIndex: number | null;
+  currentButtonPicIndex: number | null;
+  mount: boolean;
 }
 
 export interface HeightType {
-    height: number;
+  height: number;
 }
 
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
-export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, EXT_TYPE, > {
-    dataList:Array<ITEM_TYPE>;
-    scrollTop:number;
-    height:number;
-    dispatch?: Dispatch<any>;
-    extProps?: EXT_TYPE;
+export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, EXT_TYPE> {
+  dataList: Array<ITEM_TYPE>;
+  scrollTop: number;
+  height: number;
+  dispatch?: Dispatch<any>;
+  extProps?: EXT_TYPE;
 }
 
-export function lazyLoader<
-  ITEM_TYPE extends HeightType,
-  T_PROPS,
-  T_STATE,
-  EXT_TYPE,
-  ITEM_EXT_TYPE, 
->(
-  WrappedComponent: ((props:WrappedProps<ITEM_TYPE,  ITEM_EXT_TYPE>) => JSX.Element) | React.ComponentClass<WrappedProps<ITEM_TYPE,  ITEM_EXT_TYPE>>  ,
+export function lazyLoader<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, EXT_TYPE, ITEM_EXT_TYPE>(
+  WrappedComponent:
+    | ((props: WrappedProps<ITEM_TYPE, ITEM_EXT_TYPE>) => JSX.Element)
+    | React.ComponentClass<WrappedProps<ITEM_TYPE, ITEM_EXT_TYPE>>,
   className: string,
   preLoadOffSet: number = 1,
-  itemPropMap?: (extProps: EXT_TYPE) => ITEM_EXT_TYPE
+  itemPropMap?: (extProps: EXT_TYPE) => ITEM_EXT_TYPE,
 ): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE>> {
-  
   class LazyLoader extends React.Component<
     LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE>,
     LazyState
-  > {
-    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE,EXT_TYPE>) {
+    > {
+    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE>) {
       super(props);
       const itemHeightList: Array<number> = props.dataList.map(
         (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -61,7 +56,7 @@ export function lazyLoader<
             .reduce((value: number, current: number): number => value + current);
         },
       );
-      
+
       this.state = {
         currentButtonPicIndex: null,
         currentTopPicIndex: null,
@@ -87,8 +82,8 @@ export function lazyLoader<
       this.lastTimeStampe = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
       this.props.dispatch?.({
-          type: 'flow1000/scrollTop',
-          scrollTop: scrollTop,
+        type: 'flow1000/scrollTop',
+        scrollTop: scrollTop,
       });
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
@@ -150,10 +145,13 @@ export function lazyLoader<
       prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE>,
       prevState: LazyState,
     ) {
-      if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight 
-          && (this.divRefs.current as HTMLDivElement).scrollHeight > (this.divRefs.current as HTMLDivElement).clientHeight) {
-          (this.divRefs.current as HTMLDivElement).scrollTo(0, this.props.scrollTop);
-      } 
+      if (
+        this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight &&
+        (this.divRefs.current as HTMLDivElement).scrollHeight >
+        (this.divRefs.current as HTMLDivElement).clientHeight
+      ) {
+        (this.divRefs.current as HTMLDivElement).scrollTo(0, this.props.scrollTop);
+      }
       this.scrollHeight = (this.divRefs.current as HTMLDivElement).scrollHeight;
       if (prevProps.height != this.props.height) {
         this.setState({
@@ -204,46 +202,48 @@ export function lazyLoader<
         if (currentButtonPicIndex + 1 >= self.props.dataList.length) {
           return <div style={{ height: '0px' }} />;
         }
-        const height = `${self.itemHeightStep[self.itemHeightStep.length - 1] 
-          + self.props.dataList[self.props.dataList.length - 1].height 
-          - self.itemHeightStep[currentButtonPicIndex + 1]}px`
-        return <div style={{ height: height, }} /> ;
+        const height = `${self.itemHeightStep[self.itemHeightStep.length - 1] +
+          self.props.dataList[self.props.dataList.length - 1].height -
+          self.itemHeightStep[currentButtonPicIndex + 1]}px`;
+        return <div style={{ height: height }} />;
       }
       return null;
     }
 
     render() {
-      const itemListComp = this.props.dataList.map((itemBean: ITEM_TYPE, index: number) => {
-        if (
-          this.state.currentButtonPicIndex != null &&
-          this.state.currentTopPicIndex != null
-        ) {
-          const display =
-            index >= this.state.currentTopPicIndex - preLoadOffSet &&
-            index <= this.state.currentButtonPicIndex + preLoadOffSet;
+      const itemListComp = this.props.dataList
+        .map((itemBean: ITEM_TYPE, index: number) => {
+          if (this.state.currentButtonPicIndex != null && this.state.currentTopPicIndex != null) {
+            const display =
+              index >= this.state.currentTopPicIndex - preLoadOffSet &&
+              index <= this.state.currentButtonPicIndex + preLoadOffSet;
 
-          
-          const itemProps: ITEM_EXT_TYPE | undefined = (this.props.extProps && itemPropMap) ? itemPropMap(this.props.extProps) : undefined;
-          const wrappedProps: WrappedProps<ITEM_TYPE,  ITEM_EXT_TYPE> = {
+            const itemProps: ITEM_EXT_TYPE | undefined =
+              this.props.extProps && itemPropMap ? itemPropMap(this.props.extProps) : undefined;
+            const wrappedProps: WrappedProps<ITEM_TYPE, ITEM_EXT_TYPE> = {
               index: index,
               item: itemBean,
               mount: this.state.mount,
-              itemProps: itemProps
-          };
-          return display ? (
-            <WrappedComponent key={index} {...wrappedProps} />
-          ) : null;
-        }
-        return null;
-      }).filter((value: JSX.Element | null, index: number, array: (JSX.Element | null)[]) => {
-        return value != null;
-      });
+              itemProps: itemProps,
+            };
+            return display ? <WrappedComponent key={index} {...wrappedProps} /> : null;
+          }
+          return null;
+        })
+        .filter((value: JSX.Element | null, index: number, array: (JSX.Element | null)[]) => {
+          return value != null;
+        });
       return (
         <div
           className={className}
           onScroll={e => this.scrollHandler(e)}
           ref={this.divRefs}
-          style={{ height: `${this.props.height}px`, willChange: 'transform', overflowY: 'scroll', overflowX: 'hidden', }}
+          style={{
+            height: `${this.props.height}px`,
+            willChange: 'transform',
+            overflowY: 'scroll',
+            overflowX: 'hidden',
+          }}
         >
           <this.TopPadding self={this} />
           {itemListComp}
@@ -251,15 +251,15 @@ export function lazyLoader<
         </div>
       );
     }
-  };
-  return (LazyLoader);
+  }
+  return LazyLoader;
 }
 
 export class SectionBean implements HeightType {
-    name: string;
-    height: number;
-    constructor(name:string) {
-        this.name = name;
-        this.height = 21;
-    }
+  name: string;
+  height: number;
+  constructor(name: string) {
+    this.name = name;
+    this.height = 21;
+  }
 }
