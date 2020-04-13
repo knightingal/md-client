@@ -29,7 +29,7 @@ const Content = (props: ContentProps) => {
         height={props.height - 64}
         dataList={props.sectionDetail.pics}
         scrollTop={props.scrollTop}
-        itemProps={props.sectionDetail.dirName}
+        extProps={props.sectionDetail.dirName}
       />
     );
   } else {
@@ -52,16 +52,21 @@ export default connect(
   }),
 )(Content);
 
-interface ImgComponentItemProps {
+interface ImgComponentItemExtType {
   dirName: string;
-  index: number;
 }
 
-const ImgComponentItem = (props: { mount: boolean; item: ImgDetail; itemProps?: ImgComponentItemProps }) => (
+interface ImgComponentItemProps {
+  item: ImgDetail; 
+  index:number ;
+}
+
+const ImgComponentItem = (props: ImgComponentItemProps) => (
   <ImgComponent
     width={props.item.width}
     height={props.item.height}
-    index={props.itemProps?.index}
+    index={props.index}
+    // index={(props.itemProps as ImgComponentItemProps).index}
   />
 );
 
@@ -69,6 +74,6 @@ const LazyLoader: React.ComponentClass<LazyProps<
   ImgDetail,
   { index: number; password: string },
   {},
-  null,
-  any
->> = lazyLoader(ImgComponentItem, 'Content', 2, (dirName:string, index:number): ImgComponentItemProps => ({dirName, index}));
+  string,
+  null
+>> = lazyLoader(ImgComponentItem, 'Content', 2, (dirName: string): ImgComponentItemExtType => ({dirName: dirName}));

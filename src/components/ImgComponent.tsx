@@ -31,8 +31,8 @@ const ImgComponent = (props: ImgComponentProp) => {
   );
 };
 
-export default connect(({flow1000SectionContent}: {flow1000SectionContent: SectionContentState}, props: {index?: number}) => {
+export default connect(({flow1000SectionContent}: {flow1000SectionContent: SectionContentState}, props: {index: number}) => {
   return { 
-    url: flow1000SectionContent.sectionDetail?.pics[props.index? props.index:0].url 
+    url: flow1000SectionContent.sectionDetail?.pics[props.index].url 
   };
 })(ImgComponent);

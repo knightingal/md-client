@@ -199,8 +199,9 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 class SectionItem extends React.Component<{
   item: SectionBean;
   mount: boolean;
+  index: number;
 }> {
-  constructor(props: { item: SectionBean;  mount: boolean }) {
+  constructor(props: { item: SectionBean;  mount: boolean, index: number }) {
     super(props);
   }
   render() {
@@ -211,8 +212,8 @@ const LazyLoader: React.ComponentClass<LazyProps<
   SectionBean,
   SectionListProps,
   SectionListStatus,
-  GridContainer,
-  null
+  null,
+  GridContainer
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
@@ -244,7 +245,7 @@ class GridContainer extends React.Component<
   prevExpandIndex: number;
 
   fecthSectionList() {
-    const battleShipPage = false;
+    const battleShipPage = true;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
       : this.props.search === '' ? '/local1000/picIndexAjax' : '/local1000/searchSection?name=' + this.props.search;
@@ -341,7 +342,6 @@ class GridContainer extends React.Component<
           parentComp={this}
           height={this.props.height - 64}
           dispatch={this.props.dispatch}
-          itemProps={null}
         />
         <PwdDialog />
       </div>

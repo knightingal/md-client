@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
     
-interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> {
+interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, ITEM_EXT_TYPE> {
     item: ITEM_TYPE;
     mount: boolean;
+    index: number;
     parentComp?:PARENT_COMP_TYPE;
-    itemProps?: T_ITEM_PROPS;
+    itemProps?: ITEM_EXT_TYPE;
 }
 
 interface LazyState {
@@ -19,35 +20,34 @@ export interface HeightType {
 }
 
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
-export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null, T_ITEM_PROPS> {
+export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, EXT_TYPE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null> {
     dataList:Array<ITEM_TYPE>;
     parentComp?:PARENT_COMP_TYPE ;
     scrollTop:number;
     height:number;
-    itemProps: T_ITEM_PROPS;
-    dispatch?: Dispatch<any>
+    dispatch?: Dispatch<any>;
+    extProps?: EXT_TYPE;
 }
-
-type FunctionalComponentType<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> = (props:WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS>) => JSX.Element;
 
 export function lazyLoader<
   ITEM_TYPE extends HeightType,
   T_PROPS,
   T_STATE,
-  T_ITEM_PROPS,
-  PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null
+  PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE> | null,
+  EXT_TYPE,
+  ITEM_EXT_TYPE, 
 >(
-  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS>> | FunctionalComponentType<ITEM_TYPE, PARENT_COMP_TYPE, T_ITEM_PROPS> ,
+  WrappedComponent: ((props:WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, ITEM_EXT_TYPE>) => JSX.Element) | React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, ITEM_EXT_TYPE>>  ,
   className: string,
   preLoadOffSet: number = 1,
-  itemPropMap?: (...param: any) => T_ITEM_PROPS
-): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>> {
+  itemPropMap?: (extProps: EXT_TYPE) => ITEM_EXT_TYPE
+): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE,PARENT_COMP_TYPE>> {
   
   class LazyLoader extends React.Component<
-    LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>,
+    LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE,PARENT_COMP_TYPE>,
     LazyState
   > {
-    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>) {
+    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE,EXT_TYPE, PARENT_COMP_TYPE>) {
       super(props);
       const itemHeightList: Array<number> = props.dataList.map(
         (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -150,7 +150,7 @@ export function lazyLoader<
     }
 
     componentDidUpdate(
-      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE, T_ITEM_PROPS>,
+      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, EXT_TYPE,PARENT_COMP_TYPE>,
       prevState: LazyState,
     ) {
       if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight 
@@ -225,15 +225,17 @@ export function lazyLoader<
             index >= this.state.currentTopPicIndex - preLoadOffSet &&
             index <= this.state.currentButtonPicIndex + preLoadOffSet;
 
-          const wrappedProps = {
-              key: index,
+          
+          const itemProps: ITEM_EXT_TYPE | undefined = (this.props.extProps && itemPropMap) ? itemPropMap(this.props.extProps) : undefined;
+          const wrappedProps: WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE, ITEM_EXT_TYPE> = {
+              index: index,
               item: itemBean,
               parentComp: this.props.parentComp,
               mount: this.state.mount,
-              itemProps: itemPropMap?.(this.props.itemProps, index)
+              itemProps: itemProps
           };
           return display ? (
-            <WrappedComponent {...wrappedProps} />
+            <WrappedComponent key={index} {...wrappedProps} />
           ) : null;
         }
         return null;
