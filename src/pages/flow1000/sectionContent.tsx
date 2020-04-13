@@ -66,7 +66,6 @@ const ImgComponentItem = (props: ImgComponentItemProps) => (
     width={props.item.width}
     height={props.item.height}
     index={props.index}
-  // index={(props.itemProps as ImgComponentItemProps).index}
   />
 );
 
@@ -74,8 +73,7 @@ const LazyLoader: React.ComponentClass<LazyProps<
   ImgDetail,
   { index: number; password: string },
   {},
-  string,
-  null
+  string
 >> = lazyLoader(
   ImgComponentItem,
   'Content',

@@ -216,7 +216,6 @@ const LazyLoader: React.ComponentClass<LazyProps<
   SectionLine,
   SectionListProps,
   SectionListStatus,
-  null,
   null
 >> = lazyLoader(SectionItem, 'SectionList');
 
