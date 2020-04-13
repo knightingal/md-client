@@ -92,7 +92,7 @@ class SectionInfo {
   }
 }
 
-class SectionBean implements HeightType {
+class SectionLine implements HeightType {
   height: number;
   expand: boolean;
 
@@ -120,74 +120,78 @@ interface SectionListProps {}
 
 interface SectionListStatus {}
 
-const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
+const GridLine = (props: { sectionLine: SectionLine; mount: boolean }) => {
   const classes = useStyles();
 
+  const section0 = (
+    <Grid item={true} xs={3}>
+      <RecipeReviewCard
+        sectionIndex={props.sectionLine.section0.sectionIndex}
+        index={props.sectionLine.section0.index}
+        timeStamp={props.sectionLine.section0.timeStamp}
+        mount={props.mount}
+        title={props.sectionLine.section0.title}
+        imgSrc={props.sectionLine.section0.imgSrc}
+        coverHeight={props.sectionLine.section0.coverHeight}
+        coverWidth={props.sectionLine.section0.coverWidth}
+      />
+    </Grid>
+  );
+
   const section1 =
-    props.sectionBean.section1 != null ? (
+    props.sectionLine.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionBean.section1.sectionIndex}
-          index={props.sectionBean.section1.index}
+          sectionIndex={props.sectionLine.section1.sectionIndex}
+          index={props.sectionLine.section1.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section1.timeStamp}
-          title={props.sectionBean.section1.title}
-          imgSrc={props.sectionBean.section1.imgSrc}
-          coverHeight={props.sectionBean.section1.coverHeight}
-          coverWidth={props.sectionBean.section1.coverWidth}
+          timeStamp={props.sectionLine.section1.timeStamp}
+          title={props.sectionLine.section1.title}
+          imgSrc={props.sectionLine.section1.imgSrc}
+          coverHeight={props.sectionLine.section1.coverHeight}
+          coverWidth={props.sectionLine.section1.coverWidth}
         />
       </Grid>
     ) : null;
   const section2 =
-    props.sectionBean.section2 != null ? (
+    props.sectionLine.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionBean.section2.sectionIndex}
-          index={props.sectionBean.section2.index}
+          sectionIndex={props.sectionLine.section2.sectionIndex}
+          index={props.sectionLine.section2.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section2.timeStamp}
-          title={props.sectionBean.section2.title}
-          imgSrc={props.sectionBean.section2.imgSrc}
-          coverHeight={props.sectionBean.section2.coverHeight}
-          coverWidth={props.sectionBean.section2.coverWidth}
+          timeStamp={props.sectionLine.section2.timeStamp}
+          title={props.sectionLine.section2.title}
+          imgSrc={props.sectionLine.section2.imgSrc}
+          coverHeight={props.sectionLine.section2.coverHeight}
+          coverWidth={props.sectionLine.section2.coverWidth}
         />
       </Grid>
     ) : null;
   const section3 =
-    props.sectionBean.section3 != null ? (
+    props.sectionLine.section3 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionBean.section3.sectionIndex}
-          index={props.sectionBean.section3.index}
+          sectionIndex={props.sectionLine.section3.sectionIndex}
+          index={props.sectionLine.section3.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section3.timeStamp}
-          title={props.sectionBean.section3.title}
-          imgSrc={props.sectionBean.section3.imgSrc}
-          coverHeight={props.sectionBean.section3.coverHeight}
-          coverWidth={props.sectionBean.section3.coverWidth}
+          timeStamp={props.sectionLine.section3.timeStamp}
+          title={props.sectionLine.section3.title}
+          imgSrc={props.sectionLine.section3.imgSrc}
+          coverHeight={props.sectionLine.section3.coverHeight}
+          coverWidth={props.sectionLine.section3.coverWidth}
         />
       </Grid>
     ) : null;
-  const className = !props.sectionBean.expand
+  const className = !props.sectionLine.expand
     ? classes.gridItem
     : `${classes.gridItem} ${classes.expandGridItem}`;
 
-  const style: CSSProperties = !props.sectionBean.expand ? { height: '360px' } : {};
+  const style: CSSProperties = !props.sectionLine.expand ? { height: '360px' } : {};
   return (
     <div style={style}>
       <Grid container={true} spacing={1} className={className}>
-        <Grid item={true} xs={3}>
-          <RecipeReviewCard
-            sectionIndex={props.sectionBean.section0.sectionIndex}
-            index={props.sectionBean.section0.index}
-            timeStamp={props.sectionBean.section0.timeStamp}
-            mount={props.mount}
-            title={props.sectionBean.section0.title}
-            imgSrc={props.sectionBean.section0.imgSrc}
-            coverHeight={props.sectionBean.section0.coverHeight}
-            coverWidth={props.sectionBean.section0.coverWidth}
-          />
-        </Grid>
+        {section0}
         {section1}
         {section2}
         {section3}
@@ -197,23 +201,23 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 };
 
 class SectionItem extends React.Component<{
-  item: SectionBean;
+  item: SectionLine;
   mount: boolean;
   index: number;
 }> {
-  constructor(props: { item: SectionBean;  mount: boolean, index: number }) {
+  constructor(props: { item: SectionLine;  mount: boolean, index: number }) {
     super(props);
   }
   render() {
-    return <GridLine sectionBean={this.props.item} mount={this.props.mount} />;
+    return <GridLine sectionLine={this.props.item} mount={this.props.mount} />;
   }
 }
 const LazyLoader: React.ComponentClass<LazyProps<
-  SectionBean,
+  SectionLine,
   SectionListProps,
   SectionListStatus,
   null,
-  GridContainer
+  null
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
@@ -227,7 +231,7 @@ interface PicIndex {
 
 class GridContainer extends React.Component<
   Flow1000Props,
-  { sectionList: Array<SectionBean> }
+  { sectionList: Array<SectionLine> }
 > {
   constructor(props: {
     height: number;
@@ -279,7 +283,7 @@ class GridContainer extends React.Component<
         });
 
         const sectionList = sub0.map((value: PicIndex, index: number) => {
-          return new SectionBean(
+          return new SectionLine(
             value,
             index < sub1.length ? sub1[index] : null,
             index < sub2.length ? sub2[index] : null,
@@ -339,7 +343,6 @@ class GridContainer extends React.Component<
         <LazyLoader
           dataList={this.state.sectionList}
           scrollTop={this.props.scrollTop}
-          parentComp={this}
           height={this.props.height - 64}
           dispatch={this.props.dispatch}
         />
