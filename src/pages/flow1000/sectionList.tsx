@@ -1,5 +1,4 @@
-import React, { CSSProperties } from 'react';
-import { ReactNode, useEffect } from 'react';
+import React, { CSSProperties, useState, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -120,74 +119,78 @@ interface SectionListProps {}
 
 interface SectionListStatus {}
 
-const GridLine = (props: { sectionLine: SectionLine; mount: boolean }) => {
+/**
+ * a Component contain 4 sections in one line
+ */
+const GridLine = (props: { item: SectionLine; mount: boolean }) => {
   const classes = useStyles();
+  const sectionLine: SectionLine = props.item;
 
   const section0 = (
     <Grid item={true} xs={3}>
       <RecipeReviewCard
-        sectionIndex={props.sectionLine.section0.sectionIndex}
-        index={props.sectionLine.section0.index}
-        timeStamp={props.sectionLine.section0.timeStamp}
+        sectionIndex={sectionLine.section0.sectionIndex}
+        index={sectionLine.section0.index}
+        timeStamp={sectionLine.section0.timeStamp}
         mount={props.mount}
-        title={props.sectionLine.section0.title}
-        imgSrc={props.sectionLine.section0.imgSrc}
-        coverHeight={props.sectionLine.section0.coverHeight}
-        coverWidth={props.sectionLine.section0.coverWidth}
+        title={sectionLine.section0.title}
+        imgSrc={sectionLine.section0.imgSrc}
+        coverHeight={sectionLine.section0.coverHeight}
+        coverWidth={sectionLine.section0.coverWidth}
       />
     </Grid>
   );
 
   const section1 =
-    props.sectionLine.section1 != null ? (
+    sectionLine.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionLine.section1.sectionIndex}
-          index={props.sectionLine.section1.index}
+          sectionIndex={sectionLine.section1.sectionIndex}
+          index={sectionLine.section1.index}
           mount={props.mount}
-          timeStamp={props.sectionLine.section1.timeStamp}
-          title={props.sectionLine.section1.title}
-          imgSrc={props.sectionLine.section1.imgSrc}
-          coverHeight={props.sectionLine.section1.coverHeight}
-          coverWidth={props.sectionLine.section1.coverWidth}
+          timeStamp={sectionLine.section1.timeStamp}
+          title={sectionLine.section1.title}
+          imgSrc={sectionLine.section1.imgSrc}
+          coverHeight={sectionLine.section1.coverHeight}
+          coverWidth={sectionLine.section1.coverWidth}
         />
       </Grid>
     ) : null;
   const section2 =
-    props.sectionLine.section2 != null ? (
+    sectionLine.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionLine.section2.sectionIndex}
-          index={props.sectionLine.section2.index}
+          sectionIndex={sectionLine.section2.sectionIndex}
+          index={sectionLine.section2.index}
           mount={props.mount}
-          timeStamp={props.sectionLine.section2.timeStamp}
-          title={props.sectionLine.section2.title}
-          imgSrc={props.sectionLine.section2.imgSrc}
-          coverHeight={props.sectionLine.section2.coverHeight}
-          coverWidth={props.sectionLine.section2.coverWidth}
+          timeStamp={sectionLine.section2.timeStamp}
+          title={sectionLine.section2.title}
+          imgSrc={sectionLine.section2.imgSrc}
+          coverHeight={sectionLine.section2.coverHeight}
+          coverWidth={sectionLine.section2.coverWidth}
         />
       </Grid>
     ) : null;
   const section3 =
-    props.sectionLine.section3 != null ? (
+    sectionLine.section3 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionLine.section3.sectionIndex}
-          index={props.sectionLine.section3.index}
+          sectionIndex={sectionLine.section3.sectionIndex}
+          index={sectionLine.section3.index}
           mount={props.mount}
-          timeStamp={props.sectionLine.section3.timeStamp}
-          title={props.sectionLine.section3.title}
-          imgSrc={props.sectionLine.section3.imgSrc}
-          coverHeight={props.sectionLine.section3.coverHeight}
-          coverWidth={props.sectionLine.section3.coverWidth}
+          timeStamp={sectionLine.section3.timeStamp}
+          title={sectionLine.section3.title}
+          imgSrc={sectionLine.section3.imgSrc}
+          coverHeight={sectionLine.section3.coverHeight}
+          coverWidth={sectionLine.section3.coverWidth}
         />
       </Grid>
     ) : null;
-  const className = !props.sectionLine.expand
+  const className = !sectionLine.expand
     ? classes.gridItem
     : `${classes.gridItem} ${classes.expandGridItem}`;
 
-  const style: CSSProperties = !props.sectionLine.expand ? { height: '360px' } : {};
+  const style: CSSProperties = !sectionLine.expand ? { height: '360px' } : {};
   return (
     <div style={style}>
       <Grid container={true} spacing={1} className={className}>
@@ -200,24 +203,12 @@ const GridLine = (props: { sectionLine: SectionLine; mount: boolean }) => {
   );
 };
 
-class SectionItem extends React.Component<{
-  item: SectionLine;
-  mount: boolean;
-  index: number;
-}> {
-  constructor(props: { item: SectionLine;  mount: boolean, index: number }) {
-    super(props);
-  }
-  render() {
-    return <GridLine sectionLine={this.props.item} mount={this.props.mount} />;
-  }
-}
 const LazyLoader: React.ComponentClass<LazyProps<
   SectionLine,
   SectionListProps,
   SectionListStatus,
   null
->> = lazyLoader(SectionItem, 'SectionList');
+>> = lazyLoader(GridLine, 'SectionList');
 
 interface PicIndex {
   sectionIndex: number;
@@ -228,30 +219,51 @@ interface PicIndex {
   coverHeight: number;
 }
 
-class GridContainer extends React.Component<
-  Flow1000Props,
-  { sectionList: Array<SectionLine> }
-> {
-  constructor(props: {
-    height: number;
-    expandImgIndex: number;
-    dispatch: Dispatch<any>;
-    scrollTop: number;
-    pwd: string;
-    search: string;
-  }) {
-    super(props);
-    this.state = { sectionList: [] };
-    this.prevExpandIndex = -1;
-  }
+const GridContainer = (props: Flow1000Props) => {
+  ////////////////  hocks ////////////////////////////////
+  const [sectionList, setSectionList] = useState<Array<SectionLine>>([]);
+  const [prevExpandIndex, setPrevExpandIndex] = useState(-1);
+  useEffect(()=>{
+    if (props.pwd == null || props.pwd.length == 0) {
+      props.dispatch({
+        type: 'flow1000/setPwdDialogDisp',
+        pwdDialogDisp: true,
+      });
+    } else {
+      fetchSectionList();
+    }
+  }, [])
 
-  prevExpandIndex: number;
+  useEffect(() => {
+    if (props.pwd.length > 0) {
+      fetchSectionList();
+    }
+  }, [props.search, props.pwd]);
 
-  fecthSectionList() {
-    const battleShipPage = true;
+  useEffect(() => {
+    const floorIndex = Math.floor(props.expandImgIndex / 4);
+    if (sectionList[floorIndex] != undefined) {
+      sectionList[floorIndex].expand = true;
+      if (
+        sectionList[prevExpandIndex] != undefined &&
+        prevExpandIndex != floorIndex
+      ) {
+        sectionList[prevExpandIndex].expand = false;
+      }
+      setPrevExpandIndex(floorIndex);
+      setSectionList(sectionList);
+    }
+  }, [props.expandImgIndex]);
+  
+  //////////////////////////////////////////////////////// 
+  
+  const fetchSectionList = () => {
+    const battleShipPage = false;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=BattleShips'
-      : this.props.search === '' ? '/local1000/picIndexAjax' : '/local1000/searchSection?name=' + this.props.search;
+      : props.search === ''
+      ? '/local1000/picIndexAjax'
+      : '/local1000/searchSection?name=' + props.search;
 
     fetch(fetchUrl)
       .then((resp: Response) => {
@@ -290,72 +302,32 @@ class GridContainer extends React.Component<
           );
         });
 
-        this.setState({
-          sectionList: sectionList,
-        });
-        this.props.dispatch({
+        setSectionList(sectionList);
+        props.dispatch({
           type: 'flow1000/sectionList',
           subRest: subRest,
         });
       });
   }
-  componentDidMount() {
-    if (this.props.pwd == null || this.props.pwd.length == 0) {
-      this.props.dispatch({
-        type: "flow1000/setPwdDialogDisp",
-        pwdDialogDisp: true
-      });
-    } else {
-      this.fecthSectionList();
-    }
-  }
 
-  componentDidUpdate(prevProps: { expandImgIndex: number; search: string; pwd: string }) {
-    if (this.props.search != prevProps.search) {
-      this.fecthSectionList();
-    }
-    if (this.props.pwd != prevProps.pwd && this.props.pwd != null && this.props.pwd.length != 0) {
-      this.fecthSectionList();
-    }
-
-    if (this.props.expandImgIndex != prevProps.expandImgIndex) {
-      const floorIndex = Math.floor(this.props.expandImgIndex / 4);
-      if (this.state.sectionList[floorIndex] != undefined) {
-        this.state.sectionList[floorIndex].expand = true;
-        if (
-          this.state.sectionList[this.prevExpandIndex] != undefined &&
-          this.prevExpandIndex != floorIndex
-        ) {
-          this.state.sectionList[this.prevExpandIndex].expand = false;
-        }
-        this.prevExpandIndex = floorIndex;
-        this.setState({
-          sectionList: this.state.sectionList,
-        });
-      }
-    }
-  }
-
-  render() {
-    return (
-      <div style={{ height: `${this.props.height - 64}px` }}>
-        <LazyLoader
-          dataList={this.state.sectionList}
-          scrollTop={this.props.scrollTop}
-          height={this.props.height - 64}
-          dispatch={this.props.dispatch}
-        />
-        <PwdDialog />
-      </div>
-    );
-  }
+  return (
+    <div style={{ height: `${props.height - 64}px` }}>
+      <LazyLoader
+        dataList={sectionList}
+        scrollTop={props.scrollTop}
+        height={props.height - 64}
+        dispatch={props.dispatch}
+      />
+      <PwdDialog />
+    </div>
+  );
 }
-export default connect(({flow1000}: { flow1000: Flow1000ModelState, }) => ({
-    height: flow1000.height,
-    width: flow1000.width,
-    expandImgIndex: flow1000.expandImgIndex,
-    scrollTop: flow1000.scrollTop,
-    pwd: flow1000.pwd,
-    search: flow1000.search,
-  })
-)(GridContainer);
+
+export default connect((status: { flow1000: Flow1000ModelState }) => ({
+  height: status.flow1000.height,
+  width: status.flow1000.width,
+  expandImgIndex: status.flow1000.expandImgIndex,
+  scrollTop: status.flow1000.scrollTop,
+  pwd: status.flow1000.pwd,
+  search: status.flow1000.search,
+}))(GridContainer);
