@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     expandGridItem: {},
   }),
 );
+
 function RecipeReviewCard(props: {
   title: string;
   imgSrc: string;
@@ -94,24 +95,14 @@ class SectionInfo {
 class SectionLine implements HeightType {
   height: number;
   expand: boolean;
-
-  section0: SectionInfo;
-  section1: SectionInfo | null;
-  section2: SectionInfo | null;
-  section3: SectionInfo | null;
+  sectionList: SectionInfo[];
 
   constructor(
-    value0: PicIndex,
-    value1: PicIndex | null,
-    value2: PicIndex | null,
-    value3: PicIndex | null,
+    picIndex: PicIndex[]
   ) {
     this.height = 360;
     this.expand = false;
-    this.section0 = new SectionInfo(value0);
-    this.section1 = value1 != null ? new SectionInfo(value1) : null;
-    this.section2 = value2 != null ? new SectionInfo(value2) : null;
-    this.section3 = value3 != null ? new SectionInfo(value3) : null;
+    this.sectionList = picIndex.map(value => new SectionInfo(value));
   }
 }
 
@@ -126,66 +117,6 @@ const GridLine = (props: { item: SectionLine; mount: boolean }) => {
   const classes = useStyles();
   const sectionLine: SectionLine = props.item;
 
-  const section0 = (
-    <Grid item={true} xs={3}>
-      <RecipeReviewCard
-        sectionIndex={sectionLine.section0.sectionIndex}
-        index={sectionLine.section0.index}
-        timeStamp={sectionLine.section0.timeStamp}
-        mount={props.mount}
-        title={sectionLine.section0.title}
-        imgSrc={sectionLine.section0.imgSrc}
-        coverHeight={sectionLine.section0.coverHeight}
-        coverWidth={sectionLine.section0.coverWidth}
-      />
-    </Grid>
-  );
-
-  const section1 =
-    sectionLine.section1 != null ? (
-      <Grid item={true} xs={3}>
-        <RecipeReviewCard
-          sectionIndex={sectionLine.section1.sectionIndex}
-          index={sectionLine.section1.index}
-          mount={props.mount}
-          timeStamp={sectionLine.section1.timeStamp}
-          title={sectionLine.section1.title}
-          imgSrc={sectionLine.section1.imgSrc}
-          coverHeight={sectionLine.section1.coverHeight}
-          coverWidth={sectionLine.section1.coverWidth}
-        />
-      </Grid>
-    ) : null;
-  const section2 =
-    sectionLine.section2 != null ? (
-      <Grid item={true} xs={3}>
-        <RecipeReviewCard
-          sectionIndex={sectionLine.section2.sectionIndex}
-          index={sectionLine.section2.index}
-          mount={props.mount}
-          timeStamp={sectionLine.section2.timeStamp}
-          title={sectionLine.section2.title}
-          imgSrc={sectionLine.section2.imgSrc}
-          coverHeight={sectionLine.section2.coverHeight}
-          coverWidth={sectionLine.section2.coverWidth}
-        />
-      </Grid>
-    ) : null;
-  const section3 =
-    sectionLine.section3 != null ? (
-      <Grid item={true} xs={3}>
-        <RecipeReviewCard
-          sectionIndex={sectionLine.section3.sectionIndex}
-          index={sectionLine.section3.index}
-          mount={props.mount}
-          timeStamp={sectionLine.section3.timeStamp}
-          title={sectionLine.section3.title}
-          imgSrc={sectionLine.section3.imgSrc}
-          coverHeight={sectionLine.section3.coverHeight}
-          coverWidth={sectionLine.section3.coverWidth}
-        />
-      </Grid>
-    ) : null;
   const className = !sectionLine.expand
     ? classes.gridItem
     : `${classes.gridItem} ${classes.expandGridItem}`;
@@ -194,10 +125,22 @@ const GridLine = (props: { item: SectionLine; mount: boolean }) => {
   return (
     <div style={style}>
       <Grid container={true} spacing={1} className={className}>
-        {section0}
-        {section1}
-        {section2}
-        {section3}
+        {
+          sectionLine.sectionList.map(section => {
+            return <Grid item={true} xs={3}>
+              <RecipeReviewCard
+                sectionIndex={section.sectionIndex}
+                index={section.index}
+                mount={props.mount}
+                timeStamp={section.timeStamp}
+                title={section.title}
+                imgSrc={section.imgSrc}
+                coverHeight={section.coverHeight}
+                coverWidth={section.coverWidth}
+              />
+            </Grid>
+          })
+        }
       </Grid>
     </div>
   );
@@ -294,12 +237,17 @@ const GridContainer = (props: Flow1000Props) => {
         });
 
         const sectionList = sub0.map((value: PicIndex, index: number) => {
-          return new SectionLine(
-            value,
-            index < sub1.length ? sub1[index] : null,
-            index < sub2.length ? sub2[index] : null,
-            index < sub3.length ? sub3[index] : null,
-          );
+          const picIndex: PicIndex[] = [value];
+          if (index < sub1.length) {
+            picIndex.push(sub1[index]);
+          }
+          if (index < sub2.length) {
+            picIndex.push(sub2[index]);
+          }
+          if (index < sub3.length) {
+            picIndex.push(sub3[index]);
+          }
+          return new SectionLine(picIndex);
         });
 
         setSectionList(sectionList);
