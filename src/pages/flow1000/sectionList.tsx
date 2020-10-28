@@ -97,9 +97,7 @@ class SectionLine implements HeightType {
   expand: boolean;
   sectionList: SectionInfo[];
 
-  constructor(
-    picIndex: PicIndex[]
-  ) {
+  constructor(picIndex: PicIndex[]) {
     this.height = 360;
     this.expand = false;
     this.sectionList = picIndex.map(value => new SectionInfo(value));
@@ -125,9 +123,9 @@ const GridLine = (props: { item: SectionLine; mount: boolean }) => {
   return (
     <div style={style}>
       <Grid container={true} spacing={1} className={className}>
-        {
-          sectionLine.sectionList.map(section => {
-            return <Grid item={true} xs={3}>
+        {sectionLine.sectionList.map(section => {
+          return (
+            <Grid item={true} xs={3}>
               <RecipeReviewCard
                 sectionIndex={section.sectionIndex}
                 index={section.index}
@@ -139,8 +137,8 @@ const GridLine = (props: { item: SectionLine; mount: boolean }) => {
                 coverWidth={section.coverWidth}
               />
             </Grid>
-          })
-        }
+          );
+        })}
       </Grid>
     </div>
   );
@@ -166,7 +164,7 @@ const GridContainer = (props: Flow1000Props) => {
   ////////////////  hocks ////////////////////////////////
   const [sectionList, setSectionList] = useState<Array<SectionLine>>([]);
   const [prevExpandIndex, setPrevExpandIndex] = useState(-1);
-  useEffect(()=>{
+  useEffect(() => {
     if (props.pwd == null || props.pwd.length == 0) {
       props.dispatch({
         type: 'flow1000/setPwdDialogDisp',
@@ -175,7 +173,7 @@ const GridContainer = (props: Flow1000Props) => {
     } else {
       fetchSectionList();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (props.pwd.length > 0) {
@@ -187,19 +185,16 @@ const GridContainer = (props: Flow1000Props) => {
     const floorIndex = Math.floor(props.expandImgIndex / 4);
     if (sectionList[floorIndex] != undefined) {
       sectionList[floorIndex].expand = true;
-      if (
-        sectionList[prevExpandIndex] != undefined &&
-        prevExpandIndex != floorIndex
-      ) {
+      if (sectionList[prevExpandIndex] != undefined && prevExpandIndex != floorIndex) {
         sectionList[prevExpandIndex].expand = false;
       }
       setPrevExpandIndex(floorIndex);
       setSectionList(sectionList);
     }
   }, [props.expandImgIndex]);
-  
-  //////////////////////////////////////////////////////// 
-  
+
+  ////////////////////////////////////////////////////////
+
   const fetchSectionList = () => {
     const battleShipPage = false;
     const fetchUrl = battleShipPage
@@ -213,12 +208,7 @@ const GridContainer = (props: Flow1000Props) => {
         return resp.json();
       })
       .then((json: Array<PicIndex>) => {
-        let subRest: Array<PicIndex>;
-        if (battleShipPage) {
-          subRest = json;
-        } else {
-          subRest = json;
-        }
+        const subRest: Array<PicIndex> = json;
         subRest.forEach((picIndex: PicIndex, index: number) => {
           picIndex.sectionIndex = picIndex.index;
           picIndex.index = index;
@@ -236,7 +226,7 @@ const GridContainer = (props: Flow1000Props) => {
           return index % 4 == 3;
         });
 
-        const sectionList = sub0.map((value: PicIndex, index: number) => {
+        const sections = sub0.map((value: PicIndex, index: number) => {
           const picIndex: PicIndex[] = [value];
           if (index < sub1.length) {
             picIndex.push(sub1[index]);
@@ -250,13 +240,13 @@ const GridContainer = (props: Flow1000Props) => {
           return new SectionLine(picIndex);
         });
 
-        setSectionList(sectionList);
+        setSectionList(sections);
         props.dispatch({
           type: 'flow1000/sectionList',
           subRest: subRest,
         });
       });
-  }
+  };
 
   return (
     <div style={{ height: `${props.height - 64}px` }}>
@@ -269,7 +259,7 @@ const GridContainer = (props: Flow1000Props) => {
       <PwdDialog />
     </div>
   );
-}
+};
 
 export default connect((status: { flow1000: Flow1000ModelState }) => ({
   height: status.flow1000.height,

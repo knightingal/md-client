@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { decryptArray } from '../lib/decryptoArray';
-import { connect,   } from 'dva';
-import { Flow1000ModelState } from '@/models/flow1000';
-import { useState, useEffect } from 'react';
+import { connect   } from 'dva';
+import { useEffect } from 'react';
 
 import { Dispatch } from 'redux';
 import { SectionContentState } from '@/pages/flow1000/model';
