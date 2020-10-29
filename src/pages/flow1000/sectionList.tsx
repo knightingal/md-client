@@ -13,11 +13,55 @@ import PwdDialog from '../../components/PwdDialog';
 
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
-import { Flow1000ModelState } from '../../models/flow1000';
+import { Flow1000ModelState, SectionListAction, PwdDialogDispAction } from '../../models/flow1000';
+
+const fetchSectionList = (search: string): Promise<PicIndex[]> => {
+  const battleShipPage = true;
+  const fetchUrl = battleShipPage
+    ? '/local1000/picIndexAjax?album=BattleShips'
+    : search === ''
+    ? '/local1000/picIndexAjax'
+    : '/local1000/searchSection?name=' + search;
+
+  return fetch(fetchUrl)
+    .then((resp: Response) => {
+      return resp.json();
+    })
+    .then((json: PicIndex[]) => {
+      const sectionList: PicIndex[] = json;
+      sectionList.forEach((picIndex: PicIndex, index: number) => {
+        picIndex.sectionIndex = picIndex.index;
+        picIndex.index = index;
+      });
+      return sectionList;
+    });
+};
+
+const splite2GridLine = (sectionList: Array<PicIndex>): SectionLine[] => {
+  const sub0 = sectionList.filter((_: PicIndex, index: number) => index % 4 == 0);
+  const sub1 = sectionList.filter((_: PicIndex, index: number) => index % 4 == 1);
+  const sub2 = sectionList.filter((_: PicIndex, index: number) => index % 4 == 2);
+  const sub3 = sectionList.filter((_: PicIndex, index: number) => index % 4 == 3);
+
+  const sectionGrid: SectionLine[] = sub0.map((value: PicIndex, index: number) => {
+    const picIndex: PicIndex[] = [value];
+    if (index < sub1.length) {
+      picIndex.push(sub1[index]);
+    }
+    if (index < sub2.length) {
+      picIndex.push(sub2[index]);
+    }
+    if (index < sub3.length) {
+      picIndex.push(sub3[index]);
+    }
+    return new SectionLine(picIndex);
+  });
+  return sectionGrid;
+}
 interface Flow1000Props {
   height: number;
   expandImgIndex: number;
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch<SectionListAction | PwdDialogDispAction>;
   scrollTop: number;
   pwd: string;
   search: string;
@@ -161,7 +205,15 @@ interface PicIndex {
 }
 
 const GridContainer = (props: Flow1000Props) => {
-  ////////////////  hocks ////////////////////////////////
+
+  const refreshSections = (sections: PicIndex[]) => {
+    props.dispatch({
+      type: 'flow1000/sectionList',
+      subRest: sections,
+    });
+    setSectionList(splite2GridLine(sections));
+  };
+
   const [sectionList, setSectionList] = useState<Array<SectionLine>>([]);
   const [prevExpandIndex, setPrevExpandIndex] = useState(-1);
   useEffect(() => {
@@ -171,13 +223,17 @@ const GridContainer = (props: Flow1000Props) => {
         pwdDialogDisp: true,
       });
     } else {
-      fetchSectionList();
+      fetchSectionList(props.search).then((sections) => {
+        refreshSections(sections);
+      });
     }
   }, []);
 
   useEffect(() => {
     if (props.pwd.length > 0) {
-      fetchSectionList();
+      fetchSectionList(props.search).then((sections) => {
+        refreshSections(sections);
+      });
     }
   }, [props.search, props.pwd]);
 
@@ -193,60 +249,6 @@ const GridContainer = (props: Flow1000Props) => {
     }
   }, [props.expandImgIndex]);
 
-  ////////////////////////////////////////////////////////
-
-  const fetchSectionList = () => {
-    const battleShipPage = false;
-    const fetchUrl = battleShipPage
-      ? '/local1000/picIndexAjax?album=BattleShips'
-      : props.search === ''
-      ? '/local1000/picIndexAjax'
-      : '/local1000/searchSection?name=' + props.search;
-
-    fetch(fetchUrl)
-      .then((resp: Response) => {
-        return resp.json();
-      })
-      .then((json: Array<PicIndex>) => {
-        const subRest: Array<PicIndex> = json;
-        subRest.forEach((picIndex: PicIndex, index: number) => {
-          picIndex.sectionIndex = picIndex.index;
-          picIndex.index = index;
-        });
-        const sub0 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 0;
-        });
-        const sub1 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 1;
-        });
-        const sub2 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 2;
-        });
-        const sub3 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 3;
-        });
-
-        const sections = sub0.map((value: PicIndex, index: number) => {
-          const picIndex: PicIndex[] = [value];
-          if (index < sub1.length) {
-            picIndex.push(sub1[index]);
-          }
-          if (index < sub2.length) {
-            picIndex.push(sub2[index]);
-          }
-          if (index < sub3.length) {
-            picIndex.push(sub3[index]);
-          }
-          return new SectionLine(picIndex);
-        });
-
-        setSectionList(sections);
-        props.dispatch({
-          type: 'flow1000/sectionList',
-          subRest: subRest,
-        });
-      });
-  };
 
   return (
     <div style={{ height: `${props.height - 64}px` }}>

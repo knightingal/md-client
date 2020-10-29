@@ -26,7 +26,7 @@ interface PicIndex {
   coverWidth: number;
   coverHeight: number;
 }
-interface SectionListAction extends Action {
+export interface SectionListAction extends Action {
   subRest: Array<PicIndex>;
 }
 
