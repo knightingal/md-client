@@ -113,3 +113,38 @@ const Flow1000SectionContentModel: Flow1000SectionContentModelType = {
 
 
 export default Flow1000SectionContentModel;
+
+export const fetchSectionList = <T extends {}>(search: string): Promise<T[]> => {
+  const battleShipPage = true;
+  const fetchUrl = battleShipPage
+    ? '/local1000/picIndexAjax?album=BattleShips'
+    : search === ''
+    ? '/local1000/picIndexAjax'
+    : '/local1000/searchSection?name=' + search;
+
+  return fetch(fetchUrl)
+    .then((resp: Response) => resp.json())
+    .then((json: T[]) => json);
+};
+
+export const splite2GridLine =  <T extends {}>(sectionList: T[]): T[][] => {
+  const sub0 = sectionList.filter((_: T, index: number) => index % 4 == 0);
+  const sub1 = sectionList.filter((_: T, index: number) => index % 4 == 1);
+  const sub2 = sectionList.filter((_: T, index: number) => index % 4 == 2);
+  const sub3 = sectionList.filter((_: T, index: number) => index % 4 == 3);
+
+  const sectionGrid: T[][] = sub0.map((value: T, index: number) => {
+    const picIndex: T[] = [value];
+    if (index < sub1.length) {
+      picIndex.push(sub1[index]);
+    }
+    if (index < sub2.length) {
+      picIndex.push(sub2[index]);
+    }
+    if (index < sub3.length) {
+      picIndex.push(sub3[index]);
+    }
+    return picIndex;
+  });
+  return sectionGrid;
+};
