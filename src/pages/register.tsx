@@ -36,24 +36,22 @@ export default connect(
   )
 )(function Register (props:ReigsterProps) {
   const handleRegist = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    console.log("handle regist");
-    console.log(device);
-        device.appId = device.appKey;
-        const response = fetch("/message/register", {
-            method:"POST", headers:{'Content-Type': 'application/json'},
-            body: JSON.stringify(device)
-        });
-        response.then(body=> body.json()).then(jsonBody => {
-            if (jsonBody.successful) {
-                const pushToken = jsonBody.resultmessage;
-                device.pushToken = pushToken;
-            }
-            props.dispatch({
-                type:'simClient/selectDevice',
-                device: device
-            });
-            router.push("/md-page/msg-recv/")
-        });
+    device.appId = device.appKey;
+    const response = fetch("/message/register", {
+      method:"POST", headers:{'Content-Type': 'application/json'},
+      body: JSON.stringify(device)
+    });
+    response.then(body=> body.json()).then(jsonBody => {
+      if (jsonBody.successful) {
+        const pushToken = jsonBody.resultmessage;
+        device.pushToken = pushToken;
+      }
+      props.dispatch({
+        type:'simClient/selectDevice',
+        device: device
+      });
+      router.push("/md-page/msg-recv/")
+    });
   };
   const handleTerminalList = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     console.log("handle terminal list");
