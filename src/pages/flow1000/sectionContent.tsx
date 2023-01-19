@@ -1,10 +1,10 @@
 
-import React, { CSSProperties } from 'react';
+import React  from 'react';
 import {lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 
 import ImgComponent  from '../../components/ImgComponent';
 import {Flow1000ModelState} from '../../models/flow1000';
-import { connect } from 'dva';
+import { connect } from 'react-redux';
 class SectionDetail {
     dirName:string;
     picPage:string;

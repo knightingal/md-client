@@ -2,9 +2,10 @@ import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
 import { Flow1000ModelState } from '../models/flow1000';
-import { connect } from 'dva';
+import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { router } from "umi";
+// import { router } from "umi";
+import { useNavigate } from "react-router-dom";
 
 interface ImgComponentProps {
   index: number;
@@ -126,7 +127,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
         imgIndex: this.props.sectionIndex,
       });
 
-      router.push("/flow1000/sectionContent/")
+      // router.push("/flow1000/sectionContent/")
     }
 
     render() {

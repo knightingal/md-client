@@ -1,18 +1,17 @@
 import React, { CSSProperties } from 'react';
 import {ReactNode, useEffect} from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardActions from '@material-ui/core/CardActions';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import Grid from '@material-ui/core/Grid';
+// import { makeStyles, Theme, createStyles } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardActions from '@mui/material/CardActions';
+import IconButton from '@mui/material/IconButton';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import Grid from '@mui/material/Grid';
 import {lazyLoader, LazyProps, HeightType, ParentCompHandler} from '../../components/LazyLoader';
 import ImgComponent  from '../../components/SectionImgComponent';
 
-import { connect } from 'dva';
+import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {Flow1000ModelState} from '../../models/flow1000';
 interface Flow1000Props {
@@ -23,6 +22,7 @@ interface Flow1000Props {
     dispatch: Dispatch<any>;
     scrollTop: number;
 }
+/*
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+*/
+
 function RecipeReviewCard(props: {
   title: string;
   imgSrc: string;
@@ -51,10 +53,12 @@ function RecipeReviewCard(props: {
   coverWidth: number;
   timeStamp: string;
 }) {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
+    <Card 
+      // className={classes.card}
+    >
       <CardHeader title={props.title} subheader={props.timeStamp} />
       <ImgComponent
         sectionIndex={props.sectionIndex}
@@ -127,7 +131,7 @@ interface SectionListProps {}
 interface SectionListStatus {}
 
 const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   const section1 =
     props.sectionBean.section1 != null ? (
@@ -174,16 +178,18 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         />
       </Grid>
     ) : null;
-  const className = !props.sectionBean.expand
-    ? classes.gridItem
-    : `${classes.gridItem} ${classes.expandGridItem}`;
+  // const className = !props.sectionBean.expand
+  //   ? classes.gridItem
+  //   : `${classes.gridItem} ${classes.expandGridItem}`;
 
   const style: CSSProperties = !props.sectionBean.expand
     ? {height:"360px"}
     : {}
   return (
     <div  style={style}>
-      <Grid  container={true} spacing={1} className={className}>
+      <Grid  container={true} spacing={1} 
+        // className={className}
+      >
         <Grid  item={true} xs={3}>
           <RecipeReviewCard
           sectionIndex={props.sectionBean.section0.sectionIndex}
@@ -206,7 +212,7 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 
 const GridLine2 = (props:{sectionBean:SectionBean}) => {
 
-    const classes = useStyles();
+    // const classes = useStyles();
 
     const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
       <h2>{props.sectionBean.section1.title}</h2>
@@ -221,7 +227,9 @@ const GridLine2 = (props:{sectionBean:SectionBean}) => {
         {/* <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/> */}
     </Grid>): null;
     return <div style={{height:"360px"}}>
-      <Grid container={true} spacing={1} className={classes.gridItem} >
+      <Grid container={true} spacing={1} 
+        // className={classes.gridItem} 
+      >
           <Grid item={true} xs={3}>
             <h2>{props.sectionBean.section0.title}</h2>
               {/* <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/> */}

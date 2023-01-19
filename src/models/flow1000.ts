@@ -1,6 +1,6 @@
 import {Reducer, Action} from 'redux';
 
-import { router } from "umi";
+// import { router } from "umi";
 interface SetWindowSizeAction extends Action {
     height:number;
     width:number;

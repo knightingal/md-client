@@ -1,19 +1,20 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import { connect } from 'dva';
+// import { createStyles, makeStyles, withStyles, Theme } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { connect } from 'react-redux';
 import {SimClientModelState, Device} from '../models/simClient';
-import { RouteChildrenProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { router } from "umi";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+// import { router } from "umi";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { useNavigate } from "react-router-dom";
+/*
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+*/
 
 // interface RegisterStat {
 //   appKey:string
@@ -57,6 +59,7 @@ export default connect(
      {currentDevice:simClient.currentDevice}
   )
 )(function Register (props:ReigsterProps) {
+  const navigate = useNavigate();
   const handleRegist = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     console.log("handle regist");
     console.log(device);
@@ -71,7 +74,7 @@ export default connect(
         console.log(jsonBody);
         // wsConnection?.close();
         // window.location = "/pns/register";
-        router.push("/md-page/");
+        navigate("/md-page/");
     });
 
 
@@ -97,7 +100,6 @@ export default connect(
  };
 
   let wsConnection:WebSocket|null = null;
-
     useEffect(()=>{
         const HAND_SHAKE_CMD = 1;
         const MSG_CMD = 2;
@@ -119,7 +121,7 @@ export default connect(
         }
         wsConnection.onclose = (event) => {
             // this.$emit("unregister-ret");
-            router.push("/md-page/");
+            navigate("/md-page/");
         }
 
         return () => {
@@ -128,24 +130,34 @@ export default connect(
     },[]);
 
 
-  const classes = useStyles();
+  // const classes = useStyles();
   return (<>
-    <form className={classes.root} noValidate autoComplete="off">
+    <form 
+      // className={classes.root} 
+      noValidate autoComplete="off">
       <TextField id="esn" label="esn"  defaultValue={props.currentDevice.esn}/><div></div>
       <TextField id="appKey" label="appKey"  defaultValue={props.currentDevice.appKey}/><div></div>
       <TextField id="userId" label="userId"  defaultValue={props.currentDevice.userId}/><div></div>
       <TextField id="outerNetwork" label="outerNetwork"  defaultValue={props.currentDevice.outerNetwork}/><div></div>
       <TextField id="pushToken" label="pushToken"  defaultValue={props.currentDevice.pushToken}/><div></div>
-      <Button className={classes.button} onClick={handleTerminalList} variant="outlined" color="primary">
+      <Button 
+      // className={classes.button} 
+      onClick={handleTerminalList} variant="outlined" color="primary">
           注销
       </Button>
     </form>
     <TableContainer component={Paper}>
-    <Table className={classes.table} aria-label="simple table">
+    <Table 
+    // className={classes.table} 
+    aria-label="simple table">
       <TableHead >
         <TableRow >
-          <TableCell align="left" className={classes.timeStampWidth}>timeStamp</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>msg</TableCell>
+          <TableCell align="left" 
+          // className={classes.timeStampWidth}
+          >timeStamp</TableCell>
+          <TableCell align="left" 
+          // className={classes.tableHeader}
+          >msg</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

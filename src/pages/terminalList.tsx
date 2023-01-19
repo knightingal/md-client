@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { connect } from 'dva';
+// import { createStyles, makeStyles, Theme } from '@mui/material/styles';
+import { connect } from 'react-redux';
 import {SimClientModelState, Device} from '../models/simClient';
 import { Dispatch } from 'redux';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { router } from "umi";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+// import { router } from "umi";
+import {useNavigate} from "react-router-dom"
+/*
 const useStyles = makeStyles((theme: Theme) =>
+
     createStyles({
         table: {},
         tableHeader: {
@@ -19,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     }),
 );
+*/
 
 interface ReigsterProps  {
   currentDevice: Device;
@@ -31,6 +35,7 @@ export default connect(
   )
 )(function TerminalList (props:ReigsterProps) {
     const [terminalList, setTerminalList ] = useState(new Array<Device>());
+    const navigate = useNavigate();
     useEffect(()=>{
         const response = fetch("/message/terminalInfo", {
             method:"GET" 
@@ -57,21 +62,33 @@ export default connect(
                 type:'simClient/selectDevice',
                 device: device
             });
-            router.push("/md-page/msg-recv/")
+            navigate("/md-page/msg-recv/")
         });
     }
 
-  const classes = useStyles();
+  // const classes = useStyles();
   return (
     <TableContainer component={Paper}>
-    <Table className={classes.table} aria-label="simple table">
+    <Table 
+    // className={classes.table}
+    aria-label="simple table">
       <TableHead >
         <TableRow >
-          <TableCell align="left" className={classes.tableHeader}>appKey</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>userId</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>esn</TableCell>
-          <TableCell align="left" className={classes.tableHeader}>outerNetwork</TableCell>
-          <TableCell align='right' className={classes.tableHeader}>操作</TableCell>
+          <TableCell align="left" 
+          // className={classes.tableHeader}
+          >appKey</TableCell>
+          <TableCell align="left" 
+          // className={classes.tableHeader}
+          >userId</TableCell>
+          <TableCell align="left" 
+          // className={classes.tableHeader}
+          >esn</TableCell>
+          <TableCell align="left" 
+          // className={classes.tableHeader}
+          >outerNetwork</TableCell>
+          <TableCell align='right' 
+          // className={classes.tableHeader}
+          >操作</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
