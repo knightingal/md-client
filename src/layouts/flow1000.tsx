@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { Outlet } from "react-router-dom";
 /*
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +73,7 @@ export default connect(
             </AppBar>
         </div>
         <div style={{flex:"1 1 auto", height:"100%"}}>
-            {props.children}
+            <Outlet />
         </div>
     </div>
     );

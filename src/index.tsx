@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Flow1000 from "./layouts/flow1000"
+import SectionList from "./pages/flow1000/sectionList"
+import SectionContent from "./pages/flow1000/sectionContent"
+import {Provider} from 'react-redux'
+import store from './store'
 
 import {
   createBrowserRouter, RouterProvider
@@ -12,6 +17,20 @@ const router = createBrowserRouter([
   {
     path:"/",
     element: <App></App>
+  },
+  {
+    path:"/flow1000",
+    element: <Flow1000/>,
+    children:[
+      {
+        path:"/flow1000/sectionList",
+        element:<SectionList height={600} expandImgIndex={0} scrollTop={0}/>
+      },
+      {
+        path:"/flow1000/content",
+        element:<SectionContent/>
+      }
+    ]
   }
 ])
 
@@ -20,7 +39,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 

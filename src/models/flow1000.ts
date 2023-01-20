@@ -19,6 +19,8 @@ interface ScrollTopAction extends Action{
 
 export interface Flow1000ModelType {
     namespace: "flow1000";
+    name: "flow1000";
+    initialState: Flow1000ModelState;
     state: Flow1000ModelState;
     reducers: {
         setWindowSize: Reducer<Flow1000ModelState, SetWindowSizeAction>;
@@ -57,6 +59,10 @@ export interface Device {
 
 const Flow1000Model: Flow1000ModelType = {
     namespace: "flow1000",
+    name: "flow1000",
+    initialState: {
+        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0
+    },
     state: {
         height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0
     },

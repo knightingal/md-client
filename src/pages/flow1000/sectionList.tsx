@@ -268,7 +268,9 @@ interface PicIndex {
 
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number},
+  { height: number; expandImgIndex: number; 
+    // dispatch: Dispatch<any>; 
+    scrollTop: number},
   { sectionList: Array<SectionBean> }
 > implements ParentCompHandler {
   constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number}) {
@@ -278,10 +280,10 @@ class GridContainer extends React.Component<
   }
 
   dispatch(scrollTop: number) {
-    this.props.dispatch({
-        type: 'flow1000/scrollTop',
-        scrollTop: scrollTop,
-    });
+    // this.props.dispatch({
+    //     type: 'flow1000/scrollTop',
+    //     scrollTop: scrollTop,
+    // });
   }
 
   prevExpandIndex: number;
@@ -375,13 +377,15 @@ class GridContainer extends React.Component<
     );
   }
 }
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
-  return {
-    height: flow1000.height,
-    width: flow1000.width,
-    expandImgIndex: flow1000.expandImgIndex,
-    scrollTop: flow1000.scrollTop,
-  };
-})(function(props: Flow1000Props) {
-  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
-});
+// export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+//   return {
+//     height: flow1000.height,
+//     width: flow1000.width,
+//     expandImgIndex: flow1000.expandImgIndex,
+//     scrollTop: flow1000.scrollTop,
+//   };
+// })(function(props: Flow1000Props) {
+//   return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
+// });
+
+export default GridContainer;
