@@ -44,7 +44,7 @@ export default connect(
     useEffect(()=>{
         const width = document.body.clientWidth;
         const height = document.body.clientHeight;
-        console.log("useEffect")
+        console.log("flow1000 useEffect:" + height)
         props.dispatch({
             type:'flow1000/setWindowSize',
             height: height,

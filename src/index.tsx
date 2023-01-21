@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     children:[
       {
         path:"/flow1000/sectionList",
-        element:<SectionList height={600} expandImgIndex={0} scrollTop={0}/>
+        element:<SectionList />
       },
       {
         path:"/flow1000/content",

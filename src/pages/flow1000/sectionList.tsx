@@ -269,7 +269,7 @@ interface PicIndex {
 
 class GridContainer extends React.Component<
   { height: number; expandImgIndex: number; 
-    // dispatch: Dispatch<any>; 
+    dispatch: Dispatch<any>; 
     scrollTop: number},
   { sectionList: Array<SectionBean> }
 > implements ParentCompHandler {
@@ -280,13 +280,57 @@ class GridContainer extends React.Component<
   }
 
   dispatch(scrollTop: number) {
-    // this.props.dispatch({
-    //     type: 'flow1000/scrollTop',
-    //     scrollTop: scrollTop,
-    // });
+    this.props.dispatch({
+        type: 'flow1000/scrollTop',
+        scrollTop: scrollTop,
+    });
   }
 
   prevExpandIndex: number;
+
+  init() {
+        const json = new Array<PicIndex>(
+          
+        );
+        for (let i = 0; i < 50;i++) {
+          json.push(
+            {sectionIndex:i, name: i + "00000000000000000000000000000000000000", cover:"1", index:i, coverWidth:300, coverHeight:300}, 
+          )
+        }
+
+        let subRest: Array<PicIndex>;
+        subRest = json;
+        subRest.forEach((picIndex: PicIndex, index: number) => {
+          picIndex.sectionIndex = picIndex.index;
+          picIndex.index = index;
+        });
+        const sub0 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 0;
+        });
+        const sub1 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 1;
+        });
+        const sub2 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 2;
+        });
+        const sub3 = subRest.filter((_: PicIndex, index: number) => {
+          return index % 4 == 3;
+        });
+
+        const sectionList = sub0.map((value: PicIndex, index: number) => {
+          return new SectionBean(
+            value,
+            index < sub1.length ? sub1[index] : null,
+            index < sub2.length ? sub2[index] : null,
+            index < sub3.length ? sub3[index] : null,
+          );
+        });
+
+        this.setState({
+          sectionList: sectionList,
+        });
+
+  }
 
   fecthSectionList() {
     const battleShipPage = false;
@@ -339,7 +383,7 @@ class GridContainer extends React.Component<
       });
   }
   componentDidMount() {
-    this.fecthSectionList();
+    this.init();
   }
 
   componentDidUpdate(prevProps: { expandImgIndex: number }) {
@@ -377,15 +421,15 @@ class GridContainer extends React.Component<
     );
   }
 }
-// export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
-//   return {
-//     height: flow1000.height,
-//     width: flow1000.width,
-//     expandImgIndex: flow1000.expandImgIndex,
-//     scrollTop: flow1000.scrollTop,
-//   };
-// })(function(props: Flow1000Props) {
-//   return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
-// });
+export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+  return {
+    height: flow1000.height,
+    width: flow1000.width,
+    expandImgIndex: flow1000.expandImgIndex,
+    scrollTop: flow1000.scrollTop,
+  };
+})(function(props: Flow1000Props) {
+  console.log("GridContainer:" + props.height);
+  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
+});
 
-export default GridContainer;
