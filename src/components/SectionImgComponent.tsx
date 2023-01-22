@@ -7,6 +7,8 @@ import { Dispatch } from 'redux';
 // import { router } from "umi";
 import { useNavigate } from "react-router-dom";
 
+const Encrypted = false;
+
 interface ImgComponentProps {
   index: number;
   src: string;
@@ -45,7 +47,9 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
           return response.arrayBuffer();
         })
         .then(arrayBuffer => {
-          const decrypted = decryptArray(arrayBuffer, this.props.password);
+          const decrypted = Encrypted ? 
+              decryptArray(arrayBuffer, this.props.password) 
+              : arrayBuffer;
           const objectURL = URL.createObjectURL(new Blob([decrypted]));
           this.setState({
             url: objectURL,
