@@ -23,7 +23,7 @@ interface ImgComponentProps {
 
 const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   let lastTimestamp = -1;
-  const divRefs: React.RefObject<HTMLImageElement> = React.createRef();
+  const divRefs = React.useRef(null);
 
   const [state, setState] = React.useState<ImgComponentState>({
       url: null,
@@ -34,6 +34,7 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
 
 
   const fetchImgByUrl = (url: string) => {
+    console.log("fetch " + url);
     fetch(url)
     .then(response => {
       return response.arrayBuffer();
@@ -53,19 +54,20 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   React.useEffect(() => {
       if (props.src != null && props.mount == true) {
         fetchImgByUrl(props.src);
-        setState({
-          expand: props.expandImgIndex == props.index,
-          url: props.src,
-        });
       }
-  }, [props.mount, props.src, props.expandImgIndex])
+  }, [props.mount, props.src])
 
-  console.log(state)
+  React.useEffect(() => {
+    setState({
+      expand: props.expandImgIndex == props.index,
+      url: state.url
+    });
+  }, [props.expandImgIndex])
 
 
   const onMouseOver = (e: React.MouseEvent) => {
     console.log(divRefs);
-    console.log(divRefs.current?.offsetWidth)
+    console.log((divRefs.current as any).offsetWidth)
     lastTimestamp = e.timeStamp;
     setTimeout((timeStamp:number)=>{
       if (timeStamp == lastTimestamp) {
@@ -107,7 +109,7 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
 
   let imgHeight;
   if (divRefs.current != undefined) {
-    imgHeight = `${props.height * divRefs.current.offsetWidth / props.width}px`; 
+    imgHeight = `${props.height * (divRefs.current as any).offsetWidth / props.width}px`; 
   } else {
     imgHeight = 'auto';
   }
@@ -148,13 +150,13 @@ interface ImgComponentState {
   url: string | null;
   expand: boolean;
 }
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
+const ConnCompFunc = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
   expandImgIndex: flow1000.expandImgIndex,
 }))(ImgComponentFunc);
 
-// export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
-//   expandImgIndex: flow1000.expandImgIndex,
-// }))(
+const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
+  expandImgIndex: flow1000.expandImgIndex,
+}))(
   class ImgComponent extends React.Component<ImgComponentProps, ImgComponentState> {
     constructor(props: ImgComponentProps) {
       super(props);
@@ -299,4 +301,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
       return img;
     }
   }
-// );
+);
+
+
+export default ConnCompFunc;

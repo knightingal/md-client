@@ -288,52 +288,9 @@ class GridContainer extends React.Component<
 
   prevExpandIndex: number;
 
-  init() {
-        const json = new Array<PicIndex>(
-          
-        );
-        for (let i = 0; i < 50;i++) {
-          json.push(
-            {sectionIndex:i, name: i + "00000000000000000000000000000000000000", cover:"1", index:i, coverWidth:300, coverHeight:300}, 
-          )
-        }
-
-        let subRest: Array<PicIndex>;
-        subRest = json;
-        subRest.forEach((picIndex: PicIndex, index: number) => {
-          picIndex.sectionIndex = picIndex.index;
-          picIndex.index = index;
-        });
-        const sub0 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 0;
-        });
-        const sub1 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 1;
-        });
-        const sub2 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 2;
-        });
-        const sub3 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 3;
-        });
-
-        const sectionList = sub0.map((value: PicIndex, index: number) => {
-          return new SectionBean(
-            value,
-            index < sub1.length ? sub1[index] : null,
-            index < sub2.length ? sub2[index] : null,
-            index < sub3.length ? sub3[index] : null,
-          );
-        });
-
-        this.setState({
-          sectionList: sectionList,
-        });
-
-  }
 
   fecthSectionList() {
-    const battleShipPage = true;
+    const battleShipPage = false;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax';
