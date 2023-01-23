@@ -21,14 +21,140 @@ interface ImgComponentProps {
   sectionIndex: number;
 }
 
+const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
+  let lastTimestamp = -1;
+  const divRefs: React.RefObject<HTMLImageElement> = React.createRef();
+
+  const [state, setState] = React.useState<ImgComponentState>({
+      url: null,
+      expand: props.expandImgIndex == props.index
+  });
+
+  const navigate = useNavigate();
+
+
+  const fetchImgByUrl = (url: string) => {
+    fetch(url)
+    .then(response => {
+      return response.arrayBuffer();
+    })
+    .then(arrayBuffer => {
+      const decrypted = Encrypted ? 
+          decryptArray(arrayBuffer, props.password) 
+          : arrayBuffer;
+      const objectURL = URL.createObjectURL(new Blob([decrypted]));
+      setState({ 
+        expand: state.expand,
+        url: objectURL,
+      });
+    });
+  }
+
+  React.useEffect(() => {
+      if (props.src != null && props.mount == true) {
+        fetchImgByUrl(props.src);
+        setState({
+          expand: props.expandImgIndex == props.index,
+          url: props.src,
+        });
+      }
+  }, [props.mount, props.src, props.expandImgIndex])
+
+  console.log(state)
+
+
+  const onMouseOver = (e: React.MouseEvent) => {
+    console.log(divRefs);
+    console.log(divRefs.current?.offsetWidth)
+    lastTimestamp = e.timeStamp;
+    setTimeout((timeStamp:number)=>{
+      if (timeStamp == lastTimestamp) {
+        props.dispatch({
+          type: 'flow1000/imgMouseOver',
+          imgIndex: props.index,
+        });
+      }
+    }, 600, e.timeStamp);
+  }
+  const onMouseLeave = (e: React.MouseEvent) => {
+    lastTimestamp = e.timeStamp;
+    props.dispatch({
+      type: 'flow1000/imgMouseOver',
+      imgIndex: -1,
+    });
+  }
+  const onMouseMove = (e: React.MouseEvent) =>  {
+    lastTimestamp = e.timeStamp;
+    setTimeout((timeStamp:number)=>{
+      if (timeStamp == lastTimestamp) {
+        props.dispatch({
+          type: 'flow1000/imgMouseOver',
+          imgIndex: props.index,
+        });
+      }
+    }, 600, e.timeStamp);
+
+  }
+  const onClick = (e: React.MouseEvent) => {
+    lastTimestamp = e.timeStamp;
+    props.dispatch({
+      type: 'flow1000/imgClick',
+      imgIndex: props.sectionIndex,
+    });
+
+    navigate("/flow1000/content/")
+  }
+
+  let imgHeight;
+  if (divRefs.current != undefined) {
+    imgHeight = `${props.height * divRefs.current.offsetWidth / props.width}px`; 
+  } else {
+    imgHeight = 'auto';
+  }
+  const height = state.expand ? imgHeight : '200px';
+  const img =
+    state.url != null ? (
+      <img
+        src={state.url}
+        ref={divRefs}
+        style={{
+          display: 'block',
+          objectFit: 'cover',
+          height: height,
+          width: '100%',
+          transition: 'height 0.5s',
+        }}
+        onMouseOver={e => {
+          onMouseOver(e);
+        }}
+        onMouseMove={e => {
+          onMouseMove(e);
+        }}
+        onMouseLeave={e => {
+          onMouseLeave(e);
+        }}
+        onClick={e => {
+          onClick(e);
+        }}
+      />
+    ) : (
+      <div style={{ height: '200px', width: '100%' }} />
+    );
+  return img;
+
+}
+
 interface ImgComponentState {
   url: string | null;
   expand: boolean;
 }
-
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
   expandImgIndex: flow1000.expandImgIndex,
-}))(
+}))(ImgComponentFunc);
+
+// export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
+//   expandImgIndex: flow1000.expandImgIndex,
+// }))(
   class ImgComponent extends React.Component<ImgComponentProps, ImgComponentState> {
     constructor(props: ImgComponentProps) {
       super(props);
@@ -172,5 +298,5 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
         );
       return img;
     }
-  },
-);
+  }
+// );

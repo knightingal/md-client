@@ -333,9 +333,9 @@ class GridContainer extends React.Component<
   }
 
   fecthSectionList() {
-    const battleShipPage = false;
+    const battleShipPage = true;
     const fetchUrl = battleShipPage
-      ? '/local1000/picIndexAjax?album=BattleShips'
+      ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax';
 
     console.log('fetchUrl is ' + fetchUrl);

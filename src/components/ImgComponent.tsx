@@ -14,7 +14,8 @@ export default class ImgComponent extends React.Component<{src: string, height: 
         fetch(url).then(response => {
             return response.arrayBuffer();
         }).then(arrayBuffer => {
-            const decrypted = decryptArray(arrayBuffer, this.props.password);
+            // const decrypted = decryptArray(arrayBuffer, this.props.password);
+            const decrypted = arrayBuffer;
             const objectURL = URL.createObjectURL(new Blob([decrypted]));
             this.setState({
                 url: objectURL,
