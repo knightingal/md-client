@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React  from 'react';
 import {ReactNode, } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -21,26 +21,6 @@ interface Flow1000Props {
     dispatch: Dispatch<any>;
     scrollTop: number;
 }
-/*
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-    },
-    media: {
-      height: '200px',
-    },
-    gridItem: {
-        // height: 360,
-        // marginTop: 0,
-        // marginBottom: 0,
-        margin:0,
-    },
-    expandGridItem: {
-      // backgroundColor: "gray"
-    }
-  }),
-);
-*/
 
 function RecipeReviewCard(props: {
   title: string;
@@ -52,12 +32,9 @@ function RecipeReviewCard(props: {
   coverWidth: number;
   timeStamp: string;
 }) {
-  // const classes = useStyles();
 
   return (
-    <Card 
-      // className={classes.card}
-    >
+    <Card >
       <CardHeader title={props.title} subheader={props.timeStamp} />
       <ImgComponent
         sectionIndex={props.sectionIndex}
@@ -130,7 +107,6 @@ interface SectionListProps {}
 interface SectionListStatus {}
 
 const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
-  // const classes = useStyles();
 
   const section1 =
     props.sectionBean.section1 != null ? (
@@ -177,15 +153,10 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
         />
       </Grid>
     ) : null;
-  // const className = !props.sectionBean.expand
-  //   ? classes.gridItem
-  //   : `${classes.gridItem} ${classes.expandGridItem}`;
 
   return (
     <div style={{"marginTop":'8px'}}>
-      <Grid  container={true} spacing={1} 
-        // className={className}
-      >
+      <Grid  container={true} spacing={1} >
         <Grid  item={true} xs={3}>
           <RecipeReviewCard
           sectionIndex={props.sectionBean.section0.sectionIndex}
@@ -325,7 +296,6 @@ class GridContainer extends React.Component<
   }
 
   render() {
-    // const sectionList: Array<SectionBean> = genSectionList();
     return (
       <div style={{ height: `${this.props.height - 64}px` }} >
         <LazyLoader
