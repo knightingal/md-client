@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         element:<SectionList />
       },
       {
-        path:"/flow1000/content",
+        path:"/flow1000/content/:sectionId",
         element:<SectionContent/>
       }
     ]

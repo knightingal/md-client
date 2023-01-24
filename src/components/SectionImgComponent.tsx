@@ -100,12 +100,8 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   }
   const onClick = (e: React.MouseEvent) => {
     lastTimestamp = e.timeStamp;
-    props.dispatch({
-      type: 'flow1000/imgClick',
-      imgIndex: props.sectionIndex,
-    });
 
-    navigate("/flow1000/content/")
+    navigate("/flow1000/content/" + props.sectionIndex)
   }
 
   let imgHeight;

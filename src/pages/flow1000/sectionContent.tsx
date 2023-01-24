@@ -1,10 +1,11 @@
 
-import React  from 'react';
+import React, { useEffect, useState }  from 'react';
 import {lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 
 import ImgComponent  from '../../components/ImgComponent';
 import {Flow1000ModelState} from '../../models/flow1000';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 class SectionDetail {
     dirName:string;
     picPage:string;
@@ -27,6 +28,13 @@ class ImgDetail implements HeightType{
         this.width = width;
         this.height = height;
     }
+}
+
+const ContentFunc = (props: {password:string, height: number}) => {
+    const {sectionId} = useParams();
+
+    return  <Content index={Number(sectionId)} password={props.password} height={props.height} />
+
 }
 
 class Content extends React.Component<{index:number, password:string, height: number}, {sectionDetail:SectionDetail, scrollTop:number}> implements ParentCompHandler {
@@ -75,11 +83,10 @@ class Content extends React.Component<{index:number, password:string, height: nu
 export default connect(({flow1000}:{flow1000: Flow1000ModelState}) => {
     const props = {
         height: flow1000.height,
-        index: flow1000.sectionIndex,
         password: ""
     }
     return props;
-})(Content);
+})(ContentFunc);
 
 class ImgComponentItem extends React.Component<{mount: boolean, item: ImgDetail, parentComp:Content}> {
     constructor(props:{item: ImgDetail, parentComp:Content, mount: boolean}) {
