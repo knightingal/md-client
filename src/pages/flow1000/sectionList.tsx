@@ -181,11 +181,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
   //   ? classes.gridItem
   //   : `${classes.gridItem} ${classes.expandGridItem}`;
 
-  const style: CSSProperties = !props.sectionBean.expand
-    ? {height:"360px"}
-    : {}
   return (
-    <div  style={style}>
+    <div style={{"marginTop":'8px'}}>
       <Grid  container={true} spacing={1} 
         // className={className}
       >
