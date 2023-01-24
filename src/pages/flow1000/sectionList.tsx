@@ -1,6 +1,5 @@
 import React, { CSSProperties } from 'react';
-import {ReactNode, useEffect} from 'react';
-// import { makeStyles, Theme, createStyles } from '@mui/material/styles';
+import {ReactNode, } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
@@ -210,42 +209,8 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
   );
 };
 
-const GridLine2 = (props:{sectionBean:SectionBean}) => {
-
-    // const classes = useStyles();
-
-    const section1 = props.sectionBean.section1 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section1.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section1.title} imgSrc={props.sectionBean.section1.imgSrc}/> */}
-    </Grid>): null;
-    const section2 = props.sectionBean.section2 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section2.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section2.title} imgSrc={props.sectionBean.section2.imgSrc}/> */}
-    </Grid>): null;
-    const section3 = props.sectionBean.section3 != null ? (<Grid item={true} xs={3}>
-      <h2>{props.sectionBean.section3.title}</h2>
-        {/* <RecipeReviewCard title={props.sectionBean.section3.title} imgSrc={props.sectionBean.section3.imgSrc}/> */}
-    </Grid>): null;
-    return <div style={{height:"360px"}}>
-      <Grid container={true} spacing={1} 
-        // className={classes.gridItem} 
-      >
-          <Grid item={true} xs={3}>
-            <h2>{props.sectionBean.section0.title}</h2>
-              {/* <RecipeReviewCard title={props.sectionBean.section0.title} imgSrc={props.sectionBean.section0.imgSrc}/> */}
-          </Grid> 
-          {section1}
-          {section2}
-          {section3}
-      </Grid>
-
-    </div>
-}
 
 class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer, mount: boolean}> {
-    constructor(props:{item:SectionBean, parentComp: GridContainer, mount: boolean}) {
-      super(props);
-    }
     render() {
         return <GridLine sectionBean={this.props.item} mount={this.props.mount}/>
     }
@@ -290,12 +255,11 @@ class GridContainer extends React.Component<
 
 
   fecthSectionList() {
-    const battleShipPage = false;
+    const battleShipPage = true;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax';
 
-    console.log('fetchUrl is ' + fetchUrl);
     fetch(fetchUrl)
       .then((resp: Response) => {
         return resp.json();
@@ -313,16 +277,16 @@ class GridContainer extends React.Component<
           picIndex.index = index;
         });
         const sub0 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 0;
+          return index % 4 === 0;
         });
         const sub1 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 1;
+          return index % 4 === 1;
         });
         const sub2 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 2;
+          return index % 4 === 2;
         });
         const sub3 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 == 3;
+          return index % 4 === 3;
         });
 
         const sectionList = sub0.map((value: PicIndex, index: number) => {
@@ -344,20 +308,20 @@ class GridContainer extends React.Component<
   }
 
   componentDidUpdate(prevProps: { expandImgIndex: number }) {
-    if (this.props.expandImgIndex != prevProps.expandImgIndex) {
-      console.log('expandImgIndexUpdateed');
+    if (this.props.expandImgIndex !== prevProps.expandImgIndex) {
       const floorIndex = Math.floor(this.props.expandImgIndex / 4);
-      if (this.state.sectionList[floorIndex] != undefined) {
-        this.state.sectionList[floorIndex].expand = true;
+      const sectionList = this.state.sectionList;
+      if (sectionList[floorIndex] !== undefined) {
+        sectionList[floorIndex].expand = true;
         if (
-          this.state.sectionList[this.prevExpandIndex] != undefined &&
-          this.prevExpandIndex != floorIndex
+          sectionList[this.prevExpandIndex] !== undefined &&
+          this.prevExpandIndex !== floorIndex
         ) {
-          this.state.sectionList[this.prevExpandIndex].expand = false;
+          sectionList[this.prevExpandIndex].expand = false;
         }
         this.prevExpandIndex = floorIndex;
         this.setState({
-          sectionList: this.state.sectionList,
+          sectionList: sectionList,
         });
       }
     }

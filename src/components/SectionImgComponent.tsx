@@ -24,6 +24,7 @@ interface ImgComponentProps {
 const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   let lastTimestamp = -1;
   const divRefs = React.useRef(null);
+  console.log(`props.height=${props.height}`)
 
   const [state, setState] = React.useState<ImgComponentState>({
       url: null,

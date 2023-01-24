@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {decryptArray} from '../lib/decryptoArray';
+//import {decryptArray} from '../lib/decryptoArray';
 
 
 export default class ImgComponent extends React.Component<{src: string, height: number, width: number, password: string}, {url: string|null}> {
@@ -45,9 +45,9 @@ export default class ImgComponent extends React.Component<{src: string, height: 
     }
 
     render() {
-        return <img 
+        return <img alt=""
             src={this.state.url==null?"":this.state.url} 
-            style={{display:"block"}}
+            style={{display:"block", margin:"auto"}}
             height={`${this.props.height}px`} 
             width={`${this.props.width}px`}
         />
