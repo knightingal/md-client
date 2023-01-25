@@ -7,7 +7,7 @@ import { Dispatch } from 'redux';
 // import { router } from "umi";
 import { useNavigate } from "react-router-dom";
 
-const Encrypted = false;
+const Encrypted = true;
 
 interface ImgComponentProps {
   index: number;

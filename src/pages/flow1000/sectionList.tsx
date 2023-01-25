@@ -70,7 +70,7 @@ class SectionInfo {
 
     constructor(value : PicIndex) {
         // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-        this.imgSrc=`/linux1000/source/${value.name}/${value.cover}`; 
+        this.imgSrc=`/linux1000/encrypted/${value.name}/${value.cover}.bin`; 
         this.title = value.name.substring(14);
         this.timeStamp = value.name.substring(0, 14);
         this.sectionIndex = value.sectionIndex;
@@ -223,8 +223,8 @@ class GridContainer extends React.Component<
 
 
   fecthSectionList() {
-    // const battleShipPage = false;
-    const battleShipPage = true;
+    const battleShipPage = false;
+    // const battleShipPage = true;
     const fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax';
