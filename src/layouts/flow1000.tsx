@@ -1,8 +1,7 @@
-import React from 'react';
 import {ReactNode, useEffect} from 'react';
-// import { createStyles, makeStyles, Theme } from '@mui/material/styles';
 import {Flow1000ModelState} from '../models/flow1000';
 import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -11,21 +10,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Outlet } from "react-router-dom";
-/*
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      flexGrow: 1,
-    },
-  }),
-);
-*/
 
 interface Flow1000Props {
     height:number;
@@ -50,28 +34,33 @@ export default connect(
             height: height,
             width: width
         });
+    // eslint-disable-next-line
     },[]);
     return (
     <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
-        <div 
-        // className={classes.root} 
-        style={{flex:"0 0 64px"}}>
+        <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
-                <IconButton edge="start" 
-                // className={classes.menuButton} 
-                color="inherit" aria-label="menu">
-                    <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" 
-                // className={classes.title}
-                >
-                    Welcome to user Flow1000
-                </Typography>
-                <Button color="inherit">About</Button>
+                    <IconButton 
+                        edge="start" 
+                        color="inherit" 
+                        aria-label="menu" 
+                        sx={{mr:2}}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography 
+                        variant="h6" 
+                        component="div" 
+                        sx={{flexGlow:1}}
+                    >
+                        Welcome to user Flow1000
+                    </Typography>
+                    <Button color="inherit">About</Button>
                 </Toolbar>
             </AppBar>
-        </div>
+        </Box>
+
         <div style={{flex:"1 1 auto", height:"100%"}}>
             <Outlet />
         </div>
