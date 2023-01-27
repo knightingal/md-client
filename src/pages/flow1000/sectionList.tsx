@@ -20,6 +20,7 @@ interface Flow1000Props {
     children?: ReactNode;
     dispatch: Dispatch<any>;
     scrollTop: number;
+    searchKey: string;
 }
 
 function RecipeReviewCard(props: {
@@ -201,12 +202,12 @@ interface PicIndex {
 
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; 
+  { height: number; expandImgIndex: number; searchKey: string
     dispatch: Dispatch<any>; 
     scrollTop: number},
   { sectionList: Array<SectionBean> }
 > implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number}) {
+  constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number; searchKey: string}) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
@@ -225,9 +226,13 @@ class GridContainer extends React.Component<
   fecthSectionList() {
     const battleShipPage = false;
     // const battleShipPage = true;
-    const fetchUrl = battleShipPage
+    let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
-      : '/local1000/picIndexAjax';
+      : '/local1000/picIndexAjax?';
+
+    if (this.props.searchKey != null && this.props.searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + this.props.searchKey)
+    }
 
     fetch(fetchUrl)
       .then((resp: Response) => {
@@ -276,7 +281,10 @@ class GridContainer extends React.Component<
     this.fecthSectionList();
   }
 
-  componentDidUpdate(prevProps: { expandImgIndex: number }) {
+  componentDidUpdate(prevProps: { expandImgIndex: number, searchKey: string }) {
+    if (this.props.searchKey !== prevProps.searchKey) {
+      this.fecthSectionList();
+    }
     if (this.props.expandImgIndex !== prevProps.expandImgIndex) {
       const floorIndex = Math.floor(this.props.expandImgIndex / 4);
       const sectionList = this.state.sectionList;
@@ -316,9 +324,10 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
+    searchKey: flow1000.searchKey,
   };
 })(function(props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} />;
+  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey}/>;
 });
 

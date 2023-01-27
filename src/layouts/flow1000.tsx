@@ -39,6 +39,14 @@ export default connect(
         });
     // eslint-disable-next-line
     },[]);
+
+    const onSearch = (value:string) => {
+        props.dispatch({
+            type:"flow1000/search", 
+            searchKey: value
+        })
+
+    }
     return (
     <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
         <Box sx={{flexGrow: 1}}>
@@ -65,6 +73,7 @@ export default connect(
                         </SearchIconWrapper>
                         <StyledInputBase
                             placeholder="Search…"
+                            onChange={(e) => {onSearch((e.nativeEvent as any).target.value)}}
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>

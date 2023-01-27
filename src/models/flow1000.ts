@@ -5,7 +5,9 @@ interface SetWindowSizeAction extends Action {
     height:number;
     width:number;
 }
- 
+interface SearchAction extends Action {
+    searchKey: string
+}
 interface ImgMouseOverAction extends Action{
     imgIndex: number;
 }
@@ -27,6 +29,7 @@ export interface Flow1000ModelType {
         imgMouseOver: Reducer<Flow1000ModelState, ImgMouseOverAction>;
         imgClick: Reducer<Flow1000ModelState, ImgClickAction>;
         scrollTop: Reducer<Flow1000ModelState, ScrollTopAction>;
+        search: Reducer<Flow1000ModelState, SearchAction>;
     };
 }
 
@@ -44,7 +47,11 @@ interface SectionContent {
     sectionIndex:number;
 }
 
-export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, SectionContent {
+interface SearchKey {
+    searchKey: string
+}
+
+export interface Flow1000ModelState extends WindowSizeState, ImgMouseOverState, SectionContent, SearchKey {
 }
 
 export interface Device {
@@ -61,10 +68,10 @@ const Flow1000Model: Flow1000ModelType = {
     namespace: "flow1000",
     name: "flow1000",
     initialState: {
-        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0
+        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0, searchKey: ""
     },
     state: {
-        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0
+        height:0,width:0,expandImgIndex:-1,sectionIndex:-1, scrollTop:0, searchKey: ""
     },
     reducers:{
         setWindowSize(state: Flow1000ModelState|undefined, action:SetWindowSizeAction) {
@@ -84,6 +91,10 @@ const Flow1000Model: Flow1000ModelType = {
             console.log("scrollTop");
             console.log(action)
             return {...(state as Flow1000ModelState), scrollTop: action.scrollTop}
+        },
+        search(state: Flow1000ModelState|undefined, action: SearchAction) {
+            return {...(state as Flow1000ModelState), searchKey: action.searchKey }
+
         }
     }
 };
