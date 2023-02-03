@@ -1,5 +1,5 @@
-import React  from 'react';
-import {ReactNode, } from 'react';
+import React from 'react';
+import { ReactNode, } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
@@ -7,20 +7,20 @@ import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import Grid from '@mui/material/Grid';
-import {lazyLoader, LazyProps, HeightType, ParentCompHandler} from '../../components/LazyLoader';
-import ImgComponent  from '../../components/SectionImgComponent';
+import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
+import ImgComponent from '../../components/SectionImgComponent';
 
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {Flow1000ModelState} from '../../models/flow1000';
+import { Flow1000ModelState } from '../../models/flow1000';
 interface Flow1000Props {
-    height:number;
-    width:number;
-    expandImgIndex: number;
-    children?: ReactNode;
-    dispatch: Dispatch<any>;
-    scrollTop: number;
-    searchKey: string;
+  height: number;
+  width: number;
+  expandImgIndex: number;
+  children?: ReactNode;
+  dispatch: Dispatch<any>;
+  scrollTop: number;
+  searchKey: string;
 }
 
 function RecipeReviewCard(props: {
@@ -59,53 +59,53 @@ function RecipeReviewCard(props: {
 }
 
 class SectionInfo {
-    imgSrc:string;
+  imgSrc: string;
 
-    title:string;
-    timeStamp: string;
-    index:number;
-    sectionIndex:number;
+  title: string;
+  timeStamp: string;
+  index: number;
+  sectionIndex: number;
 
-    coverHeight:number;
-    coverWidth:number;
+  coverHeight: number;
+  coverWidth: number;
 
-    constructor(value : PicIndex) {
-        // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-        this.imgSrc=`/linux1000/encrypted/${value.name}/${value.cover}.bin`; 
-        this.title = value.name.substring(14);
-        this.timeStamp = value.name.substring(0, 14);
-        this.sectionIndex = value.sectionIndex;
-        this.index = value.index;
-        this.coverHeight = value.coverHeight;
-        this.coverWidth = value.coverWidth;
-    }
+  constructor(value: PicIndex) {
+    // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
+    this.imgSrc = `/linux1000/encrypted/${value.name}/${value.cover}.bin`;
+    this.title = value.name.substring(14);
+    this.timeStamp = value.name.substring(0, 14);
+    this.sectionIndex = value.sectionIndex;
+    this.index = value.index;
+    this.coverHeight = value.coverHeight;
+    this.coverWidth = value.coverWidth;
+  }
 }
 
-class SectionBean   implements HeightType{
-    height:number;
-    expand: boolean;
+class SectionBean implements HeightType {
+  height: number;
+  expand: boolean;
 
-    section0:SectionInfo;
-    section1:SectionInfo|null;
-    section2:SectionInfo|null;
-    section3:SectionInfo|null;
+  section0: SectionInfo;
+  section1: SectionInfo | null;
+  section2: SectionInfo | null;
+  section3: SectionInfo | null;
 
 
-    constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
-        this.height = 360;
-        this.expand = false;
-        this.section0 = new SectionInfo(value0);
-        this.section1 = value1 != null ? new SectionInfo(value1) : null;
-        this.section2 = value2 != null ? new SectionInfo(value2) : null;
-        this.section3 = value3 != null ? new SectionInfo(value3) : null;
-        
-    }
+  constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
+    this.height = 360;
+    this.expand = false;
+    this.section0 = new SectionInfo(value0);
+    this.section1 = value1 != null ? new SectionInfo(value1) : null;
+    this.section2 = value2 != null ? new SectionInfo(value2) : null;
+    this.section3 = value3 != null ? new SectionInfo(value3) : null;
+
+  }
 }
 
 
-interface SectionListProps {}
+interface SectionListProps { }
 
-interface SectionListStatus {}
+interface SectionListStatus { }
 
 const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 
@@ -156,18 +156,18 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
     ) : null;
 
   return (
-    <div style={{"marginTop":'8px'}}>
-      <Grid  container={true} spacing={1} >
-        <Grid  item={true} xs={3}>
+    <div style={{ "marginTop": '8px' }}>
+      <Grid container={true} spacing={1} >
+        <Grid item={true} xs={3}>
           <RecipeReviewCard
-          sectionIndex={props.sectionBean.section0.sectionIndex}
+            sectionIndex={props.sectionBean.section0.sectionIndex}
             index={props.sectionBean.section0.index}
-          timeStamp={props.sectionBean.section0.timeStamp}
+            timeStamp={props.sectionBean.section0.timeStamp}
             mount={props.mount}
             title={props.sectionBean.section0.title}
             imgSrc={props.sectionBean.section0.imgSrc}
-          coverHeight={props.sectionBean.section0.coverHeight}
-          coverWidth={props.sectionBean.section0.coverWidth}
+            coverHeight={props.sectionBean.section0.coverHeight}
+            coverWidth={props.sectionBean.section0.coverWidth}
           />
         </Grid>
         {section1}
@@ -179,10 +179,10 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 };
 
 
-class SectionItem extends React.Component<{item:SectionBean, parentComp: GridContainer, mount: boolean}> {
-    render() {
-        return <GridLine sectionBean={this.props.item} mount={this.props.mount}/>
-    }
+class SectionItem extends React.Component<{ item: SectionBean, parentComp: GridContainer, mount: boolean }> {
+  render() {
+    return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
+  }
 }
 const LazyLoader: React.ComponentClass<LazyProps<
   SectionBean,
@@ -202,12 +202,14 @@ interface PicIndex {
 
 
 class GridContainer extends React.Component<
-  { height: number; expandImgIndex: number; searchKey: string
-    dispatch: Dispatch<any>; 
-    scrollTop: number},
+  {
+    height: number; expandImgIndex: number; searchKey: string
+    dispatch: Dispatch<any>;
+    scrollTop: number
+  },
   { sectionList: Array<SectionBean> }
 > implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number;  dispatch: Dispatch<any>; scrollTop: number; searchKey: string}) {
+  constructor(props: { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; searchKey: string }) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
@@ -215,8 +217,8 @@ class GridContainer extends React.Component<
 
   dispatch(scrollTop: number) {
     this.props.dispatch({
-        type: 'flow1000/scrollTop',
-        scrollTop: scrollTop,
+      type: 'flow1000/scrollTop',
+      scrollTop: scrollTop,
     });
   }
 
@@ -326,8 +328,8 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     scrollTop: flow1000.scrollTop,
     searchKey: flow1000.searchKey,
   };
-})(function(props: Flow1000Props) {
+})(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey}/>;
+  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
 });
 
