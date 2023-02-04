@@ -27,8 +27,8 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   console.log(`props.height=${props.height}`)
 
   const [state, setState] = React.useState<ImgComponentState>({
-      url: null,
-      expand: props.expandImgIndex == props.index
+    url: null,
+    expand: props.expandImgIndex == props.index
   });
 
   const navigate = useNavigate();
@@ -37,25 +37,25 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   const fetchImgByUrl = (url: string) => {
     console.log("fetch " + url);
     fetch(url)
-    .then(response => {
-      return response.arrayBuffer();
-    })
-    .then(arrayBuffer => {
-      const decrypted = Encrypted ? 
-          decryptArray(arrayBuffer, props.password) 
+      .then(response => {
+        return response.arrayBuffer();
+      })
+      .then(arrayBuffer => {
+        const decrypted = Encrypted ?
+          decryptArray(arrayBuffer, props.password)
           : arrayBuffer;
-      const objectURL = URL.createObjectURL(new Blob([decrypted]));
-      setState({ 
-        expand: state.expand,
-        url: objectURL,
+        const objectURL = URL.createObjectURL(new Blob([decrypted]));
+        setState({
+          expand: state.expand,
+          url: objectURL,
+        });
       });
-    });
   }
 
   React.useEffect(() => {
-      if (props.src != null && props.mount == true) {
-        fetchImgByUrl(props.src);
-      }
+    if (props.src != null && props.mount == true) {
+      fetchImgByUrl(props.src);
+    }
   }, [props.mount, props.src])
 
   React.useEffect(() => {
@@ -67,10 +67,8 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
 
 
   const onMouseOver = (e: React.MouseEvent) => {
-    console.log(divRefs);
-    console.log((divRefs.current as any).offsetWidth)
     lastTimestamp = e.timeStamp;
-    setTimeout((timeStamp:number)=>{
+    setTimeout((timeStamp: number) => {
       if (timeStamp == lastTimestamp) {
         props.dispatch({
           type: 'flow1000/imgMouseOver',
@@ -86,9 +84,9 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
       imgIndex: -1,
     });
   }
-  const onMouseMove = (e: React.MouseEvent) =>  {
+  const onMouseMove = (e: React.MouseEvent) => {
     lastTimestamp = e.timeStamp;
-    setTimeout((timeStamp:number)=>{
+    setTimeout((timeStamp: number) => {
       if (timeStamp == lastTimestamp) {
         props.dispatch({
           type: 'flow1000/imgMouseOver',
@@ -96,7 +94,6 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
         });
       }
     }, 600, e.timeStamp);
-
   }
   const onClick = (e: React.MouseEvent) => {
     lastTimestamp = e.timeStamp;
@@ -105,37 +102,66 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
   }
 
   let imgHeight;
+  let expandWidth;
+  let expandTop;
   if (divRefs.current != undefined) {
-    imgHeight = `${props.height * (divRefs.current as any).offsetWidth / props.width}px`; 
+    imgHeight = `${props.height * (divRefs.current as any).offsetWidth / props.width}px`;
+    expandWidth = (divRefs.current as any).offsetWidth + "px";
+    expandTop = (divRefs.current as any).offsetTop + "px"
   } else {
     imgHeight = 'auto';
+    expandWidth = 'auto';
+    expandTop = 'auto';
+
   }
-  const height = state.expand ? imgHeight : '200px';
+  const height = state.expand && false ? imgHeight : '200px';
+  const expandHeight = imgHeight;
   const img =
     state.url != null ? (
-      <img
-        src={state.url}
-        ref={divRefs}
-        style={{
-          display: 'block',
-          objectFit: 'cover',
-          height: height,
-          width: '100%',
-          transition: 'height 0.5s',
-        }}
-        onMouseOver={e => {
-          onMouseOver(e);
-        }}
-        onMouseMove={e => {
-          onMouseMove(e);
-        }}
-        onMouseLeave={e => {
-          onMouseLeave(e);
-        }}
-        onClick={e => {
-          onClick(e);
-        }}
-      />
+      <>
+        <img
+          src={state.url}
+          ref={divRefs}
+          style={{
+            display: 'block',
+            objectFit: 'cover',
+            height: height,
+            width: '100%',
+            transition: 'height 0.5s',
+          }}
+          onMouseOver={e => {
+            onMouseOver(e);
+          }}
+          onMouseMove={e => {
+            onMouseMove(e);
+          }}
+          onClick={e => {
+            onClick(e);
+          }}
+        />
+        {
+          state.expand ?
+            <img
+              src={state.url}
+              style={{
+                position: 'absolute',
+                display: 'block',
+                objectFit: 'cover',
+                height: expandHeight,
+                width: expandWidth,
+                top: expandTop,
+                transition: 'height 0.5s',
+              }}
+              onMouseLeave={e => {
+                onMouseLeave(e);
+              }}
+              onClick={e => {
+                onClick(e);
+              }}
+            /> : null
+        }
+
+      </>
     ) : (
       <div style={{ height: '200px', width: '100%' }} />
     );
@@ -167,14 +193,14 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
     divRefs: React.RefObject<HTMLImageElement>;
     lastTimestamp: number;
     fetchImgByUrl(url: string) {
-        fetch(url)
+      fetch(url)
         .then(response => {
           return response.arrayBuffer();
         })
         .then(arrayBuffer => {
-          const decrypted = Encrypted ? 
-              decryptArray(arrayBuffer, this.props.password) 
-              : arrayBuffer;
+          const decrypted = Encrypted ?
+            decryptArray(arrayBuffer, this.props.password)
+            : arrayBuffer;
           const objectURL = URL.createObjectURL(new Blob([decrypted]));
           this.setState({
             url: objectURL,
@@ -191,7 +217,7 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
       }
     }
 
-    componentDidUpdate(prevProps: { src: string; mount: boolean; expandImgIndex:number }) {
+    componentDidUpdate(prevProps: { src: string; mount: boolean; expandImgIndex: number }) {
       if (
         this.props.src !== prevProps.src &&
         this.props.mount == true
@@ -206,14 +232,14 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
 
       if (this.props.expandImgIndex != prevProps.expandImgIndex) {
         this.setState({
-          expand:this.props.expandImgIndex == this.props.index
+          expand: this.props.expandImgIndex == this.props.index
         });
       }
 
       if (this.props.mount != prevProps.mount) {
         if (this.props.mount == true && this.props.src != null) {
-            this.fetchImgByUrl(this.props.src);
-        }       
+          this.fetchImgByUrl(this.props.src);
+        }
       }
     }
 
@@ -221,7 +247,7 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
       console.log(this.divRefs);
       console.log(this.divRefs.current?.offsetWidth)
       this.lastTimestamp = e.timeStamp;
-      setTimeout((timeStamp:number)=>{
+      setTimeout((timeStamp: number) => {
         if (timeStamp == this.lastTimestamp) {
           this.props.dispatch({
             type: 'flow1000/imgMouseOver',
@@ -239,7 +265,7 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
     }
     onMouseMove(e: React.MouseEvent) {
       this.lastTimestamp = e.timeStamp;
-      setTimeout((timeStamp:number)=>{
+      setTimeout((timeStamp: number) => {
         if (timeStamp == this.lastTimestamp) {
           this.props.dispatch({
             type: 'flow1000/imgMouseOver',
@@ -262,7 +288,7 @@ const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => 
     render() {
       let imgHeight;
       if (this.divRefs.current != undefined) {
-        imgHeight = `${this.props.height * this.divRefs.current.offsetWidth / this.props.width}px`; 
+        imgHeight = `${this.props.height * this.divRefs.current.offsetWidth / this.props.width}px`;
       } else {
         imgHeight = 'auto';
       }
