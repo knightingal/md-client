@@ -101,17 +101,23 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
     navigate("/flow1000/content/" + props.sectionIndex)
   }
 
-  let imgHeight;
+  let imgHeight: string;
+  let imgHeightNum: number;
   let expandWidth;
-  let expandTop;
+  let top;
+  let topNum: number;
   if (divRefs.current != undefined) {
-    imgHeight = `${props.height * (divRefs.current as any).offsetWidth / props.width}px`;
+    imgHeightNum = props.height * (divRefs.current as any).offsetWidth / props.width;
+    imgHeight = `${imgHeightNum}px`;
     expandWidth = (divRefs.current as any).offsetWidth + "px";
-    expandTop = (divRefs.current as any).offsetTop + "px"
+    top = (divRefs.current as any).offsetTop + "px"
+    topNum = (divRefs.current as any).offsetTop;
   } else {
+    imgHeightNum = 0;
     imgHeight = 'auto';
     expandWidth = 'auto';
-    expandTop = 'auto';
+    top = 'auto';
+    topNum = 0;
 
   }
   const height = state.expand && false ? imgHeight : '200px';
@@ -141,24 +147,8 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
         />
         {
           state.expand ?
-            <img
-              src={state.url}
-              style={{
-                position: 'absolute',
-                display: 'block',
-                objectFit: 'cover',
-                height: expandHeight,
-                width: expandWidth,
-                top: expandTop,
-                transition: 'height 0.5s',
-              }}
-              onMouseLeave={e => {
-                onMouseLeave(e);
-              }}
-              onClick={e => {
-                onClick(e);
-              }}
-            /> : null
+            <ExpandImg height={height} expandHeight={expandHeight} url={state.url} top={top} expandWidth={expandWidth} expandHeightNum={imgHeightNum} topNum={topNum} />
+            : null
         }
 
       </>
@@ -167,6 +157,39 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
     );
   return img;
 
+}
+
+const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNum, topNum }: { top: string, topNum: number, url: string, height: string, expandHeight: string, expandWidth: string, expandHeightNum: number }) => {
+  let [currentHeight, setCurrentHeight] = React.useState<string>(height)
+  let [expandTop, setExpandTop] = React.useState<string>(top)
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setExpandTop(
+        (topNum - (expandHeightNum / 2 - 100)) + "px"
+      )
+      setCurrentHeight(expandHeight);
+    }, 0)
+  }, [])
+
+  return <img
+    src={url}
+    style={{
+      position: 'absolute',
+      display: 'block',
+      objectFit: 'cover',
+      height: currentHeight,
+      width: expandWidth,
+      top: expandTop,
+      transition: 'height  0.5s, top 0.5s',
+    }}
+  // onMouseLeave={e => {
+  //   onMouseLeave(e);
+  // }}
+  // onClick={e => {
+  //   onClick(e);
+  // }}
+  />;
 }
 
 interface ImgComponentState {
