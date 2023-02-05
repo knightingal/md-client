@@ -81,7 +81,7 @@ class SectionInfo {
   }
 }
 
-class SectionBean implements HeightType {
+class GridLineBean implements HeightType {
   height: number;
   expand: boolean;
 
@@ -107,7 +107,7 @@ interface SectionListProps { }
 
 interface SectionListStatus { }
 
-const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
+const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
 
   const section1 =
     props.sectionBean.section1 != null ? (
@@ -179,13 +179,13 @@ const GridLine = (props: { sectionBean: SectionBean; mount: boolean }) => {
 };
 
 
-class SectionItem extends React.Component<{ item: SectionBean, parentComp: GridContainer, mount: boolean }> {
+class SectionItem extends React.Component<{ item: GridLineBean, parentComp: GridContainer, mount: boolean }> {
   render() {
     return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
   }
 }
 const LazyLoader: React.ComponentClass<LazyProps<
-  SectionBean,
+  GridLineBean,
   SectionListProps,
   SectionListStatus,
   GridContainer
@@ -207,7 +207,7 @@ class GridContainer extends React.Component<
     dispatch: Dispatch<any>;
     scrollTop: number
   },
-  { sectionList: Array<SectionBean> }
+  { sectionList: Array<GridLineBean> }
 > implements ParentCompHandler {
   constructor(props: { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; searchKey: string }) {
     super(props);
@@ -226,8 +226,8 @@ class GridContainer extends React.Component<
 
 
   fecthSectionList() {
-    const battleShipPage = false;
-    // const battleShipPage = true;
+    // const battleShipPage = false;
+    const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
@@ -266,7 +266,7 @@ class GridContainer extends React.Component<
         });
 
         const sectionList = sub0.map((value: PicIndex, index: number) => {
-          return new SectionBean(
+          return new GridLineBean(
             value,
             index < sub1.length ? sub1[index] : null,
             index < sub2.length ? sub2[index] : null,
@@ -280,6 +280,10 @@ class GridContainer extends React.Component<
       });
   }
   componentDidMount() {
+    this.props.dispatch({
+      type: 'flow1000/imgMouseOver',
+      imgIndex: -1,
+    });
     this.fecthSectionList();
   }
 
