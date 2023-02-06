@@ -21,6 +21,7 @@ interface Flow1000Props {
   dispatch: Dispatch<any>;
   scrollTop: number;
   searchKey: string;
+  sectionList: PicIndex[];
 }
 
 function RecipeReviewCard(props: {
@@ -198,6 +199,7 @@ interface PicIndex {
   index: number;
   coverWidth: number;
   coverHeight: number;
+  expanded: boolean;
 }
 
 
@@ -205,11 +207,11 @@ class GridContainer extends React.Component<
   {
     height: number; expandImgIndex: number; searchKey: string
     dispatch: Dispatch<any>;
-    scrollTop: number
+    scrollTop: number, subRest: PicIndex[]
   },
   { sectionList: Array<GridLineBean> }
 > implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; searchKey: string }) {
+  constructor(props: { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; searchKey: string; subRest: PicIndex[] }) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
@@ -250,41 +252,58 @@ class GridContainer extends React.Component<
         }
         subRest.forEach((picIndex: PicIndex, index: number) => {
           picIndex.sectionIndex = picIndex.index;
+          picIndex.expanded = false;
           picIndex.index = index;
         });
-        const sub0 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 === 0;
-        });
-        const sub1 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 === 1;
-        });
-        const sub2 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 === 2;
-        });
-        const sub3 = subRest.filter((_: PicIndex, index: number) => {
-          return index % 4 === 3;
-        });
 
-        const sectionList = sub0.map((value: PicIndex, index: number) => {
-          return new GridLineBean(
-            value,
-            index < sub1.length ? sub1[index] : null,
-            index < sub2.length ? sub2[index] : null,
-            index < sub3.length ? sub3[index] : null,
-          );
+        this.props.dispatch({
+          type: 'flow1000/setSeciontList',
+          sectionList: subRest,
         });
-
-        this.setState({
-          sectionList: sectionList,
-        });
+        this.initBySectionData(subRest);
       });
   }
+
+  initBySectionData(subRest: PicIndex[]) {
+    const sub0 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 0;
+    });
+    const sub1 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 1;
+    });
+    const sub2 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 2;
+    });
+    const sub3 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 3;
+    });
+
+    const sectionList = sub0.map((value: PicIndex, index: number) => {
+      return new GridLineBean(
+        value,
+        index < sub1.length ? sub1[index] : null,
+        index < sub2.length ? sub2[index] : null,
+        index < sub3.length ? sub3[index] : null,
+      );
+    });
+
+    this.setState({
+      sectionList: sectionList,
+    });
+
+  }
+
   componentDidMount() {
     this.props.dispatch({
       type: 'flow1000/imgMouseOver',
       imgIndex: -1,
     });
-    this.fecthSectionList();
+    if (this.props.subRest.length <= 0) {
+      this.fecthSectionList();
+
+    } else {
+      this.initBySectionData(this.props.subRest);
+    }
   }
 
   componentDidUpdate(prevProps: { expandImgIndex: number, searchKey: string }) {
@@ -331,9 +350,10 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     expandImgIndex: flow1000.expandImgIndex,
     scrollTop: flow1000.scrollTop,
     searchKey: flow1000.searchKey,
+    sectionList: flow1000.sectionList,
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainer scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
+  return <GridContainer subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
 });
 

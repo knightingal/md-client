@@ -2,37 +2,22 @@ import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
 import { Flow1000ModelState } from '../models/flow1000';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
-// import { router } from "umi";
 import { useNavigate } from "react-router-dom";
 
 const Encrypted = true;
 
-interface ImgComponentProps {
-  index: number;
-  src: string;
-  password: string;
-  mount: boolean;
-  expandImgIndex: number;
-  width: number;
-  height: number;
-  dispatch: Dispatch<any>;
-  sectionIndex: number;
-}
 
-const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
-  let lastTimestamp = -1;
+const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   const divRefs = React.useRef(null);
   console.log(`props.height=${props.height}`)
 
   const [state, setState] = React.useState<ImgComponentState>({
     url: null,
-    expand: props.expandImgIndex == props.index
   });
 
   const navigate = useNavigate();
-
 
   const fetchImgByUrl = (url: string) => {
     console.log("fetch " + url);
@@ -46,7 +31,6 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
           : arrayBuffer;
         const objectURL = URL.createObjectURL(new Blob([decrypted]));
         setState({
-          expand: state.expand,
           url: objectURL,
         });
       });
@@ -58,46 +42,21 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
     }
   }, [props.mount, props.src])
 
-  React.useEffect(() => {
-    setState({
-      expand: props.expandImgIndex == props.index,
-      url: state.url
-    });
-  }, [props.expandImgIndex])
-
-
   const onMouseOver = (e: React.MouseEvent) => {
-    lastTimestamp = e.timeStamp;
-    setTimeout((timeStamp: number) => {
-      if (timeStamp == lastTimestamp) {
-        props.dispatch({
-          type: 'flow1000/imgMouseOver',
-          imgIndex: props.index,
-        });
-      }
-    }, 600, e.timeStamp);
-  }
-  const onMouseLeave = (e: React.MouseEvent) => {
-    lastTimestamp = e.timeStamp;
     props.dispatch({
       type: 'flow1000/imgMouseOver',
-      imgIndex: -1,
+      imgIndex: props.index,
     });
   }
-  const onMouseMove = (e: React.MouseEvent) => {
-    lastTimestamp = e.timeStamp;
-    setTimeout((timeStamp: number) => {
-      if (timeStamp == lastTimestamp) {
-        props.dispatch({
-          type: 'flow1000/imgMouseOver',
-          imgIndex: props.index,
-        });
-      }
-    }, 600, e.timeStamp);
-  }
-  const onClick = (e: React.MouseEvent) => {
-    lastTimestamp = e.timeStamp;
 
+  const onMouseMove = (e: React.MouseEvent) => {
+    props.dispatch({
+      type: 'flow1000/imgMouseOver',
+      imgIndex: props.index,
+    });
+  }
+
+  const onClick = (e: React.MouseEvent) => {
     navigate("/flow1000/content/" + props.sectionIndex)
   }
 
@@ -118,9 +77,9 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
     expandWidth = 'auto';
     top = 'auto';
     topNum = 0;
-
   }
-  const height = state.expand && false ? imgHeight : '200px';
+
+  const height = props.expanded && false ? imgHeight : '200px';
   const expandHeight = imgHeight;
   const img =
     state.url != null ? (
@@ -146,8 +105,8 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
           }}
         />
         {
-          state.expand ?
-            <ExpandImg height={height} expandHeight={expandHeight} url={state.url} top={top} expandWidth={expandWidth} expandHeightNum={imgHeightNum} topNum={topNum} />
+          props.expanded ?
+            <ExpandImg index={props.index} height={height} expandHeight={expandHeight} url={state.url} top={top} expandWidth={expandWidth} expandHeightNum={imgHeightNum} topNum={topNum} />
             : null
         }
 
@@ -159,7 +118,7 @@ const ImgComponentFunc = (props: ImgComponentProps): JSX.Element => {
 
 }
 
-const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNum, topNum }: { top: string, topNum: number, url: string, height: string, expandHeight: string, expandWidth: string, expandHeightNum: number }) => {
+const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNum, topNum, index }: { index: number, top: string, topNum: number, url: string, height: string, expandHeight: string, expandWidth: string, expandHeightNum: number }) => {
   let [currentHeight, setCurrentHeight] = React.useState<string>(height)
   let [expandTop, setExpandTop] = React.useState<string>(top)
 
@@ -172,6 +131,8 @@ const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNu
     }, 0)
   }, [])
 
+  const dispacther = useDispatch();
+
   return <img
     src={url}
     style={{
@@ -183,9 +144,12 @@ const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNu
       top: expandTop,
       transition: 'height  0.5s, top 0.5s',
     }}
-  // onMouseLeave={e => {
-  //   onMouseLeave(e);
-  // }}
+    onMouseLeave={e => {
+      dispacther({
+        type: 'flow1000/imgMouseLeave',
+        imgIndex: index,
+      });
+    }}
   // onClick={e => {
   //   onClick(e);
   // }}
@@ -194,160 +158,29 @@ const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNu
 
 interface ImgComponentState {
   url: string | null;
-  expand: boolean;
 }
-const ConnCompFunc = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
-  expandImgIndex: flow1000.expandImgIndex,
+
+interface ImgComponentProps {
+  index: number;
+  src: string;
+  password: string;
+  mount: boolean;
+  width: number;
+  height: number;
+  sectionIndex: number;
+}
+
+interface InnerImgComponentProps extends ImgComponentProps {
+  expanded: boolean;
+  dispatch: Dispatch<any>;
+}
+
+type RemoveRedex<Type> = {
+  [P in keyof Type as Exclude<Exclude<Exclude<P, "dispatch">, "expandImgIndex">, "expanded">]: Type[P]
+};
+
+const ConnCompFunc = connect(({ flow1000 }: { flow1000: Flow1000ModelState }, ownProps: ImgComponentProps) => ({
+  expanded: flow1000.sectionList[ownProps.index].expanded,
 }))(ImgComponentFunc);
-
-const ConnCompClz = connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => ({
-  expandImgIndex: flow1000.expandImgIndex,
-}))(
-  class ImgComponent extends React.Component<ImgComponentProps, ImgComponentState> {
-    constructor(props: ImgComponentProps) {
-      super(props);
-      this.divRefs = React.createRef();
-      this.state = {
-        url: null,
-        expand: props.expandImgIndex == this.props.index
-      };
-      this.lastTimestamp = -1;
-    }
-    divRefs: React.RefObject<HTMLImageElement>;
-    lastTimestamp: number;
-    fetchImgByUrl(url: string) {
-      fetch(url)
-        .then(response => {
-          return response.arrayBuffer();
-        })
-        .then(arrayBuffer => {
-          const decrypted = Encrypted ?
-            decryptArray(arrayBuffer, this.props.password)
-            : arrayBuffer;
-          const objectURL = URL.createObjectURL(new Blob([decrypted]));
-          this.setState({
-            url: objectURL,
-          });
-        });
-    }
-
-    componentDidMount() {
-      if (this.props.src != null && this.props.mount == true) {
-        this.fetchImgByUrl(this.props.src);
-        this.setState({
-          url: null,
-        });
-      }
-    }
-
-    componentDidUpdate(prevProps: { src: string; mount: boolean; expandImgIndex: number }) {
-      if (
-        this.props.src !== prevProps.src &&
-        this.props.mount == true
-      ) {
-        if (this.props.src != null) {
-          this.fetchImgByUrl(this.props.src);
-          this.setState({
-            url: null,
-          });
-        }
-      }
-
-      if (this.props.expandImgIndex != prevProps.expandImgIndex) {
-        this.setState({
-          expand: this.props.expandImgIndex == this.props.index
-        });
-      }
-
-      if (this.props.mount != prevProps.mount) {
-        if (this.props.mount == true && this.props.src != null) {
-          this.fetchImgByUrl(this.props.src);
-        }
-      }
-    }
-
-    onMouseOver(e: React.MouseEvent) {
-      console.log(this.divRefs);
-      console.log(this.divRefs.current?.offsetWidth)
-      this.lastTimestamp = e.timeStamp;
-      setTimeout((timeStamp: number) => {
-        if (timeStamp == this.lastTimestamp) {
-          this.props.dispatch({
-            type: 'flow1000/imgMouseOver',
-            imgIndex: this.props.index,
-          });
-        }
-      }, 600, e.timeStamp);
-    }
-    onMouseLeave(e: React.MouseEvent) {
-      this.lastTimestamp = e.timeStamp;
-      this.props.dispatch({
-        type: 'flow1000/imgMouseOver',
-        imgIndex: -1,
-      });
-    }
-    onMouseMove(e: React.MouseEvent) {
-      this.lastTimestamp = e.timeStamp;
-      setTimeout((timeStamp: number) => {
-        if (timeStamp == this.lastTimestamp) {
-          this.props.dispatch({
-            type: 'flow1000/imgMouseOver',
-            imgIndex: this.props.index,
-          });
-        }
-      }, 600, e.timeStamp);
-
-    }
-    onClick(e: React.MouseEvent) {
-      this.lastTimestamp = e.timeStamp;
-      this.props.dispatch({
-        type: 'flow1000/imgClick',
-        imgIndex: this.props.sectionIndex,
-      });
-
-      // router.push("/flow1000/sectionContent/")
-    }
-
-    render() {
-      let imgHeight;
-      if (this.divRefs.current != undefined) {
-        imgHeight = `${this.props.height * this.divRefs.current.offsetWidth / this.props.width}px`;
-      } else {
-        imgHeight = 'auto';
-      }
-      const height = this.state.expand ? imgHeight : '200px';
-      const img =
-        this.state.url != null ? (
-          <img
-            src={this.state.url}
-            ref={this.divRefs}
-            style={{
-              display: 'block',
-              objectFit: 'cover',
-              height: height,
-              width: '100%',
-              transition: 'height 0.5s',
-            }}
-            onMouseOver={e => {
-              this.onMouseOver(e);
-            }}
-            onMouseMove={e => {
-              this.onMouseMove(e);
-            }}
-            onMouseLeave={e => {
-              this.onMouseLeave(e);
-            }}
-            onClick={e => {
-              this.onClick(e);
-            }}
-          />
-        ) : (
-          <div style={{ height: '200px', width: '100%' }} />
-        );
-      return img;
-    }
-  }
-);
-
 
 export default ConnCompFunc;
