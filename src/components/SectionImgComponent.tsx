@@ -106,7 +106,15 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
         />
         {
           props.expanded ?
-            <ExpandImg index={props.index} height={height} expandHeight={expandHeight} url={state.url} top={top} expandWidth={expandWidth} expandHeightNum={imgHeightNum} topNum={topNum} />
+            <ExpandImg
+              index={props.index}
+              height={height}
+              expandHeight={expandHeight}
+              url={state.url}
+              top={top}
+              expandWidth={expandWidth}
+              expandHeightNum={imgHeightNum} topNum={topNum}
+            />
             : null
         }
 
@@ -118,7 +126,25 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
 
 }
 
-const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNum, topNum, index }: { index: number, top: string, topNum: number, url: string, height: string, expandHeight: string, expandWidth: string, expandHeightNum: number }) => {
+const ExpandImg = ({
+  height,
+  expandHeight,
+  url,
+  top,
+  expandWidth,
+  expandHeightNum,
+  topNum,
+  index
+}: {
+  index: number,
+  top: string,
+  topNum: number,
+  url: string,
+  height: string,
+  expandHeight: string,
+  expandWidth: string,
+  expandHeightNum: number,
+}) => {
   let [currentHeight, setCurrentHeight] = React.useState<string>(height)
   let [expandTop, setExpandTop] = React.useState<string>(top)
 
@@ -145,10 +171,16 @@ const ExpandImg = ({ height, expandHeight, url, top, expandWidth, expandHeightNu
       transition: 'height  0.5s, top 0.5s',
     }}
     onMouseLeave={e => {
-      dispacther({
-        type: 'flow1000/imgMouseLeave',
-        imgIndex: index,
-      });
+      setExpandTop(top);
+      setCurrentHeight(height);
+      setTimeout(() => {
+        dispacther({
+          type: 'flow1000/imgMouseLeave',
+          imgIndex: index,
+        });
+
+      }, 500);
+
     }}
   // onClick={e => {
   //   onClick(e);
@@ -175,9 +207,6 @@ interface InnerImgComponentProps extends ImgComponentProps {
   dispatch: Dispatch<any>;
 }
 
-type RemoveRedex<Type> = {
-  [P in keyof Type as Exclude<Exclude<Exclude<P, "dispatch">, "expandImgIndex">, "expanded">]: Type[P]
-};
 
 const ConnCompFunc = connect(({ flow1000 }: { flow1000: Flow1000ModelState }, ownProps: ImgComponentProps) => ({
   expanded: flow1000.sectionList[ownProps.index].expanded,
