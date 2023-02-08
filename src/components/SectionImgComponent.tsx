@@ -114,6 +114,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
               top={top}
               expandWidth={expandWidth}
               expandHeightNum={imgHeightNum} topNum={topNum}
+              sectionIndex={props.sectionIndex}
             />
             : null
         }
@@ -133,7 +134,7 @@ const ExpandImg = ({
   top,
   expandWidth,
   expandHeightNum,
-  topNum,
+  sectionIndex, topNum,
   index
 }: {
   index: number,
@@ -144,6 +145,7 @@ const ExpandImg = ({
   expandHeight: string,
   expandWidth: string,
   expandHeightNum: number,
+  sectionIndex: number
 }) => {
   let [currentHeight, setCurrentHeight] = React.useState<string>(height)
   let [expandTop, setExpandTop] = React.useState<string>(top)
@@ -158,6 +160,16 @@ const ExpandImg = ({
   }, [])
 
   const dispacther = useDispatch();
+
+  const navigate = useNavigate();
+
+  const onClick = (e: React.MouseEvent) => {
+    dispacther({
+      type: 'flow1000/imgMouseLeave',
+      imgIndex: index,
+    });
+    navigate("/flow1000/content/" + sectionIndex)
+  }
 
   return <img
     src={url}
@@ -182,9 +194,9 @@ const ExpandImg = ({
       }, 500);
 
     }}
-  // onClick={e => {
-  //   onClick(e);
-  // }}
+    onClick={e => {
+      onClick(e);
+    }}
   />;
 }
 

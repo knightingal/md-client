@@ -99,27 +99,13 @@ const Flow1000Model: Flow1000ModelType = {
     },
     imgMouseOver(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
       const state0 = (state as Flow1000ModelState);
-      console.log(action);
-      const sectionList = state0.sectionList.map(section => {
-        if (section.index != action.imgIndex) {
-          return { ...section };
-        } else {
-          return { ...section, expanded: true };
-        }
-      });
-      return { ...state0, expandImgIndex: action.imgIndex, sectionList };
+      state0.sectionList[action.imgIndex].expanded = true;
+      return state0;
     },
     imgMouseLeave(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
       const state0 = (state as Flow1000ModelState);
-      console.log(action);
-      const sectionList = state0.sectionList.map(section => {
-        if (section.index != action.imgIndex) {
-          return { ...section };
-        } else {
-          return { ...section, expanded: false };
-        }
-      });
-      return { ...state0, expandImgIndex: action.imgIndex, sectionList };
+      state0.sectionList[action.imgIndex].expanded = false;
+      return state0;
     },
     imgClick(state: Flow1000ModelState | undefined, action: ImgClickAction) {
       console.log("imgClick");

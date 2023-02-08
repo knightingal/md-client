@@ -228,8 +228,8 @@ class GridContainer extends React.Component<
 
 
   fecthSectionList() {
-    // const battleShipPage = false;
-    const battleShipPage = true;
+    const battleShipPage = false;
+    // const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
@@ -294,10 +294,10 @@ class GridContainer extends React.Component<
   }
 
   componentDidMount() {
-    this.props.dispatch({
-      type: 'flow1000/imgMouseOver',
-      imgIndex: -1,
-    });
+    // this.props.dispatch({
+    //   type: 'flow1000/imgMouseOver',
+    //   imgIndex: -1,
+    // });
     if (this.props.subRest.length <= 0) {
       this.fecthSectionList();
 
