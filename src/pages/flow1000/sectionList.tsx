@@ -294,10 +294,6 @@ class GridContainer extends React.Component<
   }
 
   componentDidMount() {
-    // this.props.dispatch({
-    //   type: 'flow1000/imgMouseOver',
-    //   imgIndex: -1,
-    // });
     if (this.props.subRest.length <= 0) {
       this.fecthSectionList();
 

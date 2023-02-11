@@ -220,8 +220,18 @@ interface InnerImgComponentProps extends ImgComponentProps {
 }
 
 
-const ConnCompFunc = connect(({ flow1000 }: { flow1000: Flow1000ModelState }, ownProps: ImgComponentProps) => ({
-  expanded: flow1000.sectionList[ownProps.index].expanded,
-}))(ImgComponentFunc);
+const connCompFuncStateMapper = ({ flow1000 }: { flow1000: Flow1000ModelState }, ownProps: ImgComponentProps) => {
+  if (flow1000.sectionList[ownProps.index]) {
+    return {
+      expanded: flow1000.sectionList[ownProps.index].expanded,
+    }
+  } else {
+    return {
+      expanded: false,
+    }
+  }
+};
+
+const ConnCompFunc = connect(connCompFuncStateMapper)(ImgComponentFunc);
 
 export default ConnCompFunc;
