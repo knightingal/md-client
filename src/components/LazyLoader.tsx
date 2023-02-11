@@ -1,31 +1,32 @@
 import * as React from 'react';
-    
+
 interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
-    item: ITEM_TYPE;
-    mount: boolean;
-    parentComp:PARENT_COMP_TYPE;
+  item: ITEM_TYPE;
+  mount: boolean;
+  parentComp: PARENT_COMP_TYPE;
 }
 
 interface LazyState {
-    currentTopPicIndex:number|null; 
-    currentButtonPicIndex:number|null;
-    mount: boolean;
+  currentTopPicIndex: number | null;
+  currentButtonPicIndex: number | null;
+  mount: boolean;
 }
 
 export interface HeightType {
-    height: number;
+  height: number;
 }
 
 export interface ParentCompHandler {
-  dispatch: (scrollTop: number)=>void
+  refreshScrollTop: (scrollTop: number) => void
+  inScrolling: (inScrolling: boolean) => void
 }
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
 export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>> {
-    dataList:Array<ITEM_TYPE>;
-    parentComp:PARENT_COMP_TYPE;
-    scrollTop:number;
-    height:number;
-    dispatchHandler: ParentCompHandler
+  dataList: Array<ITEM_TYPE>;
+  parentComp: PARENT_COMP_TYPE;
+  scrollTop: number;
+  height: number;
+  dispatchHandler: ParentCompHandler
 }
 
 
@@ -39,7 +40,7 @@ export function lazyLoader<
   className: string,
   preLoadOffSet: number = 1,
 ): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>> {
-  
+
   class LazyLoader extends React.Component<
     LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
     LazyState
@@ -61,7 +62,7 @@ export function lazyLoader<
             .reduce((value: number, current: number): number => value + current);
         },
       );
-      
+
       this.state = {
         currentButtonPicIndex: null,
         currentTopPicIndex: null,
@@ -86,7 +87,8 @@ export function lazyLoader<
       }
       this.lastTimeStampe = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
-      this.props.dispatchHandler.dispatch(scrollTop);
+      this.props.dispatchHandler.refreshScrollTop(scrollTop);
+      this.props.dispatchHandler.inScrolling(true);
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
       const refreshTopPicIndex = this.checkPostionInPic(scrollTop);
@@ -95,6 +97,7 @@ export function lazyLoader<
           if (this.lastTimeStampe == timeStamp) {
             console.log('scroll stoped');
             this.setState({ mount: true });
+            this.props.dispatchHandler.inScrolling(false);
           }
         },
         300,
@@ -150,10 +153,10 @@ export function lazyLoader<
       prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
       prevState: LazyState,
     ) {
-      if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight 
-          && (this.divRefs.current as HTMLDivElement).scrollHeight > (this.divRefs.current as HTMLDivElement).clientHeight) {
-          (this.divRefs.current as HTMLDivElement).scrollTo(0, this.props.scrollTop);
-      } 
+      if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight
+        && (this.divRefs.current as HTMLDivElement).scrollHeight > (this.divRefs.current as HTMLDivElement).clientHeight) {
+        (this.divRefs.current as HTMLDivElement).scrollTo(0, this.props.scrollTop);
+      }
       this.scrollHeight = (this.divRefs.current as HTMLDivElement).scrollHeight;
       if (prevProps.height != this.props.height) {
         this.setState({
@@ -271,10 +274,10 @@ export function lazyLoader<
 }
 
 export class SectionBean implements HeightType {
-    name: string;
-    height: number;
-    constructor(name:string) {
-        this.name = name;
-        this.height = 21;
-    }
+  name: string;
+  height: number;
+  constructor(name: string) {
+    this.name = name;
+    this.height = 21;
+  }
 }

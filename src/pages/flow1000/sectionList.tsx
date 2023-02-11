@@ -16,7 +16,7 @@ import { Flow1000ModelState } from '../../models/flow1000';
 interface Flow1000Props {
   height: number;
   width: number;
-  expandImgIndex: number;
+  expandImgIndex: number[];
   children?: ReactNode;
   dispatch: Dispatch<any>;
   scrollTop: number;
@@ -205,23 +205,33 @@ interface PicIndex {
 
 class GridContainer extends React.Component<
   {
-    height: number; expandImgIndex: number; searchKey: string
+    height: number;
+    expandImgIndex: number[];
+    searchKey: string
     dispatch: Dispatch<any>;
     scrollTop: number, subRest: PicIndex[]
   },
   { sectionList: Array<GridLineBean> }
 > implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number; dispatch: Dispatch<any>; scrollTop: number; searchKey: string; subRest: PicIndex[] }) {
+  constructor(props: { height: number; expandImgIndex: number[]; dispatch: Dispatch<any>; scrollTop: number; searchKey: string; subRest: PicIndex[] }) {
     super(props);
     this.state = { sectionList: [] };
     this.prevExpandIndex = -1;
   }
 
-  dispatch(scrollTop: number) {
+  refreshScrollTop(scrollTop: number) {
     this.props.dispatch({
       type: 'flow1000/scrollTop',
       scrollTop: scrollTop,
     });
+  }
+
+  inScrolling: (inScrolling: boolean) => void = (inScrolling: boolean) => {
+    this.props.dispatch({
+      type: 'flow1000/inScrolling',
+      inScrolling,
+    });
+
   }
 
   prevExpandIndex: number;
@@ -302,26 +312,9 @@ class GridContainer extends React.Component<
     }
   }
 
-  componentDidUpdate(prevProps: { expandImgIndex: number, searchKey: string }) {
+  componentDidUpdate(prevProps: { searchKey: string }) {
     if (this.props.searchKey !== prevProps.searchKey) {
       this.fecthSectionList();
-    }
-    if (this.props.expandImgIndex !== prevProps.expandImgIndex) {
-      const floorIndex = Math.floor(this.props.expandImgIndex / 4);
-      const sectionList = this.state.sectionList;
-      if (sectionList[floorIndex] !== undefined) {
-        sectionList[floorIndex].expand = true;
-        if (
-          sectionList[this.prevExpandIndex] !== undefined &&
-          this.prevExpandIndex !== floorIndex
-        ) {
-          sectionList[this.prevExpandIndex].expand = false;
-        }
-        this.prevExpandIndex = floorIndex;
-        this.setState({
-          sectionList: sectionList,
-        });
-      }
     }
   }
 

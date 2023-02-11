@@ -43,6 +43,9 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   }, [props.mount, props.src])
 
   const onMouseOver = (e: React.MouseEvent) => {
+    if (props.scrolling) {
+      return;
+    }
     props.dispatch({
       type: 'flow1000/imgMouseOver',
       imgIndex: props.index,
@@ -50,6 +53,9 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   }
 
   const onMouseMove = (e: React.MouseEvent) => {
+    if (props.scrolling) {
+      return;
+    }
     props.dispatch({
       type: 'flow1000/imgMouseOver',
       imgIndex: props.index,
@@ -105,7 +111,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
           }}
         />
         {
-          props.expanded ?
+          props.expanded && !props.scrolling ?
             <ExpandImg
               index={props.index}
               height={height}
@@ -215,6 +221,7 @@ interface ImgComponentProps {
 }
 
 interface InnerImgComponentProps extends ImgComponentProps {
+  scrolling: boolean
   expanded: boolean;
   dispatch: Dispatch<any>;
 }
@@ -224,10 +231,12 @@ const connCompFuncStateMapper = ({ flow1000 }: { flow1000: Flow1000ModelState },
   if (flow1000.sectionList[ownProps.index]) {
     return {
       expanded: flow1000.sectionList[ownProps.index].expanded,
+      scrolling: flow1000.scrolling
     }
   } else {
     return {
       expanded: false,
+      scrolling: flow1000.scrolling
     }
   }
 };
