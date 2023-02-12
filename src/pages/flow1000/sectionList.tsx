@@ -157,8 +157,8 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
     ) : null;
 
   return (
-    <div style={{ "marginTop": '8px' }}>
-      <Grid container={true} spacing={1} >
+    <div style={{ "height": "360px" }}>
+      <Grid container={true} spacing={1} sx={{ marginTop: "auto" }}  >
         <Grid item={true} xs={3}>
           <RecipeReviewCard
             sectionIndex={props.sectionBean.section0.sectionIndex}
