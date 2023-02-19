@@ -6,7 +6,7 @@ import { connect, useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { useNavigate } from "react-router-dom";
 
-const Encrypted = true;
+const Encrypted = false;
 
 
 const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {

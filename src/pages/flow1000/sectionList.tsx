@@ -72,7 +72,7 @@ class SectionInfo {
 
   constructor(value: PicIndex) {
     // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-    this.imgSrc = `/linux1000/encrypted/${value.name}/${value.cover}.bin`;
+    this.imgSrc = `/linux1000/1024/${value.name}/${value.cover}`;
     this.title = value.name.substring(14);
     this.timeStamp = value.name.substring(0, 14);
     this.sectionIndex = value.sectionIndex;
@@ -236,12 +236,14 @@ class GridContainer extends React.Component<
 
   prevExpandIndex: number;
 
+  album: string = "1024"
+  // album:string = "ship"
 
   fecthSectionList() {
-    const battleShipPage = false;
-    // const battleShipPage = true;
-    let fetchUrl = battleShipPage
-      ? '/local1000/picIndexAjax?album=ship'
+    // const enalbeAlbum = false;
+    const enalbeAlbum = true;
+    let fetchUrl = enalbeAlbum
+      ? `/local1000/picIndexAjax?album=${this.album}`
       : '/local1000/picIndexAjax?';
 
     if (this.props.searchKey != null && this.props.searchKey !== '') {
@@ -254,12 +256,7 @@ class GridContainer extends React.Component<
       })
       .then((json: Array<PicIndex>) => {
         let subRest: Array<PicIndex>;
-        if (battleShipPage) {
-          // subRest = json.concat(json, json, json, json, json, json, json, json);
-          subRest = json;
-        } else {
-          subRest = json;
-        }
+        subRest = json;
         subRest.forEach((picIndex: PicIndex, index: number) => {
           picIndex.sectionIndex = picIndex.index;
           picIndex.expanded = false;
