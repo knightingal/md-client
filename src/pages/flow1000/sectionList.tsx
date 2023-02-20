@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 import ImgComponent from '../../components/SectionImgComponent';
 
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Flow1000ModelState } from '../../models/flow1000';
 interface Flow1000Props {
@@ -210,6 +210,8 @@ const GridContainerFunc = (props: {
   dispatch: Dispatch<any>;
   scrollTop: number, subRest: PicIndex[]
 }) => {
+  const config1 = useSelector((state: any) => state.flow1000Config.config1)
+  console.log("config1=" + config1)
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
@@ -244,12 +246,7 @@ const GridContainerFunc = (props: {
       })
       .then((json: Array<PicIndex>) => {
         let subRest: Array<PicIndex>;
-        if (battleShipPage) {
-          // subRest = json.concat(json, json, json, json, json, json, json, json);
-          subRest = json;
-        } else {
-          subRest = json;
-        }
+        subRest = json;
         subRest.forEach((picIndex: PicIndex, index: number) => {
           picIndex.sectionIndex = picIndex.index;
           picIndex.expanded = false;
