@@ -89,27 +89,22 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   return props;
 })(ContentFunc);
 
-class ImgComponentItem extends React.Component<{ mount: boolean, item: ImgDetail, parentComp: Content }> {
-  constructor(props: { item: ImgDetail, parentComp: Content, mount: boolean }) {
-    super(props);
-  }
+class ImgComponentItem extends React.Component<{ mount: boolean, item: ImgDetail, parentComp: Content | ((props: any) => JSX.Element) }> {
 
   render() {
     return <ImgComponent
       width={this.props.item.width}
       height={this.props.item.height}
-      src={`/linux1000/encrypted/${this.props.parentComp.state.sectionDetail.dirName}/${this.props.item.name}.bin`}
+      src={`/linux1000/encrypted/${(this.props.parentComp as Content).state.sectionDetail.dirName}/${this.props.item.name}.bin`}
       password="yjmK14040842$000"
     />
   }
 }
-const LazyLoader:
-  React.ComponentClass<
-    LazyProps<
-      ImgDetail,
-      { index: number, password: string },
-      {},
-      Content
-    >
-  >
-  = lazyLoader(ImgComponentItem, "Content", 2)
+
+
+const LazyLoader: React.ComponentClass<LazyProps<
+  ImgDetail,
+  { index: number, password: string },
+  {},
+  Content
+>> = lazyLoader(ImgComponentItem, "Content", 2)

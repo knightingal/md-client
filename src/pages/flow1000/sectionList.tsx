@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactNode, } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -180,7 +180,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
 };
 
 
-class SectionItem extends React.Component<{ item: GridLineBean, parentComp: GridContainer, mount: boolean }> {
+class SectionItem extends React.Component<{ item: GridLineBean, parentComp: GridContainer | ((props: any) => JSX.Element), mount: boolean }> {
   render() {
     return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
   }
@@ -200,6 +200,116 @@ interface PicIndex {
   coverWidth: number;
   coverHeight: number;
   expanded: boolean;
+}
+
+
+const GridContainerFunc = (props: {
+  height: number;
+  expandImgIndex: number[];
+  searchKey: string
+  dispatch: Dispatch<any>;
+  scrollTop: number, subRest: PicIndex[]
+}) => {
+
+  const parentCompHandler: ParentCompHandler = {
+    refreshScrollTop: (scrollTop: number) => {
+      props.dispatch({
+        type: 'flow1000/scrollTop',
+        scrollTop: scrollTop,
+      });
+    },
+
+    inScrolling: (inScrolling: boolean) => {
+      props.dispatch({
+        type: 'flow1000/inScrolling',
+        inScrolling,
+      });
+    }
+  }
+
+  function fecthSectionList() {
+    // const battleShipPage = false;
+    const battleShipPage = true;
+    let fetchUrl = battleShipPage
+      ? '/local1000/picIndexAjax?album=ship'
+      : '/local1000/picIndexAjax?';
+
+    if (props.searchKey != null && props.searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + props.searchKey)
+    }
+
+    fetch(fetchUrl)
+      .then((resp: Response) => {
+        return resp.json();
+      })
+      .then((json: Array<PicIndex>) => {
+        let subRest: Array<PicIndex>;
+        if (battleShipPage) {
+          // subRest = json.concat(json, json, json, json, json, json, json, json);
+          subRest = json;
+        } else {
+          subRest = json;
+        }
+        subRest.forEach((picIndex: PicIndex, index: number) => {
+          picIndex.sectionIndex = picIndex.index;
+          picIndex.expanded = false;
+          picIndex.index = index;
+        });
+
+        props.dispatch({
+          type: 'flow1000/setSeciontList',
+          sectionList: subRest,
+        });
+        initBySectionData(subRest);
+      });
+  }
+
+  function initBySectionData(subRest: PicIndex[]) {
+    const sub0 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 0;
+    });
+    const sub1 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 1;
+    });
+    const sub2 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 2;
+    });
+    const sub3 = subRest.filter((_: PicIndex, index: number) => {
+      return index % 4 === 3;
+    });
+
+    const sectionList = sub0.map((value: PicIndex, index: number) => {
+      return new GridLineBean(
+        value,
+        index < sub1.length ? sub1[index] : null,
+        index < sub2.length ? sub2[index] : null,
+        index < sub3.length ? sub3[index] : null,
+      );
+    });
+
+    setSectionList(sectionList)
+
+  }
+
+  const [sectionList, setSectionList] = useState<GridLineBean[]>([])
+
+  useEffect(() => {
+    fecthSectionList();
+  }, [props.searchKey])
+
+
+  return (
+    <div style={{ height: `${props.height - 64}px` }} >
+      <LazyLoader
+        dataList={sectionList}
+        scrollTop={props.scrollTop}
+        parentComp={GridContainerFunc}
+        height={props.height - 64}
+        dispatchHandler={parentCompHandler}
+      />
+    </div>
+  );
+
 }
 
 
@@ -343,6 +453,5 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainer subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
+  return <GridContainerFunc subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
 });
-

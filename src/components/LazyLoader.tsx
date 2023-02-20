@@ -3,7 +3,7 @@ import * as React from 'react';
 interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
   item: ITEM_TYPE;
   mount: boolean;
-  parentComp: PARENT_COMP_TYPE;
+  parentComp: PARENT_COMP_TYPE | ((props: any) => JSX.Element);
 }
 
 interface LazyState {
@@ -23,7 +23,7 @@ export interface ParentCompHandler {
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
 export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>> {
   dataList: Array<ITEM_TYPE>;
-  parentComp: PARENT_COMP_TYPE;
+  parentComp: PARENT_COMP_TYPE | ((props: any) => JSX.Element);
   scrollTop: number;
   height: number;
   dispatchHandler: ParentCompHandler
