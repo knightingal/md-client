@@ -7,13 +7,12 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { connect, useDispatch } from 'react-redux';
+import { connect, } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { add } from "../store";
 
 interface Flow1000Props {
   height: number;
@@ -28,10 +27,8 @@ export default connect(
     return { height: flow1000.height, width: flow1000.width }
   }
 )((props: Flow1000Props) => {
-  const dispatch = useDispatch()
   // const classes = useStyles();
   useEffect(() => {
-    dispatch(add())
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
     console.log("flow1000 useEffect:" + height)

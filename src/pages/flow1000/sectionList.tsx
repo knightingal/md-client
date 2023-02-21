@@ -13,6 +13,7 @@ import ImgComponent from '../../components/SectionImgComponent';
 import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Flow1000ModelState } from '../../models/flow1000';
+import { ConfigState } from '../../store';
 interface Flow1000Props {
   height: number;
   width: number;
@@ -210,8 +211,9 @@ const GridContainerFunc = (props: {
   dispatch: Dispatch<any>;
   scrollTop: number, subRest: PicIndex[]
 }) => {
-  const config1 = useSelector((state: any) => state.flow1000Config.config1)
-  console.log("config1=" + config1)
+  const albumConfig = useSelector(({ flow1000Config }: { flow1000Config: ConfigState }) => flow1000Config)
+  console.log(`albumConfig=`);
+  console.log(albumConfig.albumConfigs);
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
