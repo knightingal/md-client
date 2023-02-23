@@ -1,55 +1,37 @@
 import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
+interface ImgComponentProps {
+  src: string, height: number, width: number, password: string
+}
 
-export default class ImgComponent extends React.Component<{ src: string, height: number, width: number, password: string }, { url: string | null }> {
-  constructor(props: { src: string, height: number, width: number, password: string }) {
-    super(props);
-    this.state = {
-      url: null
-    }
-  }
-
-  fetchImgByUrl(url: string) {
+const ImgComponentFunc = (props: ImgComponentProps) => {
+  const [url, setUrl] = React.useState<string | null>(null);
+  const fetchImgByUrl = (url: string) => {
     fetch(url).then(response => {
       return response.arrayBuffer();
     }).then(arrayBuffer => {
-      const decrypted = decryptArray(arrayBuffer, this.props.password);
+      const decrypted = decryptArray(arrayBuffer, props.password);
       // const decrypted = arrayBuffer;
       const objectURL = URL.createObjectURL(new Blob([decrypted]));
-      this.setState({
-        url: objectURL,
-      });
+      setUrl(objectURL);
     });
   }
 
-  componentDidMount() {
-    if (this.props.src != null) {
-      this.fetchImgByUrl(this.props.src);
-      this.setState({
-        url: null
-      });
+  React.useEffect(() => {
+    if (props.src != null) {
+      fetchImgByUrl(props.src);
+      setUrl(null)
     }
 
-  }
+  }, [props.src])
+  return <img alt=""
+    src={url == null ? "" : url}
+    style={{ display: "block", margin: "auto" }}
+    height={`${props.height}px`}
+    width={`${props.width}px`}
+  />
 
-  componentDidUpdate(prevProps: { src: string }) {
-    if (this.props.src !== prevProps.src) {
-      if (this.props.src != null) {
-        this.fetchImgByUrl(this.props.src);
-        this.setState({
-          url: null
-        });
-      }
-    }
-  }
-
-  render() {
-    return <img alt=""
-      src={this.state.url == null ? "" : this.state.url}
-      style={{ display: "block", margin: "auto" }}
-      height={`${this.props.height}px`}
-      width={`${this.props.width}px`}
-    />
-  }
 }
+
+export default ImgComponentFunc;
