@@ -10,11 +10,13 @@ class SectionDetail {
   dirName: string;
   picPage: string;
   pics: Array<ImgDetail>;
+  album: string;
 
   constructor() {
     this.dirName = "";
     this.picPage = "";
     this.pics = [];
+    this.album = "";
   }
 }
 
@@ -93,6 +95,7 @@ class ImgComponentItem extends React.Component<{ mount: boolean, item: ImgDetail
 
   render() {
     return <ImgComponent
+      album={this.props.item.album}
       width={this.props.item.width}
       height={this.props.item.height}
       src={`/linux1000/encrypted/${(this.props.parentComp as Content).state.sectionDetail.dirName}/${this.props.item.name}.bin`}

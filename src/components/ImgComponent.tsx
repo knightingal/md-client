@@ -1,30 +1,43 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { decryptArray } from '../lib/decryptoArray';
+import { ConfigState } from '../store';
 
 interface ImgComponentProps {
-  src: string, height: number, width: number, password: string
+  src: string, height: number, width: number, password: string, album: string
 }
 
 const ImgComponentFunc = (props: ImgComponentProps) => {
-  const [url, setUrl] = React.useState<string | null>(null);
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
+  const albumConfig = albumConfigs.find(config => config.name == props.album);
+
+  const [url, setUrl] = useState<string | null>(null);
   const fetchImgByUrl = (url: string) => {
     fetch(url).then(response => {
       return response.arrayBuffer();
     }).then(arrayBuffer => {
-      const decrypted = decryptArray(arrayBuffer, props.password);
-      // const decrypted = arrayBuffer;
+      let decrypted: ArrayBuffer;
+      if (albumConfig?.encryped) {
+        decrypted = decryptArray(arrayBuffer, props.password);
+      } else {
+        decrypted = arrayBuffer;
+      }
       const objectURL = URL.createObjectURL(new Blob([decrypted]));
       setUrl(objectURL);
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.src != null) {
       fetchImgByUrl(props.src);
       setUrl(null)
     }
-
   }, [props.src])
+
   return <img alt=""
     src={url == null ? "" : url}
     style={{ display: "block", margin: "auto" }}
