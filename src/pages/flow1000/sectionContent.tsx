@@ -78,8 +78,25 @@ class Content extends React.Component<{ index: number, password: string, height:
 
   }
 
+  ImgComponentItem = (props: { mount: boolean, item: ImgDetail, parentComp: Content | ((props: any) => JSX.Element) }) => {
+    return <ImgComponent
+      album={this.state.sectionDetail.album}
+      width={props.item.width}
+      height={props.item.height}
+      src={`/linux1000/encrypted/${(props.parentComp as Content).state.sectionDetail.dirName}/${props.item.name}.bin`}
+      password="yjmK14040842$000"
+    />
+  }
+
+  LazyLoader: React.ComponentClass<LazyProps<
+    ImgDetail,
+    { index: number, password: string },
+    {},
+    Content
+  >> = lazyLoader(this.ImgComponentItem, "Content", 2)
+
   render() {
-    return <LazyLoader dispatchHandler={this} height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop} />
+    return <this.LazyLoader dispatchHandler={this} height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop} />
   }
 };
 
@@ -91,23 +108,3 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   return props;
 })(ContentFunc);
 
-class ImgComponentItem extends React.Component<{ mount: boolean, item: ImgDetail, parentComp: Content | ((props: any) => JSX.Element) }> {
-
-  render() {
-    return <ImgComponent
-      album={this.props.item.album}
-      width={this.props.item.width}
-      height={this.props.item.height}
-      src={`/linux1000/encrypted/${(this.props.parentComp as Content).state.sectionDetail.dirName}/${this.props.item.name}.bin`}
-      password="yjmK14040842$000"
-    />
-  }
-}
-
-
-const LazyLoader: React.ComponentClass<LazyProps<
-  ImgDetail,
-  { index: number, password: string },
-  {},
-  Content
->> = lazyLoader(ImgComponentItem, "Content", 2)

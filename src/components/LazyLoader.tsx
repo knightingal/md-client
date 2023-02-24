@@ -36,7 +36,7 @@ export function lazyLoader<
   T_STATE,
   PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>
 >(
-  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>>,
+  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>> | ((props: WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>) => JSX.Element),
   className: string,
   preLoadOffSet: number = 1,
 ): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>> {
