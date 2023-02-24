@@ -13,7 +13,10 @@ const ImgComponentFunc = (props: ImgComponentProps) => {
   }) => {
     return state.flow1000Config.albumConfigs;
   })
-  const albumConfig = albumConfigs.find(config => config.name == props.album);
+  let albumConfig = albumConfigs.find(config => config.name == props.album);
+  if (!albumConfig) {
+    albumConfig = albumConfigs[0]
+  }
 
   const [url, setUrl] = useState<string | null>(null);
   const fetchImgByUrl = (url: string) => {

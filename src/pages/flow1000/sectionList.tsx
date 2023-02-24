@@ -181,7 +181,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
 };
 
 
-class SectionItem extends React.Component<{ item: GridLineBean, parentComp: GridContainer | ((props: any) => JSX.Element), mount: boolean }> {
+class SectionItem extends React.Component<{ item: GridLineBean, parentComp: any, mount: boolean }> {
   render() {
     return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
   }
@@ -190,7 +190,7 @@ const LazyLoader: React.ComponentClass<LazyProps<
   GridLineBean,
   SectionListProps,
   SectionListStatus,
-  GridContainer
+  any
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
@@ -201,6 +201,7 @@ interface PicIndex {
   coverWidth: number;
   coverHeight: number;
   expanded: boolean;
+  album: string;
 }
 
 
@@ -232,8 +233,8 @@ const GridContainerFunc = (props: {
   }
 
   function fecthSectionList() {
-    // const battleShipPage = false;
-    const battleShipPage = true;
+    const battleShipPage = false;
+    // const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
@@ -311,136 +312,6 @@ const GridContainerFunc = (props: {
 
 }
 
-
-class GridContainer extends React.Component<
-  {
-    height: number;
-    expandImgIndex: number[];
-    searchKey: string
-    dispatch: Dispatch<any>;
-    scrollTop: number, subRest: PicIndex[]
-  },
-  { sectionList: Array<GridLineBean> }
-> implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number[]; dispatch: Dispatch<any>; scrollTop: number; searchKey: string; subRest: PicIndex[] }) {
-    super(props);
-    this.state = { sectionList: [] };
-    this.prevExpandIndex = -1;
-  }
-
-  refreshScrollTop(scrollTop: number) {
-    this.props.dispatch({
-      type: 'flow1000/scrollTop',
-      scrollTop: scrollTop,
-    });
-  }
-
-  inScrolling: (inScrolling: boolean) => void = (inScrolling: boolean) => {
-    this.props.dispatch({
-      type: 'flow1000/inScrolling',
-      inScrolling,
-    });
-
-  }
-
-  prevExpandIndex: number;
-
-
-  fecthSectionList() {
-    const battleShipPage = false;
-    // const battleShipPage = true;
-    let fetchUrl = battleShipPage
-      ? '/local1000/picIndexAjax?album=ship'
-      : '/local1000/picIndexAjax?';
-
-    if (this.props.searchKey != null && this.props.searchKey !== '') {
-      fetchUrl = fetchUrl.concat("&searchKey=" + this.props.searchKey)
-    }
-
-    fetch(fetchUrl)
-      .then((resp: Response) => {
-        return resp.json();
-      })
-      .then((json: Array<PicIndex>) => {
-        let subRest: Array<PicIndex>;
-        if (battleShipPage) {
-          // subRest = json.concat(json, json, json, json, json, json, json, json);
-          subRest = json;
-        } else {
-          subRest = json;
-        }
-        subRest.forEach((picIndex: PicIndex, index: number) => {
-          picIndex.sectionIndex = picIndex.index;
-          picIndex.expanded = false;
-          picIndex.index = index;
-        });
-
-        this.props.dispatch({
-          type: 'flow1000/setSeciontList',
-          sectionList: subRest,
-        });
-        this.initBySectionData(subRest);
-      });
-  }
-
-  initBySectionData(subRest: PicIndex[]) {
-    const sub0 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 0;
-    });
-    const sub1 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 1;
-    });
-    const sub2 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 2;
-    });
-    const sub3 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 3;
-    });
-
-    const sectionList = sub0.map((value: PicIndex, index: number) => {
-      return new GridLineBean(
-        value,
-        index < sub1.length ? sub1[index] : null,
-        index < sub2.length ? sub2[index] : null,
-        index < sub3.length ? sub3[index] : null,
-      );
-    });
-
-    this.setState({
-      sectionList: sectionList,
-    });
-
-  }
-
-  componentDidMount() {
-    if (this.props.subRest.length <= 0) {
-      this.fecthSectionList();
-
-    } else {
-      this.initBySectionData(this.props.subRest);
-    }
-  }
-
-  componentDidUpdate(prevProps: { searchKey: string }) {
-    if (this.props.searchKey !== prevProps.searchKey) {
-      this.fecthSectionList();
-    }
-  }
-
-  render() {
-    return (
-      <div style={{ height: `${this.props.height - 64}px` }} >
-        <LazyLoader
-          dataList={this.state.sectionList}
-          scrollTop={this.props.scrollTop}
-          parentComp={this}
-          height={this.props.height - 64}
-          dispatchHandler={this}
-        />
-      </div>
-    );
-  }
-}
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   return {
     height: flow1000.height,
@@ -449,6 +320,7 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     scrollTop: flow1000.scrollTop,
     searchKey: flow1000.searchKey,
     sectionList: flow1000.sectionList,
+
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);

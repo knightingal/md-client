@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const flow1000Slice = createSlice(Flow1000Module as any)
 
-interface AlbumConfig {
+export interface AlbumConfig {
   name: string,
   encryped: boolean,
   baseUrl: string
@@ -28,11 +28,11 @@ const configOption: CreateSliceOptions<ConfigState, Red, string> = {
     albumConfigs: [{
       name: "flow1000",
       encryped: true,
-      baseUrl: ""
+      baseUrl: "encrypted"
     }, {
       name: "ship",
       encryped: true,
-      baseUrl: ""
+      baseUrl: "encrypted"
     }, {
       name: "1804",
       encryped: true,

@@ -4,8 +4,10 @@ import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../comp
 
 import ImgComponent from '../../components/ImgComponent';
 import { Flow1000ModelState } from '../../models/flow1000';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { AlbumConfig, ConfigState } from '../../store';
+
 class SectionDetail {
   dirName: string;
   picPage: string;
@@ -35,21 +37,25 @@ class ImgDetail implements HeightType {
 const ContentFunc = (props: { password: string, height: number }) => {
   const { sectionId } = useParams();
 
-  return <Content index={Number(sectionId)} password={props.password} height={props.height} />
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
 
-}
-
-class Content extends React.Component<{ index: number, password: string, height: number }, { sectionDetail: SectionDetail, scrollTop: number }> implements ParentCompHandler {
-  constructor(props: { index: number, password: string, height: number }) {
-    super(props);
-    this.state = { sectionDetail: new SectionDetail(), scrollTop: 0 };
+  const prarentCompHandler: ParentCompHandler = {
+    refreshScrollTop: (scrollTop: number) => void {
+    },
+    inScrolling: (inScrolling: boolean) => void {
+    }
   }
 
-  inScrolling: (inScrolling: boolean) => void = () => { }
+  const [sectionDetail, setSectionDetail] = useState<SectionDetail>(new SectionDetail())
+  const [albumConfig, setAlbumConfig] = useState<AlbumConfig>({
+    name: '', encryped: false, baseUrl: ""
+  })
 
-  refreshScrollTop: () => void = () => { };
-
-  fecthSectionList(index: number) {
+  const fecthSectionList = (index: number) => {
     if (index <= 0) {
       return;
     }
@@ -59,46 +65,39 @@ class Content extends React.Component<{ index: number, password: string, height:
       })
       .then((json: any) => {
         const sectionDetail: SectionDetail = json;
-        this.setState({
-          sectionDetail: sectionDetail,
-          scrollTop: 0
-        });
+        setSectionDetail(sectionDetail);
+        let albumConfig = albumConfigs.find(config => config.name == sectionDetail.album);
+        if (!albumConfig) {
+          albumConfig = albumConfigs[0]
+        }
+        setAlbumConfig(albumConfig);
       });
   }
 
-  componentDidMount() {
-    this.fecthSectionList(this.props.index);
-  }
+  useEffect(() => {
+    fecthSectionList(Number(sectionId));
+  }, [])
 
-
-  componentDidUpdate(prevProps: { index: number }) {
-    if (this.props.index !== prevProps.index) {
-      this.fecthSectionList(this.props.index);
-    }
-
-  }
-
-  ImgComponentItem = (props: { mount: boolean, item: ImgDetail, parentComp: Content | ((props: any) => JSX.Element) }) => {
+  const ImgComponentItem = (props: { mount: boolean, item: ImgDetail, parentComp: any }) => {
     return <ImgComponent
-      album={this.state.sectionDetail.album}
+      album={sectionDetail.album}
       width={props.item.width}
       height={props.item.height}
-      src={`/linux1000/encrypted/${(props.parentComp as Content).state.sectionDetail.dirName}/${props.item.name}.bin`}
+      src={`/linux1000/${albumConfig.baseUrl}/${sectionDetail.dirName}/${props.item.name}${albumConfig.encryped ? ".bin" : ""}`}
       password="yjmK14040842$000"
     />
   }
 
-  LazyLoader: React.ComponentClass<LazyProps<
+  const LazyLoader: React.ComponentClass<LazyProps<
     ImgDetail,
     { index: number, password: string },
     {},
-    Content
-  >> = lazyLoader(this.ImgComponentItem, "Content", 2)
+    any
+  >> = lazyLoader(ImgComponentItem, "Content", 2)
 
-  render() {
-    return <this.LazyLoader dispatchHandler={this} height={this.props.height - 64} dataList={this.state.sectionDetail.pics} parentComp={this} scrollTop={this.state.scrollTop} />
-  }
-};
+  return <LazyLoader dispatchHandler={prarentCompHandler} height={props.height - 64} dataList={sectionDetail.pics} parentComp={ContentFunc} scrollTop={0} />
+}
+
 
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   const props = {
