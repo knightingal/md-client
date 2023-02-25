@@ -39,7 +39,7 @@ function RecipeReviewCard(props: {
 
   return (
     <Card >
-      <CardHeader title={props.title} subheader={props.timeStamp} />
+      <CardHeader title={props.title} subheader={props.timeStamp} sx={{ whiteSpace: "nowrap" }} />
       <ImgComponent
         sectionIndex={props.sectionIndex}
         src={props.imgSrc}
