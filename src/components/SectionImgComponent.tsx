@@ -2,9 +2,10 @@ import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
 import { Flow1000ModelState } from '../models/flow1000';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { useNavigate } from "react-router-dom";
+import { ConfigState } from '../store';
 
 const Encrypted = true;
 
@@ -12,6 +13,13 @@ const Encrypted = true;
 const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   const divRefs = React.useRef(null);
   console.log(`props.height=${props.height}`)
+
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
+
 
   const [state, setState] = React.useState<ImgComponentState>({
     url: null,
@@ -26,7 +34,11 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
         return response.arrayBuffer();
       })
       .then(arrayBuffer => {
-        const decrypted = Encrypted ?
+        let albumConfig = albumConfigs.find(config => config.name == props.album);
+        if (!albumConfig) {
+          albumConfig = albumConfigs[0]
+        }
+        const decrypted = albumConfig.encryped ?
           decryptArray(arrayBuffer, props.password)
           : arrayBuffer;
         const objectURL = URL.createObjectURL(new Blob([decrypted]));
@@ -218,6 +230,7 @@ interface ImgComponentProps {
   width: number;
   height: number;
   sectionIndex: number;
+  album: string;
 }
 
 interface InnerImgComponentProps extends ImgComponentProps {

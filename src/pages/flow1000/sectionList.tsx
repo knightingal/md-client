@@ -13,7 +13,7 @@ import ImgComponent from '../../components/SectionImgComponent';
 import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Flow1000ModelState } from '../../models/flow1000';
-import { ConfigState } from '../../store';
+import { AlbumConfig, ConfigState } from '../../store';
 interface Flow1000Props {
   height: number;
   width: number;
@@ -34,6 +34,7 @@ function RecipeReviewCard(props: {
   coverHeight: number;
   coverWidth: number;
   timeStamp: string;
+  album: string;
 }) {
 
   return (
@@ -47,6 +48,7 @@ function RecipeReviewCard(props: {
         index={props.index}
         height={props.coverHeight}
         width={props.coverWidth}
+        album={props.album}
       />
       <CardActions disableSpacing={true}>
         <IconButton aria-label="add to favorites">
@@ -70,16 +72,18 @@ class SectionInfo {
 
   coverHeight: number;
   coverWidth: number;
+  album: string;
 
-  constructor(value: PicIndex) {
+  constructor(value: PicIndex, baseUrl: string, ecrypted: boolean) {
     // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-    this.imgSrc = `/linux1000/encrypted/${value.name}/${value.cover}.bin`;
+    this.imgSrc = `/linux1000/${baseUrl}/${value.name}/${value.cover}${ecrypted ? ".bin" : ""}`;
     this.title = value.name.substring(14);
     this.timeStamp = value.name.substring(0, 14);
     this.sectionIndex = value.sectionIndex;
     this.index = value.index;
     this.coverHeight = value.coverHeight;
     this.coverWidth = value.coverWidth;
+    this.album = value.album;
   }
 }
 
@@ -93,13 +97,14 @@ class GridLineBean implements HeightType {
   section3: SectionInfo | null;
 
 
-  constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
+  constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null, getConfig: (album: string) => AlbumConfig) {
+
     this.height = 360;
     this.expand = false;
-    this.section0 = new SectionInfo(value0);
-    this.section1 = value1 != null ? new SectionInfo(value1) : null;
-    this.section2 = value2 != null ? new SectionInfo(value2) : null;
-    this.section3 = value3 != null ? new SectionInfo(value3) : null;
+    this.section0 = new SectionInfo(value0, getConfig(value0.album).baseUrl, getConfig(value0.album).encryped);
+    this.section1 = value1 != null ? new SectionInfo(value1, getConfig(value1.album).baseUrl, getConfig(value1.album).encryped) : null;
+    this.section2 = value2 != null ? new SectionInfo(value2, getConfig(value2.album).baseUrl, getConfig(value2.album).encryped) : null;
+    this.section3 = value3 != null ? new SectionInfo(value3, getConfig(value3.album).baseUrl, getConfig(value3.album).encryped) : null;
 
   }
 }
@@ -115,6 +120,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
     props.sectionBean.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          album={props.sectionBean.section1.album}
           sectionIndex={props.sectionBean.section1.sectionIndex}
           index={props.sectionBean.section1.index}
           mount={props.mount}
@@ -130,6 +136,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
     props.sectionBean.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          album={props.sectionBean.section2.album}
           sectionIndex={props.sectionBean.section2.sectionIndex}
           index={props.sectionBean.section2.index}
           mount={props.mount}
@@ -153,6 +160,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
           imgSrc={props.sectionBean.section3.imgSrc}
           coverHeight={props.sectionBean.section3.coverHeight}
           coverWidth={props.sectionBean.section3.coverWidth}
+          album={props.sectionBean.section3.album}
         />
       </Grid>
     ) : null;
@@ -170,6 +178,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
             imgSrc={props.sectionBean.section0.imgSrc}
             coverHeight={props.sectionBean.section0.coverHeight}
             coverWidth={props.sectionBean.section0.coverWidth}
+            album={props.sectionBean.section0.album}
           />
         </Grid>
         {section1}
@@ -212,9 +221,13 @@ const GridContainerFunc = (props: {
   dispatch: Dispatch<any>;
   scrollTop: number, subRest: PicIndex[]
 }) => {
-  const albumConfig = useSelector(({ flow1000Config }: { flow1000Config: ConfigState }) => flow1000Config)
-  console.log(`albumConfig=`);
-  console.log(albumConfig.albumConfigs);
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
+
+  const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
@@ -264,7 +277,17 @@ const GridContainerFunc = (props: {
       });
   }
 
+
   function initBySectionData(subRest: PicIndex[]) {
+    const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
+      const albumConfig = albumConfigMap.get(album);
+      if (albumConfig) {
+        return albumConfig;
+      }
+      return albumConfigs[0];
+    }
+
+
     const sub0 = subRest.filter((_: PicIndex, index: number) => {
       return index % 4 === 0;
     });
@@ -284,6 +307,7 @@ const GridContainerFunc = (props: {
         index < sub1.length ? sub1[index] : null,
         index < sub2.length ? sub2[index] : null,
         index < sub3.length ? sub3[index] : null,
+        getConfigMap,
       );
     });
 
@@ -320,7 +344,6 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     scrollTop: flow1000.scrollTop,
     searchKey: flow1000.searchKey,
     sectionList: flow1000.sectionList,
-
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
