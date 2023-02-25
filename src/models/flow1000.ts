@@ -73,6 +73,7 @@ interface PicIndex {
   coverWidth: number;
   coverHeight: number;
   expanded: boolean;
+  album: string;
 }
 
 export interface Flow1000ModelState extends SectionList, Scrolling, WindowSizeState, ImgMouseOverState, SectionContent, SearchKey {

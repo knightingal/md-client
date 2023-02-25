@@ -1,55 +1,53 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { decryptArray } from '../lib/decryptoArray';
+import { ConfigState } from '../store';
 
+interface ImgComponentProps {
+  src: string, height: number, width: number, password: string, album: string
+}
 
-export default class ImgComponent extends React.Component<{ src: string, height: number, width: number, password: string }, { url: string | null }> {
-  constructor(props: { src: string, height: number, width: number, password: string }) {
-    super(props);
-    this.state = {
-      url: null
-    }
+const ImgComponentFunc = (props: ImgComponentProps) => {
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
+  let albumConfig = albumConfigs.find(config => config.name == props.album);
+  if (!albumConfig) {
+    albumConfig = albumConfigs[0]
   }
 
-  fetchImgByUrl(url: string) {
+  const [url, setUrl] = useState<string | null>(null);
+  const fetchImgByUrl = (url: string) => {
     fetch(url).then(response => {
       return response.arrayBuffer();
     }).then(arrayBuffer => {
-      const decrypted = decryptArray(arrayBuffer, this.props.password);
-      // const decrypted = arrayBuffer;
+      let decrypted: ArrayBuffer;
+      if (albumConfig?.encryped) {
+        decrypted = decryptArray(arrayBuffer, props.password);
+      } else {
+        decrypted = arrayBuffer;
+      }
       const objectURL = URL.createObjectURL(new Blob([decrypted]));
-      this.setState({
-        url: objectURL,
-      });
+      setUrl(objectURL);
     });
   }
 
-  componentDidMount() {
-    if (this.props.src != null) {
-      this.fetchImgByUrl(this.props.src);
-      this.setState({
-        url: null
-      });
+  useEffect(() => {
+    if (props.src != null) {
+      fetchImgByUrl(props.src);
+      setUrl(null)
     }
+  }, [props.src])
 
-  }
+  return <img alt=""
+    src={url == null ? "" : url}
+    style={{ display: "block", margin: "auto" }}
+    height={`${props.height}px`}
+    width={`${props.width}px`}
+  />
 
-  componentDidUpdate(prevProps: { src: string }) {
-    if (this.props.src !== prevProps.src) {
-      if (this.props.src != null) {
-        this.fetchImgByUrl(this.props.src);
-        this.setState({
-          url: null
-        });
-      }
-    }
-  }
-
-  render() {
-    return <img alt=""
-      src={this.state.url == null ? "" : this.state.url}
-      style={{ display: "block", margin: "auto" }}
-      height={`${this.props.height}px`}
-      width={`${this.props.width}px`}
-    />
-  }
 }
+
+export default ImgComponentFunc;

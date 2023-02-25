@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactNode, } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -10,9 +10,10 @@ import Grid from '@mui/material/Grid';
 import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 import ImgComponent from '../../components/SectionImgComponent';
 
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Flow1000ModelState } from '../../models/flow1000';
+import { AlbumConfig, ConfigState } from '../../store';
 interface Flow1000Props {
   height: number;
   width: number;
@@ -33,6 +34,7 @@ function RecipeReviewCard(props: {
   coverHeight: number;
   coverWidth: number;
   timeStamp: string;
+  album: string;
 }) {
 
   return (
@@ -46,6 +48,7 @@ function RecipeReviewCard(props: {
         index={props.index}
         height={props.coverHeight}
         width={props.coverWidth}
+        album={props.album}
       />
       <CardActions disableSpacing={true}>
         <IconButton aria-label="add to favorites">
@@ -69,16 +72,18 @@ class SectionInfo {
 
   coverHeight: number;
   coverWidth: number;
+  album: string;
 
-  constructor(value: PicIndex) {
+  constructor(value: PicIndex, baseUrl: string, ecrypted: boolean) {
     // this.imgSrc = "http://127.0.0.1:3000/tarsylia_resources/120.jpg";
-    this.imgSrc = `/linux1000/encrypted/${value.name}/${value.cover}.bin`;
+    this.imgSrc = `/linux1000/${baseUrl}/${value.name}/${value.cover}${ecrypted ? ".bin" : ""}`;
     this.title = value.name.substring(14);
     this.timeStamp = value.name.substring(0, 14);
     this.sectionIndex = value.sectionIndex;
     this.index = value.index;
     this.coverHeight = value.coverHeight;
     this.coverWidth = value.coverWidth;
+    this.album = value.album;
   }
 }
 
@@ -92,13 +97,14 @@ class GridLineBean implements HeightType {
   section3: SectionInfo | null;
 
 
-  constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null) {
+  constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null, getConfig: (album: string) => AlbumConfig) {
+
     this.height = 360;
     this.expand = false;
-    this.section0 = new SectionInfo(value0);
-    this.section1 = value1 != null ? new SectionInfo(value1) : null;
-    this.section2 = value2 != null ? new SectionInfo(value2) : null;
-    this.section3 = value3 != null ? new SectionInfo(value3) : null;
+    this.section0 = new SectionInfo(value0, getConfig(value0.album).baseUrl, getConfig(value0.album).encryped);
+    this.section1 = value1 != null ? new SectionInfo(value1, getConfig(value1.album).baseUrl, getConfig(value1.album).encryped) : null;
+    this.section2 = value2 != null ? new SectionInfo(value2, getConfig(value2.album).baseUrl, getConfig(value2.album).encryped) : null;
+    this.section3 = value3 != null ? new SectionInfo(value3, getConfig(value3.album).baseUrl, getConfig(value3.album).encryped) : null;
 
   }
 }
@@ -114,6 +120,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
     props.sectionBean.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          album={props.sectionBean.section1.album}
           sectionIndex={props.sectionBean.section1.sectionIndex}
           index={props.sectionBean.section1.index}
           mount={props.mount}
@@ -129,6 +136,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
     props.sectionBean.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
+          album={props.sectionBean.section2.album}
           sectionIndex={props.sectionBean.section2.sectionIndex}
           index={props.sectionBean.section2.index}
           mount={props.mount}
@@ -152,6 +160,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
           imgSrc={props.sectionBean.section3.imgSrc}
           coverHeight={props.sectionBean.section3.coverHeight}
           coverWidth={props.sectionBean.section3.coverWidth}
+          album={props.sectionBean.section3.album}
         />
       </Grid>
     ) : null;
@@ -169,6 +178,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
             imgSrc={props.sectionBean.section0.imgSrc}
             coverHeight={props.sectionBean.section0.coverHeight}
             coverWidth={props.sectionBean.section0.coverWidth}
+            album={props.sectionBean.section0.album}
           />
         </Grid>
         {section1}
@@ -180,7 +190,7 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
 };
 
 
-class SectionItem extends React.Component<{ item: GridLineBean, parentComp: GridContainer, mount: boolean }> {
+class SectionItem extends React.Component<{ item: GridLineBean, parentComp: any, mount: boolean }> {
   render() {
     return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
   }
@@ -189,7 +199,7 @@ const LazyLoader: React.ComponentClass<LazyProps<
   GridLineBean,
   SectionListProps,
   SectionListStatus,
-  GridContainer
+  any
 >> = lazyLoader(SectionItem, 'SectionList');
 
 interface PicIndex {
@@ -200,52 +210,50 @@ interface PicIndex {
   coverWidth: number;
   coverHeight: number;
   expanded: boolean;
+  album: string;
 }
 
 
-class GridContainer extends React.Component<
-  {
-    height: number;
-    expandImgIndex: number[];
-    searchKey: string
-    dispatch: Dispatch<any>;
-    scrollTop: number, subRest: PicIndex[]
-  },
-  { sectionList: Array<GridLineBean> }
-> implements ParentCompHandler {
-  constructor(props: { height: number; expandImgIndex: number[]; dispatch: Dispatch<any>; scrollTop: number; searchKey: string; subRest: PicIndex[] }) {
-    super(props);
-    this.state = { sectionList: [] };
-    this.prevExpandIndex = -1;
+const GridContainerFunc = (props: {
+  height: number;
+  expandImgIndex: number[];
+  searchKey: string
+  dispatch: Dispatch<any>;
+  scrollTop: number, subRest: PicIndex[]
+}) => {
+  const albumConfigs = useSelector((state: {
+    flow1000Config: ConfigState,
+  }) => {
+    return state.flow1000Config.albumConfigs;
+  })
+
+  const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
+
+  const parentCompHandler: ParentCompHandler = {
+    refreshScrollTop: (scrollTop: number) => {
+      props.dispatch({
+        type: 'flow1000/scrollTop',
+        scrollTop: scrollTop,
+      });
+    },
+
+    inScrolling: (inScrolling: boolean) => {
+      props.dispatch({
+        type: 'flow1000/inScrolling',
+        inScrolling,
+      });
+    }
   }
 
-  refreshScrollTop(scrollTop: number) {
-    this.props.dispatch({
-      type: 'flow1000/scrollTop',
-      scrollTop: scrollTop,
-    });
-  }
-
-  inScrolling: (inScrolling: boolean) => void = (inScrolling: boolean) => {
-    this.props.dispatch({
-      type: 'flow1000/inScrolling',
-      inScrolling,
-    });
-
-  }
-
-  prevExpandIndex: number;
-
-
-  fecthSectionList() {
+  function fecthSectionList() {
     const battleShipPage = false;
     // const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
 
-    if (this.props.searchKey != null && this.props.searchKey !== '') {
-      fetchUrl = fetchUrl.concat("&searchKey=" + this.props.searchKey)
+    if (props.searchKey != null && props.searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + props.searchKey)
     }
 
     fetch(fetchUrl)
@@ -254,27 +262,32 @@ class GridContainer extends React.Component<
       })
       .then((json: Array<PicIndex>) => {
         let subRest: Array<PicIndex>;
-        if (battleShipPage) {
-          // subRest = json.concat(json, json, json, json, json, json, json, json);
-          subRest = json;
-        } else {
-          subRest = json;
-        }
+        subRest = json;
         subRest.forEach((picIndex: PicIndex, index: number) => {
           picIndex.sectionIndex = picIndex.index;
           picIndex.expanded = false;
           picIndex.index = index;
         });
 
-        this.props.dispatch({
+        props.dispatch({
           type: 'flow1000/setSeciontList',
           sectionList: subRest,
         });
-        this.initBySectionData(subRest);
+        initBySectionData(subRest);
       });
   }
 
-  initBySectionData(subRest: PicIndex[]) {
+
+  function initBySectionData(subRest: PicIndex[]) {
+    const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
+      const albumConfig = albumConfigMap.get(album);
+      if (albumConfig) {
+        return albumConfig;
+      }
+      return albumConfigs[0];
+    }
+
+
     const sub0 = subRest.filter((_: PicIndex, index: number) => {
       return index % 4 === 0;
     });
@@ -294,44 +307,35 @@ class GridContainer extends React.Component<
         index < sub1.length ? sub1[index] : null,
         index < sub2.length ? sub2[index] : null,
         index < sub3.length ? sub3[index] : null,
+        getConfigMap,
       );
     });
 
-    this.setState({
-      sectionList: sectionList,
-    });
+    setSectionList(sectionList)
 
   }
 
-  componentDidMount() {
-    if (this.props.subRest.length <= 0) {
-      this.fecthSectionList();
+  const [sectionList, setSectionList] = useState<GridLineBean[]>([])
 
-    } else {
-      this.initBySectionData(this.props.subRest);
-    }
-  }
+  useEffect(() => {
+    fecthSectionList();
+  }, [props.searchKey])
 
-  componentDidUpdate(prevProps: { searchKey: string }) {
-    if (this.props.searchKey !== prevProps.searchKey) {
-      this.fecthSectionList();
-    }
-  }
 
-  render() {
-    return (
-      <div style={{ height: `${this.props.height - 64}px` }} >
-        <LazyLoader
-          dataList={this.state.sectionList}
-          scrollTop={this.props.scrollTop}
-          parentComp={this}
-          height={this.props.height - 64}
-          dispatchHandler={this}
-        />
-      </div>
-    );
-  }
+  return (
+    <div style={{ height: `${props.height - 64}px` }} >
+      <LazyLoader
+        dataList={sectionList}
+        scrollTop={props.scrollTop}
+        parentComp={GridContainerFunc}
+        height={props.height - 64}
+        dispatchHandler={parentCompHandler}
+      />
+    </div>
+  );
+
 }
+
 export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   return {
     height: flow1000.height,
@@ -343,6 +347,5 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainer subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
+  return <GridContainerFunc subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
 });
-
