@@ -34,9 +34,13 @@ const configOption: CreateSliceOptions<ConfigState, Red, string> = {
       encryped: true,
       baseUrl: "encrypted"
     }, {
+      name: "1803",
+      encryped: false,
+      baseUrl: "1803"
+    }, {
       name: "1804",
-      encryped: true,
-      baseUrl: ""
+      encryped: false,
+      baseUrl: "1804"
     }],
   },
   reducers: {
