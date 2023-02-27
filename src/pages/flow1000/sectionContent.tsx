@@ -78,7 +78,7 @@ const ContentFunc = (props: { password: string, height: number }) => {
     fecthSectionList(Number(sectionId));
   }, [])
 
-  const ImgComponentItem = (props: { mount: boolean, item: ImgDetail, parentComp: any }) => {
+  const ImgComponentItem = (props: { mount: boolean, item: ImgDetail }) => {
     return <ImgComponent
       album={sectionDetail.album}
       width={props.item.width}
@@ -91,11 +91,10 @@ const ContentFunc = (props: { password: string, height: number }) => {
   const LazyLoader: React.ComponentClass<LazyProps<
     ImgDetail,
     { index: number, password: string },
-    {},
-    any
+    {}
   >> = lazyLoader(ImgComponentItem, "Content", 2)
 
-  return <LazyLoader dispatchHandler={prarentCompHandler} height={props.height - 64} dataList={sectionDetail.pics} parentComp={ContentFunc} scrollTop={0} />
+  return <LazyLoader dispatchHandler={prarentCompHandler} height={props.height - 64} dataList={sectionDetail.pics} scrollTop={0} />
 }
 
 

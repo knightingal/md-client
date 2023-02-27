@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-interface WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE> {
+interface WrappedProps<ITEM_TYPE> {
   item: ITEM_TYPE;
   mount: boolean;
-  parentComp: PARENT_COMP_TYPE | ((props: any) => JSX.Element);
 }
 
 interface LazyState {
@@ -21,9 +20,8 @@ export interface ParentCompHandler {
   inScrolling: (inScrolling: boolean) => void
 }
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
-export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE, PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>> {
+export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE,> {
   dataList: Array<ITEM_TYPE>;
-  parentComp: PARENT_COMP_TYPE | ((props: any) => JSX.Element);
   scrollTop: number;
   height: number;
   dispatchHandler: ParentCompHandler
@@ -34,18 +32,17 @@ export function lazyLoader<
   ITEM_TYPE extends HeightType,
   T_PROPS,
   T_STATE,
-  PARENT_COMP_TYPE extends React.Component<T_PROPS, T_STATE>
 >(
-  WrappedComponent: React.ComponentClass<WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>> | ((props: WrappedProps<ITEM_TYPE, PARENT_COMP_TYPE>) => JSX.Element),
+  WrappedComponent: (props: WrappedProps<ITEM_TYPE>) => JSX.Element,
   className: string,
   preLoadOffSet: number = 1,
-): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>> {
+): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE>> {
 
   class LazyLoader extends React.Component<
-    LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
+    LazyProps<ITEM_TYPE, T_PROPS, T_STATE>,
     LazyState
   > {
-    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>) {
+    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE>) {
       super(props);
       const itemHeightList: Array<number> = props.dataList.map(
         (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -150,7 +147,7 @@ export function lazyLoader<
     }
 
     componentDidUpdate(
-      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE, PARENT_COMP_TYPE>,
+      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE>,
       prevState: LazyState,
     ) {
       if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight
@@ -255,7 +252,6 @@ export function lazyLoader<
                   <WrappedComponent
                     key={index}
                     item={itemBean}
-                    parentComp={this.props.parentComp}
                     mount={this.state.mount}
                   />
                 ) : null;
