@@ -34,8 +34,10 @@ class ImgDetail implements HeightType {
   }
 }
 
-const ContentFunc = (props: { password: string, height: number }) => {
+const Content = (props: { password: string, height: number }) => {
   const { sectionId } = useParams();
+
+  const divRefs = React.useRef<HTMLDivElement>(null);
 
   const albumConfigs = useSelector((state: {
     flow1000Config: ConfigState,
@@ -78,6 +80,24 @@ const ContentFunc = (props: { password: string, height: number }) => {
     fecthSectionList(Number(sectionId));
   }, [])
 
+  if (!divRefs.current) {
+    return <div ref={divRefs} />
+  }
+  console.log("client width:")
+  console.log(divRefs.current.clientWidth);
+  const maxWidth = divRefs.current.clientWidth;
+
+  sectionDetail.pics = sectionDetail.pics.map(pic => {
+    if (pic.width <= maxWidth) {
+      return pic;
+    } else {
+      const width = maxWidth
+      const height = pic.height * maxWidth / pic.width
+      return new ImgDetail(pic.name, width, height)
+    }
+  })
+
+
   const ImgComponentItem = (props: { mount: boolean, item: ImgDetail }) => {
     return <ImgComponent
       album={sectionDetail.album}
@@ -94,7 +114,10 @@ const ContentFunc = (props: { password: string, height: number }) => {
     {}
   >> = lazyLoader(ImgComponentItem, "Content", 2)
 
-  return <LazyLoader dispatchHandler={prarentCompHandler} height={props.height - 64} dataList={sectionDetail.pics} scrollTop={0} />
+  return <div ref={divRefs}>
+    <LazyLoader dispatchHandler={prarentCompHandler}
+      height={props.height - 64} dataList={sectionDetail.pics} scrollTop={0} />
+  </div>
 }
 
 
@@ -104,5 +127,5 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     password: ""
   }
   return props;
-})(ContentFunc);
+})(Content);
 
