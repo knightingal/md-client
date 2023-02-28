@@ -189,18 +189,15 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
   );
 };
 
+const SectionItemFunc = (props: { item: GridLineBean, mount: boolean }) =>
+  <GridLine sectionBean={props.item} mount={props.mount} />
 
-class SectionItem extends React.Component<{ item: GridLineBean, parentComp: any, mount: boolean }> {
-  render() {
-    return <GridLine sectionBean={this.props.item} mount={this.props.mount} />
-  }
-}
+
 const LazyLoader: React.ComponentClass<LazyProps<
   GridLineBean,
   SectionListProps,
-  SectionListStatus,
-  any
->> = lazyLoader(SectionItem, 'SectionList');
+  SectionListStatus
+>> = lazyLoader(SectionItemFunc, 'SectionList');
 
 interface PicIndex {
   sectionIndex: number;
@@ -327,7 +324,6 @@ const GridContainerFunc = (props: {
       <LazyLoader
         dataList={sectionList}
         scrollTop={props.scrollTop}
-        parentComp={GridContainerFunc}
         height={props.height - 64}
         dispatchHandler={parentCompHandler}
       />
