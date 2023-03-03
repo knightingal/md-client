@@ -46,9 +46,9 @@ const Content = (props: { password: string, height: number }) => {
   })
 
   const prarentCompHandler: ParentCompHandler = {
-    refreshScrollTop: (scrollTop: number) => void {
+    refreshScrollTop: (_: number) => void {
     },
-    inScrolling: (inScrolling: boolean) => void {
+    inScrolling: (_: boolean) => void {
     }
   }
 

@@ -242,9 +242,9 @@ const GridContainerFunc = (props: {
     }
   }
 
-  function fecthSectionList() {
-    const battleShipPage = false;
-    // const battleShipPage = true;
+  const fecthSectionList = () => {
+    // const battleShipPage = false;
+    const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
@@ -254,9 +254,7 @@ const GridContainerFunc = (props: {
     }
 
     fetch(fetchUrl)
-      .then((resp: Response) => {
-        return resp.json();
-      })
+      .then((resp: Response) => resp.json())
       .then((json: Array<PicIndex>) => {
         let subRest: Array<PicIndex>;
         subRest = json;
@@ -275,7 +273,7 @@ const GridContainerFunc = (props: {
   }
 
 
-  function initBySectionData(subRest: PicIndex[]) {
+  const initBySectionData = (subRest: PicIndex[]) => {
     const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
       const albumConfig = albumConfigMap.get(album);
       if (albumConfig) {
@@ -309,7 +307,6 @@ const GridContainerFunc = (props: {
     });
 
     setSectionList(sectionList)
-
   }
 
   const [sectionList, setSectionList] = useState<GridLineBean[]>([])
