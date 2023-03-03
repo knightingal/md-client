@@ -57,28 +57,27 @@ const Content = (props: { password: string, height: number }) => {
     name: '', encryped: false, baseUrl: ""
   })
 
-  const fecthSectionList = (index: number) => {
-    if (index <= 0) {
-      return;
-    }
-    fetch(`/local1000/picDetailAjax?id=${index}`)
-      .then((resp: Response) => {
-        return resp.json();
-      })
-      .then((json: any) => {
-        const sectionDetail: SectionDetail = json;
-        setSectionDetail(sectionDetail);
-        let albumConfig = albumConfigs.find(config => config.name === sectionDetail.album);
-        if (!albumConfig) {
-          albumConfig = albumConfigs[0]
-        }
-        setAlbumConfig(albumConfig);
-      });
-  }
 
   useEffect(() => {
-    fecthSectionList(Number(sectionId));
-  }, [sectionId])
+    ((index: number) => {
+      if (index <= 0) {
+        return;
+      }
+      fetch(`/local1000/picDetailAjax?id=${index}`)
+        .then((resp: Response) => {
+          return resp.json();
+        })
+        .then((json: any) => {
+          const sectionDetail: SectionDetail = json;
+          setSectionDetail(sectionDetail);
+          let albumConfig = albumConfigs.find(config => config.name === sectionDetail.album);
+          if (!albumConfig) {
+            albumConfig = albumConfigs[0]
+          }
+          setAlbumConfig(albumConfig);
+        });
+    })(Number(sectionId));
+  }, [sectionId, albumConfigs])
 
   if (!divRefs.current) {
     return <div ref={divRefs} />
