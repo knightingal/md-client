@@ -68,7 +68,7 @@ const Content = (props: { password: string, height: number }) => {
       .then((json: any) => {
         const sectionDetail: SectionDetail = json;
         setSectionDetail(sectionDetail);
-        let albumConfig = albumConfigs.find(config => config.name == sectionDetail.album);
+        let albumConfig = albumConfigs.find(config => config.name === sectionDetail.album);
         if (!albumConfig) {
           albumConfig = albumConfigs[0]
         }
@@ -78,7 +78,7 @@ const Content = (props: { password: string, height: number }) => {
 
   useEffect(() => {
     fecthSectionList(Number(sectionId));
-  }, [])
+  }, [sectionId])
 
   if (!divRefs.current) {
     return <div ref={divRefs} />
@@ -109,9 +109,7 @@ const Content = (props: { password: string, height: number }) => {
   }
 
   const LazyLoader: React.ComponentClass<LazyProps<
-    ImgDetail,
-    { index: number, password: string },
-    {}
+    ImgDetail
   >> = lazyLoader(ImgComponentItem, "Content", 2)
 
   return <div ref={divRefs}>

@@ -110,10 +110,6 @@ class GridLineBean implements HeightType {
 }
 
 
-interface SectionListProps { }
-
-interface SectionListStatus { }
-
 const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
 
   const section1 =
@@ -194,9 +190,7 @@ const SectionItemFunc = (props: { item: GridLineBean, mount: boolean }) =>
 
 
 const LazyLoader: React.ComponentClass<LazyProps<
-  GridLineBean,
-  SectionListProps,
-  SectionListStatus
+  GridLineBean
 >> = lazyLoader(SectionItemFunc, 'SectionList');
 
 interface PicIndex {
@@ -243,8 +237,8 @@ const GridContainerFunc = (props: {
   }
 
   const fecthSectionList = () => {
-    // const battleShipPage = false;
-    const battleShipPage = true;
+    const battleShipPage = false;
+    // const battleShipPage = true;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';

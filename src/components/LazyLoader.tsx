@@ -20,7 +20,7 @@ export interface ParentCompHandler {
   inScrolling: (inScrolling: boolean) => void
 }
 // 输入的item数据必须包含一个height字段，用于表示每个item的高度
-export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE,> {
+export interface LazyProps<ITEM_TYPE extends HeightType,> {
   dataList: Array<ITEM_TYPE>;
   scrollTop: number;
   height: number;
@@ -29,20 +29,18 @@ export interface LazyProps<ITEM_TYPE extends HeightType, T_PROPS, T_STATE,> {
 
 
 export function lazyLoader<
-  ITEM_TYPE extends HeightType,
-  T_PROPS,
-  T_STATE,
+  ITEM_TYPE extends HeightType
 >(
   WrappedComponent: (props: WrappedProps<ITEM_TYPE>) => JSX.Element,
   className: string,
   preLoadOffSet: number = 1,
-): React.ComponentClass<LazyProps<ITEM_TYPE, T_PROPS, T_STATE>> {
+): React.ComponentClass<LazyProps<ITEM_TYPE>> {
 
   class LazyLoader extends React.Component<
-    LazyProps<ITEM_TYPE, T_PROPS, T_STATE>,
+    LazyProps<ITEM_TYPE>,
     LazyState
   > {
-    constructor(props: LazyProps<ITEM_TYPE, T_PROPS, T_STATE>) {
+    constructor(props: LazyProps<ITEM_TYPE>) {
       super(props);
       const itemHeightList: Array<number> = props.dataList.map(
         (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -51,7 +49,7 @@ export function lazyLoader<
       );
       this.itemHeightStep = itemHeightList.map(
         (value: number, index: number, array: Array<number>): number => {
-          if (index == 0) {
+          if (index === 0) {
             return 0;
           }
           return array
@@ -77,7 +75,7 @@ export function lazyLoader<
     lastTimeStampe: number;
 
     scrollHandler(e: React.UIEvent) {
-      if (this.state.mount == true) {
+      if (this.state.mount === true) {
         this.setState({
           mount: false,
         });
@@ -91,7 +89,7 @@ export function lazyLoader<
       const refreshTopPicIndex = this.checkPostionInPic(scrollTop);
       setTimeout(
         (timeStamp: number) => {
-          if (this.lastTimeStampe == timeStamp) {
+          if (this.lastTimeStampe === timeStamp) {
             this.setState({ mount: true });
             this.props.dispatchHandler.inScrolling(false);
           }
@@ -126,7 +124,7 @@ export function lazyLoader<
         if (currentTopPicIndex < 0) {
           return <div style={{ height: '0px' }} />;
         }
-        if (self.props.dataList.length == 0) {
+        if (self.props.dataList.length === 0) {
           return <div style={{ height: '0px' }} />;
         }
         const topPaddingHeight = self.itemHeightStep[currentTopPicIndex];
@@ -144,7 +142,7 @@ export function lazyLoader<
     }
 
     componentDidUpdate(
-      prevProps: LazyProps<ITEM_TYPE, T_PROPS, T_STATE>,
+      prevProps: LazyProps<ITEM_TYPE>,
       prevState: LazyState,
     ) {
       if (this.scrollHeight <= (this.divRefs.current as HTMLDivElement).clientHeight
@@ -152,14 +150,14 @@ export function lazyLoader<
         (this.divRefs.current as HTMLDivElement).scrollTo(0, this.props.scrollTop);
       }
       this.scrollHeight = (this.divRefs.current as HTMLDivElement).scrollHeight;
-      if (prevProps.height != this.props.height) {
+      if (prevProps.height !== this.props.height) {
         this.setState({
           currentButtonPicIndex: this.checkPostionInPic(
             (this.divRefs.current as HTMLDivElement).clientHeight,
           ),
         });
       }
-      if (this.props.dataList.length != prevProps.dataList.length) {
+      if (this.props.dataList.length !== prevProps.dataList.length) {
         const itemHeightList: Array<number> = this.props.dataList.map(
           (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
             return value.height;
@@ -167,7 +165,7 @@ export function lazyLoader<
         );
         this.itemHeightStep = itemHeightList.map(
           (value: number, index: number, array: Array<number>): number => {
-            if (index == 0) {
+            if (index === 0) {
               return 0;
             }
             const subArray = array.slice(0, index);
