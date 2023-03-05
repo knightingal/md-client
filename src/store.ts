@@ -38,6 +38,10 @@ const configOption: CreateSliceOptions<ConfigState, Red, string> = {
       encryped: false,
       baseUrl: "1803"
     }, {
+      name: "1805",
+      encryped: false,
+      baseUrl: "1805"
+    }, {
       name: "1804",
       encryped: false,
       baseUrl: "1804"
