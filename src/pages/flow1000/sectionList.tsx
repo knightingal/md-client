@@ -109,13 +109,7 @@ class GridLineBean implements HeightType {
   }
 }
 
-
-interface SectionListProps { }
-
-interface SectionListStatus { }
-
 const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
-
   const section1 =
     props.sectionBean.section1 != null ? (
       <Grid item={true} xs={3}>
@@ -194,9 +188,7 @@ const SectionItemFunc = (props: { item: GridLineBean, mount: boolean }) =>
 
 
 const LazyLoader: React.ComponentClass<LazyProps<
-  GridLineBean,
-  SectionListProps,
-  SectionListStatus
+  GridLineBean
 >> = lazyLoader(SectionItemFunc, 'SectionList');
 
 interface PicIndex {
@@ -224,101 +216,93 @@ const GridContainerFunc = (props: {
     return state.flow1000Config.albumConfigs;
   })
 
-  const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
+  const [sectionList, setSectionList] = useState<GridLineBean[]>([])
+  const { searchKey, dispatch } = props;
+
+  useEffect(() => {
+    const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
+    const initBySectionData = (subRest: PicIndex[]) => {
+      const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
+        const albumConfig = albumConfigMap.get(album);
+        if (albumConfig) {
+          return albumConfig;
+        }
+        return albumConfigs[0];
+      }
+
+      const sub0 = subRest.filter((_: PicIndex, index: number) => {
+        return index % 4 === 0;
+      });
+      const sub1 = subRest.filter((_: PicIndex, index: number) => {
+        return index % 4 === 1;
+      });
+      const sub2 = subRest.filter((_: PicIndex, index: number) => {
+        return index % 4 === 2;
+      });
+      const sub3 = subRest.filter((_: PicIndex, index: number) => {
+        return index % 4 === 3;
+      });
+
+      const sectionList = sub0.map((value: PicIndex, index: number) => {
+        return new GridLineBean(
+          value,
+          index < sub1.length ? sub1[index] : null,
+          index < sub2.length ? sub2[index] : null,
+          index < sub3.length ? sub3[index] : null,
+          getConfigMap,
+        );
+      });
+
+      setSectionList(sectionList)
+    }
+    const fecthSectionList = () => {
+      const battleShipPage = false;
+      // const battleShipPage = true;
+      let fetchUrl = battleShipPage
+        ? '/local1000/picIndexAjax?album=ship'
+        : '/local1000/picIndexAjax?';
+
+      if (searchKey != null && searchKey !== '') {
+        fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
+      }
+
+      fetch(fetchUrl)
+        .then((resp: Response) => resp.json())
+        .then((json: Array<PicIndex>) => {
+          let subRest: Array<PicIndex>;
+          subRest = json;
+          subRest.forEach((picIndex: PicIndex, index: number) => {
+            picIndex.sectionIndex = picIndex.index;
+            picIndex.expanded = false;
+            picIndex.index = index;
+          });
+
+          dispatch({
+            type: 'flow1000/setSeciontList',
+            sectionList: subRest,
+          });
+          initBySectionData(subRest);
+        });
+    }
+    fecthSectionList();
+  }, [searchKey, albumConfigs, dispatch])
+
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
-      props.dispatch({
+      dispatch({
         type: 'flow1000/scrollTop',
         scrollTop: scrollTop,
       });
     },
 
     inScrolling: (inScrolling: boolean) => {
-      props.dispatch({
+      dispatch({
         type: 'flow1000/inScrolling',
         inScrolling,
       });
     }
   }
-
-  function fecthSectionList() {
-    const battleShipPage = false;
-    // const battleShipPage = true;
-    let fetchUrl = battleShipPage
-      ? '/local1000/picIndexAjax?album=ship'
-      : '/local1000/picIndexAjax?';
-
-    if (props.searchKey != null && props.searchKey !== '') {
-      fetchUrl = fetchUrl.concat("&searchKey=" + props.searchKey)
-    }
-
-    fetch(fetchUrl)
-      .then((resp: Response) => {
-        return resp.json();
-      })
-      .then((json: Array<PicIndex>) => {
-        let subRest: Array<PicIndex>;
-        subRest = json;
-        subRest.forEach((picIndex: PicIndex, index: number) => {
-          picIndex.sectionIndex = picIndex.index;
-          picIndex.expanded = false;
-          picIndex.index = index;
-        });
-
-        props.dispatch({
-          type: 'flow1000/setSeciontList',
-          sectionList: subRest,
-        });
-        initBySectionData(subRest);
-      });
-  }
-
-
-  function initBySectionData(subRest: PicIndex[]) {
-    const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
-      const albumConfig = albumConfigMap.get(album);
-      if (albumConfig) {
-        return albumConfig;
-      }
-      return albumConfigs[0];
-    }
-
-
-    const sub0 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 0;
-    });
-    const sub1 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 1;
-    });
-    const sub2 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 2;
-    });
-    const sub3 = subRest.filter((_: PicIndex, index: number) => {
-      return index % 4 === 3;
-    });
-
-    const sectionList = sub0.map((value: PicIndex, index: number) => {
-      return new GridLineBean(
-        value,
-        index < sub1.length ? sub1[index] : null,
-        index < sub2.length ? sub2[index] : null,
-        index < sub3.length ? sub3[index] : null,
-        getConfigMap,
-      );
-    });
-
-    setSectionList(sectionList)
-
-  }
-
-  const [sectionList, setSectionList] = useState<GridLineBean[]>([])
-
-  useEffect(() => {
-    fecthSectionList();
-  }, [props.searchKey])
-
-
   return (
     <div style={{ height: `${props.height - 64}px` }} >
       <LazyLoader
