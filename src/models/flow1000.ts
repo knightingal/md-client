@@ -115,7 +115,7 @@ const Flow1000Model: Flow1000ModelType = {
     imgMouseLeave(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
       const state0 = (state as Flow1000ModelState);
       state0.sectionList[action.imgIndex].expanded = false;
-      state0.expandImgIndex = state0.expandImgIndex.filter(item => item != action.imgIndex);
+      state0.expandImgIndex = state0.expandImgIndex.filter(item => item !== action.imgIndex);
       return state0;
     },
     imgClick(state: Flow1000ModelState | undefined, action: ImgClickAction) {
