@@ -13,7 +13,7 @@ const ImgComponentFunc = (props: ImgComponentProps) => {
   }) => {
     return state.flow1000Config.albumConfigs;
   })
-  let albumConfig = albumConfigs.find(config => config.name == props.album);
+  let albumConfig = albumConfigs.find(config => config.name === props.album);
   if (!albumConfig) {
     albumConfig = albumConfigs[0]
   }

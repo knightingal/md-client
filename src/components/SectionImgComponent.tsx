@@ -7,8 +7,6 @@ import { Dispatch } from 'redux';
 import { useNavigate } from "react-router-dom";
 import { ConfigState } from '../store';
 
-const Encrypted = true;
-
 
 const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   const divRefs = React.useRef(null);
@@ -34,7 +32,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
         return response.arrayBuffer();
       })
       .then(arrayBuffer => {
-        let albumConfig = albumConfigs.find(config => config.name == props.album);
+        let albumConfig = albumConfigs.find(config => config.name === props.album);
         if (!albumConfig) {
           albumConfig = albumConfigs[0]
         }
@@ -49,10 +47,10 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   }
 
   React.useEffect(() => {
-    if (props.src != null && props.mount == true) {
+    if (props.src !== null && props.mount === true) {
       fetchImgByUrl(props.src);
     }
-  }, [props.mount, props.src])
+  }, [props.mount, props.src, fetchImgByUrl])
 
   const onMouseOver = (e: React.MouseEvent) => {
     if (props.scrolling) {
@@ -83,7 +81,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   let expandWidth;
   let top;
   let topNum: number;
-  if (divRefs.current != undefined) {
+  if (divRefs.current !== null) {
     imgHeightNum = props.height * (divRefs.current as any).offsetWidth / props.width;
     imgHeight = `${imgHeightNum}px`;
     expandWidth = (divRefs.current as any).offsetWidth + "px";
@@ -102,7 +100,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   const img =
     state.url != null ? (
       <>
-        <img
+        <img alt=""
           src={state.url}
           ref={divRefs}
           style={{
@@ -175,7 +173,7 @@ const ExpandImg = ({
       )
       setCurrentHeight(expandHeight);
     }, 0)
-  }, [])
+  }, [expandHeight, expandHeightNum, topNum])
 
   const dispacther = useDispatch();
 
@@ -189,7 +187,7 @@ const ExpandImg = ({
     navigate("/flow1000/content/" + sectionIndex)
   }
 
-  return <img
+  return <img alt=""
     src={url}
     style={{
       position: 'absolute',
