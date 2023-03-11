@@ -1,8 +1,35 @@
-import { Actions, CaseReducers, configureStore, CreateSliceOptions } from '@reduxjs/toolkit'
+import { Actions, CaseReducers, configureStore, CreateSliceOptions, PayloadAction } from '@reduxjs/toolkit'
 import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const flow1000Slice = createSlice(Flow1000Module as any)
+
+interface TitleState {
+  title: string
+}
+
+const initialState: TitleState = {
+  title: "Welcome to user Flow1000"
+}
+
+export const titleSlice = createSlice({
+  name: "title",
+  initialState,
+  reducers: {
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
+    },
+    resetTitle: (state) => {
+      state.title = "Welcome to user Flow1000"
+    }
+  }
+});
+
+const titleReducer = titleSlice.reducer;
+
+export const { setTitle, resetTitle } = titleSlice.actions;
+
 
 export interface AlbumConfig {
   name: string,
@@ -19,7 +46,6 @@ interface ConfigAction extends Actions {
 }
 
 interface Red extends CaseReducers<ConfigState, ConfigAction> {
-  // add: (state: ConfigState) => void
 }
 
 const configOption: CreateSliceOptions<ConfigState, Red, string> = {
@@ -48,9 +74,6 @@ const configOption: CreateSliceOptions<ConfigState, Red, string> = {
     }],
   },
   reducers: {
-    // add: (state: ConfigState) => {
-    //   state.config1 += 1
-    // }
   }
 }
 
@@ -60,11 +83,20 @@ const flow1000ConfigSlice = createSlice(configOption)
 const flow1000Reducer = flow1000Slice.reducer;
 const flow1000ConfigReducer = flow1000ConfigSlice.reducer;
 
-export default configureStore({
+const store = configureStore({
   reducer: {
     flow1000: flow1000Reducer,
     flow1000Config: flow1000ConfigReducer,
+    flowTitle: titleReducer,
   }
 })
+
+export default store;
+
+type RootState = ReturnType<typeof store.getState>
+type AppDispatch = typeof store.dispatch;
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppDispatch: () => AppDispatch = useDispatch;
 
 export const { add } = flow1000ConfigSlice.actions;
