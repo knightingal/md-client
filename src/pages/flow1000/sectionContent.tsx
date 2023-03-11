@@ -80,7 +80,7 @@ const Content = (props: { password: string, height: number }) => {
           setAlbumConfig(albumConfig);
         });
     })(Number(sectionId));
-  }, [sectionId, albumConfigs])
+  }, [sectionId, albumConfigs, dispatch])
 
   if (!divRefs.current) {
     return <div ref={divRefs} />
