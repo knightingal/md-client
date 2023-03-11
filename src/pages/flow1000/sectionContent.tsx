@@ -6,7 +6,7 @@ import ImgComponent from '../../components/ImgComponent';
 import { Flow1000ModelState } from '../../models/flow1000';
 import { connect, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { AlbumConfig, ConfigState } from '../../store';
+import { AlbumConfig, ConfigState, setTitle, useAppDispatch } from '../../store';
 
 class SectionDetail {
   dirName: string;
@@ -36,6 +36,7 @@ class ImgDetail implements HeightType {
 
 const Content = (props: { password: string, height: number }) => {
   const { sectionId } = useParams();
+  const dispatch = useAppDispatch();
 
   const divRefs = React.useRef<HTMLDivElement>(null);
 
@@ -69,6 +70,8 @@ const Content = (props: { password: string, height: number }) => {
         })
         .then((json: any) => {
           const sectionDetail: SectionDetail = json;
+          const title = sectionDetail.dirName;
+          dispatch(setTitle(title));
           setSectionDetail(sectionDetail);
           let albumConfig = albumConfigs.find(config => config.name === sectionDetail.album);
           if (!albumConfig) {

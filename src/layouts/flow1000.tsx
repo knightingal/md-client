@@ -13,6 +13,7 @@ import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { useAppSelector } from '../store';
 
 interface Flow1000Props {
   height: number;
@@ -27,6 +28,9 @@ export default connect(
     return { height: flow1000.height, width: flow1000.width }
   }
 )((props: Flow1000Props) => {
+
+  const title = useAppSelector((state) => state.flowTitle.title);
+
   // const classes = useStyles();
   useEffect(() => {
     const width = document.body.clientWidth;
@@ -65,7 +69,7 @@ export default connect(
               component="div"
               sx={{ flexGrow: 1 }}
             >
-              Welcome to user Flow1000
+              {title}
             </Typography>
             <Search>
               <SearchIconWrapper>

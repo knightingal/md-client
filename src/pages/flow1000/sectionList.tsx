@@ -285,6 +285,7 @@ const GridContainerFunc = (props: {
         });
     }
     fecthSectionList();
+    dispatch({ type: 'title/resetTitle' });
   }, [searchKey, albumConfigs, dispatch])
 
 
