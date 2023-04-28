@@ -1,21 +1,15 @@
-import { Actions, CaseReducers, configureStore, CreateSliceOptions, PayloadAction } from '@reduxjs/toolkit'
+import { configureStore, PayloadAction } from '@reduxjs/toolkit'
 import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const flow1000Slice = createSlice(Flow1000Module as any)
 
-interface TitleState {
-  title: string
-}
-
-const initialState: TitleState = {
-  title: "Welcome to user Flow1000"
-}
-
 export const titleSlice = createSlice({
   name: "title",
-  initialState,
+  initialState: {
+    title: "Welcome to user Flow1000"
+  },
   reducers: {
     setTitle: (state, action: PayloadAction<string>) => {
       state.title = action.payload;
@@ -41,14 +35,8 @@ export interface ConfigState {
   albumConfigs: AlbumConfig[]
 }
 
-interface ConfigAction extends Actions {
 
-}
-
-interface Red extends CaseReducers<ConfigState, ConfigAction> {
-}
-
-const configOption: CreateSliceOptions<ConfigState, Red, string> = {
+const flow1000ConfigSlice = createSlice({
   name: "flow1000Config",
   initialState: {
     albumConfigs: [{
@@ -75,10 +63,7 @@ const configOption: CreateSliceOptions<ConfigState, Red, string> = {
   },
   reducers: {
   }
-}
-
-
-const flow1000ConfigSlice = createSlice(configOption)
+})
 
 const flow1000Reducer = flow1000Slice.reducer;
 const flow1000ConfigReducer = flow1000ConfigSlice.reducer;
@@ -98,5 +83,3 @@ type AppDispatch = typeof store.dispatch;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useAppDispatch: () => AppDispatch = useDispatch;
-
-export const { add } = flow1000ConfigSlice.actions;
