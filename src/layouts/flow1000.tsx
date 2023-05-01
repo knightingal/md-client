@@ -12,7 +12,7 @@ import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useAppSelector } from '../store';
+import { initConfig, initConfigState, useAppSelector } from '../store';
 
 interface Flow1000Props {
   height: number;
@@ -28,13 +28,14 @@ export default connect(
   }
 )((props: Flow1000Props) => {
 
-  const title = useAppSelector((state) => state.flowTitle.title);
+  const title = useAppSelector((state) => state.flow1000Title.title);
 
   // const classes = useStyles();
   useEffect(() => {
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
     console.log("flow1000 useEffect:" + height)
+    props.dispatch(initConfig(initConfigState))
     props.dispatch({
       type: 'flow1000/setWindowSize',
       height: height,
