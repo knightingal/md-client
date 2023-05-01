@@ -3,9 +3,34 @@ import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
+export const initConfigState: ConfigState = {
+  albumConfigs: [{
+    name: "flow1000",
+    encryped: true,
+    baseUrl: "encrypted"
+  }, {
+    name: "ship",
+    encryped: true,
+    baseUrl: "encrypted"
+  }, {
+    name: "1803",
+    encryped: false,
+    baseUrl: "1803"
+  }, {
+    name: "1805",
+    encryped: false,
+    baseUrl: "1805"
+  }, {
+    name: "1804",
+    encryped: false,
+    baseUrl: "1804"
+  }],
+}
+
+
 const flow1000Slice = createSlice(Flow1000Module as any)
 
-export const titleSlice = createSlice({
+export const flow1000TitleSlice = createSlice({
   name: "title",
   initialState: {
     title: "Welcome to user Flow1000"
@@ -20,9 +45,9 @@ export const titleSlice = createSlice({
   }
 });
 
-const titleReducer = titleSlice.reducer;
+const flow1000TitleReducer = flow1000TitleSlice.reducer;
 
-export const { setTitle, resetTitle } = titleSlice.actions;
+export const { setTitle, resetTitle } = flow1000TitleSlice.actions;
 
 
 export interface AlbumConfig {
@@ -39,31 +64,16 @@ export interface ConfigState {
 const flow1000ConfigSlice = createSlice({
   name: "flow1000Config",
   initialState: {
-    albumConfigs: [{
-      name: "flow1000",
-      encryped: true,
-      baseUrl: "encrypted"
-    }, {
-      name: "ship",
-      encryped: true,
-      baseUrl: "encrypted"
-    }, {
-      name: "1803",
-      encryped: false,
-      baseUrl: "1803"
-    }, {
-      name: "1805",
-      encryped: false,
-      baseUrl: "1805"
-    }, {
-      name: "1804",
-      encryped: false,
-      baseUrl: "1804"
-    }],
+    albumConfigs: []
   },
   reducers: {
+    initConfig: (state: ConfigState, action: PayloadAction<ConfigState>) => {
+      state.albumConfigs = action.payload.albumConfigs
+    }
   }
 })
+
+export const { initConfig, } = flow1000ConfigSlice.actions;
 
 const flow1000Reducer = flow1000Slice.reducer;
 const flow1000ConfigReducer = flow1000ConfigSlice.reducer;
@@ -72,7 +82,7 @@ const store = configureStore({
   reducer: {
     flow1000: flow1000Reducer,
     flow1000Config: flow1000ConfigReducer,
-    flowTitle: titleReducer,
+    flow1000Title: flow1000TitleReducer,
   }
 })
 
