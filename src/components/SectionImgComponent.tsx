@@ -18,7 +18,6 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
     return state.flow1000Config.albumConfigs;
   })
 
-
   const [state, setState] = React.useState<ImgComponentState>({
     url: null,
   });
@@ -28,9 +27,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   const fetchImgByUrl = (url: string) => {
     console.log("fetch " + url);
     fetch(url)
-      .then(response => {
-        return response.arrayBuffer();
-      })
+      .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         let albumConfig = albumConfigs.find(config => config.name === props.album);
         if (!albumConfig) {
@@ -140,7 +137,6 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
       <div style={{ height: '200px', width: '100%' }} />
     );
   return img;
-
 }
 
 const ExpandImg = ({
