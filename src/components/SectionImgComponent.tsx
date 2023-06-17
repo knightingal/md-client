@@ -50,7 +50,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
     if (props.src !== null && props.mount === true) {
       fetchImgByUrl(props.src);
     }
-  }, [props.mount, props.src, fetchImgByUrl])
+  }, [props.mount, props.src])
 
   const onMouseOver = (e: React.MouseEvent) => {
     if (props.scrolling) {
