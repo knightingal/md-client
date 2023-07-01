@@ -113,52 +113,52 @@ class GridLineBean implements HeightType {
   }
 }
 
-const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
+const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
   const section1 =
-    props.sectionBean.section1 != null ? (
+    props.item.section1 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          album={props.sectionBean.section1.album}
-          sectionIndex={props.sectionBean.section1.sectionIndex}
-          index={props.sectionBean.section1.index}
+          album={props.item.section1.album}
+          sectionIndex={props.item.section1.sectionIndex}
+          index={props.item.section1.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section1.timeStamp}
-          title={props.sectionBean.section1.title}
-          imgSrc={props.sectionBean.section1.imgSrc}
-          coverHeight={props.sectionBean.section1.coverHeight}
-          coverWidth={props.sectionBean.section1.coverWidth}
+          timeStamp={props.item.section1.timeStamp}
+          title={props.item.section1.title}
+          imgSrc={props.item.section1.imgSrc}
+          coverHeight={props.item.section1.coverHeight}
+          coverWidth={props.item.section1.coverWidth}
         />
       </Grid>
     ) : null;
   const section2 =
-    props.sectionBean.section2 != null ? (
+    props.item.section2 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          album={props.sectionBean.section2.album}
-          sectionIndex={props.sectionBean.section2.sectionIndex}
-          index={props.sectionBean.section2.index}
+          album={props.item.section2.album}
+          sectionIndex={props.item.section2.sectionIndex}
+          index={props.item.section2.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section2.timeStamp}
-          title={props.sectionBean.section2.title}
-          imgSrc={props.sectionBean.section2.imgSrc}
-          coverHeight={props.sectionBean.section2.coverHeight}
-          coverWidth={props.sectionBean.section2.coverWidth}
+          timeStamp={props.item.section2.timeStamp}
+          title={props.item.section2.title}
+          imgSrc={props.item.section2.imgSrc}
+          coverHeight={props.item.section2.coverHeight}
+          coverWidth={props.item.section2.coverWidth}
         />
       </Grid>
     ) : null;
   const section3 =
-    props.sectionBean.section3 != null ? (
+    props.item.section3 != null ? (
       <Grid item={true} xs={3}>
         <RecipeReviewCard
-          sectionIndex={props.sectionBean.section3.sectionIndex}
-          index={props.sectionBean.section3.index}
+          sectionIndex={props.item.section3.sectionIndex}
+          index={props.item.section3.index}
           mount={props.mount}
-          timeStamp={props.sectionBean.section3.timeStamp}
-          title={props.sectionBean.section3.title}
-          imgSrc={props.sectionBean.section3.imgSrc}
-          coverHeight={props.sectionBean.section3.coverHeight}
-          coverWidth={props.sectionBean.section3.coverWidth}
-          album={props.sectionBean.section3.album}
+          timeStamp={props.item.section3.timeStamp}
+          title={props.item.section3.title}
+          imgSrc={props.item.section3.imgSrc}
+          coverHeight={props.item.section3.coverHeight}
+          coverWidth={props.item.section3.coverWidth}
+          album={props.item.section3.album}
         />
       </Grid>
     ) : null;
@@ -168,15 +168,15 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
       <Grid container={true} spacing={1} sx={{ marginTop: "auto" }}  >
         <Grid item={true} xs={3}>
           <RecipeReviewCard
-            sectionIndex={props.sectionBean.section0.sectionIndex}
-            index={props.sectionBean.section0.index}
-            timeStamp={props.sectionBean.section0.timeStamp}
+            sectionIndex={props.item.section0.sectionIndex}
+            index={props.item.section0.index}
+            timeStamp={props.item.section0.timeStamp}
             mount={props.mount}
-            title={props.sectionBean.section0.title}
-            imgSrc={props.sectionBean.section0.imgSrc}
-            coverHeight={props.sectionBean.section0.coverHeight}
-            coverWidth={props.sectionBean.section0.coverWidth}
-            album={props.sectionBean.section0.album}
+            title={props.item.section0.title}
+            imgSrc={props.item.section0.imgSrc}
+            coverHeight={props.item.section0.coverHeight}
+            coverWidth={props.item.section0.coverWidth}
+            album={props.item.section0.album}
           />
         </Grid>
         {section1}
@@ -187,13 +187,9 @@ const GridLine = (props: { sectionBean: GridLineBean; mount: boolean }) => {
   );
 };
 
-const SectionItemFunc = (props: { item: GridLineBean, mount: boolean }) =>
-  <GridLine sectionBean={props.item} mount={props.mount} />
-
-
 const LazyLoader: React.ComponentClass<LazyProps<
   GridLineBean
->> = lazyLoader(SectionItemFunc, 'SectionList');
+>> = lazyLoader(GridLine, 'SectionList');
 
 interface PicIndex {
   sectionIndex: number;
