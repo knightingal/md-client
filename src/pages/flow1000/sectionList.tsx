@@ -247,7 +247,7 @@ const GridContainerFunc = (props: {
         return index % 4 === 3;
       });
 
-      const sectionList = sub0.map((value: PicIndex, index: number) => {
+      const sectionList = albumConfigs.length == 0 ? [] : sub0.map((value: PicIndex, index: number) => {
         return new GridLineBean(
           value,
           index < sub1.length ? sub1[index] : null,
