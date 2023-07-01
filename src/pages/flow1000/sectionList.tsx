@@ -5,6 +5,7 @@ import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
 import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import Grid from '@mui/material/Grid';
 import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
@@ -56,6 +57,9 @@ function RecipeReviewCard(props: {
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />
+        </IconButton>
+        <IconButton aria-label="download">
+          <DownloadIcon />
         </IconButton>
       </CardActions>
     </Card>
