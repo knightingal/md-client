@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
-import ImgComponent from './SectionImgComponent';
+import SectionImgComponent from './SectionImgComponent';
 import { AlbumConfig } from '../store';
 
 function AlbumCoverCard(props: {
@@ -25,7 +25,7 @@ function AlbumCoverCard(props: {
   return (
     <Card >
       <CardHeader title={props.title} subheader={props.timeStamp} sx={{ whiteSpace: "nowrap" }} />
-      <ImgComponent
+      <SectionImgComponent
         sectionIndex={props.sectionIndex}
         src={props.imgSrc}
         password="yjmK14040842$000"
@@ -43,11 +43,21 @@ function AlbumCoverCard(props: {
           <ShareIcon />
         </IconButton>
         <IconButton aria-label="download">
-          <DownloadIcon />
+          <DownloadIcon onClick={e => {postDownloadSection(props.sectionIndex)}}/>
         </IconButton>
       </CardActions>
     </Card>
   );
+}
+
+const postDownloadSection = (sectionIndex: number) => {
+  fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
+    .then((resp: Response) => {
+      return resp.json();
+    })
+    .then((json: any) => {
+      
+    });
 }
 
 

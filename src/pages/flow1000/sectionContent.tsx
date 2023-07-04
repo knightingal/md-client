@@ -34,7 +34,7 @@ class ImgDetail implements HeightType {
   }
 }
 
-const Content = (props: { password: string, height: number }) => {
+const Content = (props: {password: string, height: number}) => {
   const { sectionId } = useParams();
   const dispatch = useAppDispatch();
 
@@ -100,7 +100,7 @@ const Content = (props: { password: string, height: number }) => {
   })
 
 
-  const ImgComponentItem = (props: { mount: boolean, item: ImgDetail }) => {
+  const ImgComponentItem = (props: {mount: boolean, item: ImgDetail}) => {
     return <ImgComponent
       album={sectionDetail.album}
       width={props.item.width}
@@ -121,7 +121,7 @@ const Content = (props: { password: string, height: number }) => {
 }
 
 
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+export default connect(({flow1000}: {flow1000: Flow1000ModelState}) => {
   const props = {
     height: flow1000.height,
     password: ""
