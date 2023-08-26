@@ -33,7 +33,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
         if (!albumConfig) {
           albumConfig = albumConfigs[0]
         }
-        const decrypted = albumConfig.encryped ?
+        const decrypted = albumConfig.encrypted ?
           decryptArray(arrayBuffer, props.password)
           : arrayBuffer;
         const objectURL = URL.createObjectURL(new Blob([decrypted]));

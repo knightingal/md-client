@@ -55,7 +55,7 @@ const Content = (props: { password: string, height: number }) => {
 
   const [sectionDetail, setSectionDetail] = useState<SectionDetail>(new SectionDetail())
   const [albumConfig, setAlbumConfig] = useState<AlbumConfig>({
-    name: '', encryped: false, baseUrl: ""
+    name: '', encrypted: false, baseUrl: ""
   })
 
 
@@ -105,7 +105,7 @@ const Content = (props: { password: string, height: number }) => {
       album={sectionDetail.album}
       width={props.item.width}
       height={props.item.height}
-      src={`/linux1000/${albumConfig.baseUrl}/${sectionDetail.dirName}/${props.item.name}${albumConfig.encryped ? ".bin" : ""}`}
+      src={`/linux1000/${albumConfig.baseUrl}/${sectionDetail.dirName}/${props.item.name}${albumConfig.encrypted ? ".bin" : ""}`}
       password="yjmK14040842$000"
     />
   }

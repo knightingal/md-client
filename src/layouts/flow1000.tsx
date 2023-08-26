@@ -12,7 +12,7 @@ import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { initConfig, initConfigState, useAppSelector } from '../store';
+import { AlbumConfig, initConfig, useAppSelector } from '../store';
 
 interface Flow1000Props {
   height: number;
@@ -35,7 +35,6 @@ export default connect(
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
     console.log("flow1000 useEffect:" + height)
-    props.dispatch(initConfig(initConfigState))
     props.dispatch({
       type: 'flow1000/setWindowSize',
       height: height,
@@ -43,6 +42,15 @@ export default connect(
     });
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    fetch("/local1000/albumConfig/list")
+      .then((resp: Response) => resp.json())
+      .then((json: Array<AlbumConfig>) => {
+        const albumConfigs: Array<AlbumConfig> = json;
+        props.dispatch(initConfig({albumConfigs: albumConfigs}))
+      });
+  }, [])
 
   const onSearch = (value: string) => {
     props.dispatch({

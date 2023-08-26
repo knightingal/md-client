@@ -24,7 +24,7 @@ const ImgComponentFunc = (props: ImgComponentProps) => {
       return response.arrayBuffer();
     }).then(arrayBuffer => {
       let decrypted: ArrayBuffer;
-      if (albumConfig?.encryped) {
+      if (albumConfig?.encrypted) {
         decrypted = decryptArray(arrayBuffer, props.password);
       } else {
         decrypted = arrayBuffer;

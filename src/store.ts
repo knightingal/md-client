@@ -3,31 +3,6 @@ import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-export const initConfigState: ConfigState = {
-  albumConfigs: [{
-    name: "flow1000",
-    encryped: true,
-    baseUrl: "encrypted"
-  }, {
-    name: "ship",
-    encryped: true,
-    baseUrl: "encrypted"
-  }, {
-    name: "1803",
-    encryped: false,
-    baseUrl: "1803"
-  }, {
-    name: "1805",
-    encryped: false,
-    baseUrl: "1805"
-  }, {
-    name: "1804",
-    encryped: false,
-    baseUrl: "1804"
-  }],
-}
-
-
 const flow1000Slice = createSlice(Flow1000Module as any)
 
 export const flow1000TitleSlice = createSlice({
@@ -52,7 +27,7 @@ export const { setTitle, resetTitle } = flow1000TitleSlice.actions;
 
 export interface AlbumConfig {
   name: string,
-  encryped: boolean,
+  encrypted: boolean,
   baseUrl: string
 }
 

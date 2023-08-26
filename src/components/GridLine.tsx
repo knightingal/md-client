@@ -97,10 +97,10 @@ export class GridLineBean implements HeightType {
   constructor(value0: PicIndex, value1: PicIndex | null, value2: PicIndex | null, value3: PicIndex | null, getConfig: (album: string) => AlbumConfig) {
     this.height = 360;
     this.expand = false;
-    this.section0 = new SectionInfo(value0, getConfig(value0.album).baseUrl, getConfig(value0.album).encryped);
-    this.section1 = value1 != null ? new SectionInfo(value1, getConfig(value1.album).baseUrl, getConfig(value1.album).encryped) : null;
-    this.section2 = value2 != null ? new SectionInfo(value2, getConfig(value2.album).baseUrl, getConfig(value2.album).encryped) : null;
-    this.section3 = value3 != null ? new SectionInfo(value3, getConfig(value3.album).baseUrl, getConfig(value3.album).encryped) : null;
+    this.section0 = new SectionInfo(value0, getConfig(value0.album).baseUrl, getConfig(value0.album).encrypted);
+    this.section1 = value1 != null ? new SectionInfo(value1, getConfig(value1.album).baseUrl, getConfig(value1.album).encrypted) : null;
+    this.section2 = value2 != null ? new SectionInfo(value2, getConfig(value2.album).baseUrl, getConfig(value2.album).encrypted) : null;
+    this.section3 = value3 != null ? new SectionInfo(value3, getConfig(value3.album).baseUrl, getConfig(value3.album).encrypted) : null;
   }
 }
 export const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
