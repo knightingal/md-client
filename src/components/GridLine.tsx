@@ -21,6 +21,7 @@ function AlbumCoverCard(props: {
   coverWidth: number;
   timeStamp: string;
   album: string;
+  clientStatus: string;
 }) {
   return (
     <Card >
@@ -42,7 +43,7 @@ function AlbumCoverCard(props: {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
-        <IconButton aria-label="download">
+        <IconButton aria-label="download" style={ props.clientStatus === "NONE" ? {} :  {color:  "#1976d2"}}>
           <DownloadIcon onClick={e => {postDownloadSection(props.sectionIndex)}}/>
         </IconButton>
       </CardActions>
@@ -70,6 +71,7 @@ export interface PicIndex {
   coverHeight: number;
   expanded: boolean;
   album: string;
+  clientStatus: string;
 }
 
 class SectionInfo {
@@ -81,6 +83,7 @@ class SectionInfo {
   coverHeight: number;
   coverWidth: number;
   album: string;
+  clientStatus: string;
 
   constructor(value: PicIndex, baseUrl: string, ecrypted: boolean) {
     this.imgSrc = `/linux1000/${baseUrl}/${value.name}/${value.cover}${ecrypted ? ".bin" : ""}`;
@@ -91,6 +94,7 @@ class SectionInfo {
     this.coverHeight = value.coverHeight;
     this.coverWidth = value.coverWidth;
     this.album = value.album;
+    this.clientStatus = value.clientStatus;
   }
 }
 
@@ -127,6 +131,7 @@ export const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
           imgSrc={props.item.section1.imgSrc}
           coverHeight={props.item.section1.coverHeight}
           coverWidth={props.item.section1.coverWidth}
+          clientStatus={props.item.section1.clientStatus}
         />
       </Grid>
     ) : null;
@@ -143,6 +148,7 @@ export const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
           imgSrc={props.item.section2.imgSrc}
           coverHeight={props.item.section2.coverHeight}
           coverWidth={props.item.section2.coverWidth}
+          clientStatus={props.item.section2.clientStatus}
         />
       </Grid>
     ) : null;
@@ -159,6 +165,7 @@ export const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
           coverHeight={props.item.section3.coverHeight}
           coverWidth={props.item.section3.coverWidth}
           album={props.item.section3.album}
+          clientStatus={props.item.section3.clientStatus}
         />
       </Grid>
     ) : null;
@@ -177,6 +184,7 @@ export const GridLine = (props: { item: GridLineBean; mount: boolean }) => {
             coverHeight={props.item.section0.coverHeight}
             coverWidth={props.item.section0.coverWidth}
             album={props.item.section0.album}
+            clientStatus={props.item.section0.clientStatus}
           />
         </Grid>
         {section1}
