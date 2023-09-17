@@ -1,3 +1,4 @@
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { Reducer, Action } from 'redux';
 
 // import { router } from "umi";
@@ -40,6 +41,9 @@ export interface Flow1000ModelType {
     setSeciontList: Reducer<Flow1000ModelState, SetSectionListAction>;
     inScrolling: Reducer<Flow1000ModelState, InScrollingAction>;
   };
+  extraReducers: (builder: ActionReducerMapBuilder<Flow1000ModelState>) => void;
+
+
 }
 
 interface WindowSizeState {
@@ -94,6 +98,11 @@ export interface Device {
   appId: string | null;
 }
 
+export const refreshSectionList = createAsyncThunk<Array<PicIndex>,  {}, {}>(
+  "flow1000/refresh",async () => {
+    return []
+})
+
 const Flow1000Model: Flow1000ModelType = {
   namespace: "flow1000",
   name: "flow1000",
@@ -102,6 +111,8 @@ const Flow1000Model: Flow1000ModelType = {
   },
   state: {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
+  },
+  extraReducers(builder) {
   },
   reducers: {
     setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {

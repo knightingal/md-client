@@ -12,11 +12,16 @@ import store from './store'
 import {
   createBrowserRouter, RouterProvider
 } from "react-router-dom"
+import UsersComponent from './user/UsersComponent';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App></App>
+  },
+  {
+    path: "/user",
+    element:<UsersComponent/>
   },
   {
     path: "/flow1000",
