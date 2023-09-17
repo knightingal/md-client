@@ -4,7 +4,7 @@ import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyL
 
 import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Flow1000ModelState } from '../../models/flow1000';
+import { Flow1000ModelState, refreshSectionList } from '../../models/flow1000';
 import { AlbumConfig, ConfigState } from '../../store';
 import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
 interface Flow1000Props {
@@ -103,7 +103,8 @@ const GridContainerFunc = (props: {
           initBySectionData(subRest);
         });
     }
-    fecthSectionList();
+    // fecthSectionList();
+    dispatch(refreshSectionList())
     dispatch({ type: 'title/resetTitle' });
   }, [searchKey, albumConfigs, dispatch])
 

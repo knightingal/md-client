@@ -98,9 +98,23 @@ export interface Device {
   appId: string | null;
 }
 
-export const refreshSectionList = createAsyncThunk<Array<PicIndex>,  {}, {}>(
+export const refreshSectionList = createAsyncThunk<Array<PicIndex>,  void, {}>(
   "flow1000/refresh",async () => {
-    return []
+    return new Promise((res, rej) => {
+      const ret = [{
+        sectionIndex: 1,
+        name:"20130615152036宫廷床上的玉女Elina",
+        cover: "1.jpg",
+        coverWidth: 1000,
+        coverHeight: 1500,
+        album: "",
+        index: 1,
+        expanded: false,
+        clientStatus: "LOCAL"
+      }]
+      console.log(ret)
+      res(ret)
+  })
 })
 
 const Flow1000Model: Flow1000ModelType = {
@@ -113,6 +127,10 @@ const Flow1000Model: Flow1000ModelType = {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
   extraReducers(builder) {
+    builder.addCase(refreshSectionList.fulfilled, (state, {payload}) => {
+      console.log("refreshSectionList.fulfilled", payload)
+      state.sectionList = payload
+    })
   },
   reducers: {
     setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
