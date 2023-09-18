@@ -100,21 +100,17 @@ export interface Device {
 
 export const refreshSectionList = createAsyncThunk<Array<PicIndex>,  void, {}>(
   "flow1000/refresh",async () => {
-    return new Promise((res, rej) => {
-      const ret = [{
-        sectionIndex: 1,
-        name:"20130615152036宫廷床上的玉女Elina",
-        cover: "1.jpg",
-        coverWidth: 1000,
-        coverHeight: 1500,
-        album: "",
-        index: 1,
-        expanded: false,
-        clientStatus: "LOCAL"
-      }]
-      console.log(ret)
-      res(ret)
-  })
+    const battleShipPage = false;
+    let fetchUrl = battleShipPage
+      ? '/local1000/picIndexAjax?album=ship'
+      : '/local1000/picIndexAjax?';
+    // TODO: searchKey
+    // if (searchKey != null && searchKey !== '') {
+    //   fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
+    // }
+
+    return fetch(fetchUrl)
+      .then((resp: Response) => resp.json())
 })
 
 const Flow1000Model: Flow1000ModelType = {
@@ -124,12 +120,19 @@ const Flow1000Model: Flow1000ModelType = {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
   state: {
-    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
+    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [
+      
+    ], scrolling: false
   },
   extraReducers(builder) {
-    builder.addCase(refreshSectionList.fulfilled, (state, {payload}) => {
+    builder.addCase(refreshSectionList.fulfilled, (state0, {payload}) => {
       console.log("refreshSectionList.fulfilled", payload)
-      state.sectionList = payload
+      payload.forEach((picIndex: PicIndex, index: number) => {
+        picIndex.sectionIndex = picIndex.index;
+        picIndex.expanded = false;
+        picIndex.index = index;
+      })
+      state0.sectionList = payload
     })
   },
   reducers: {
@@ -172,11 +175,7 @@ const Flow1000Model: Flow1000ModelType = {
       state0.scrolling = action.inScrolling;
       state0.expandImgIndex.forEach(imgIndex => state0.sectionList[imgIndex].expanded = false)
       state0.expandImgIndex = [];
-
       return state0;
-
-
-
     }
 
   }
