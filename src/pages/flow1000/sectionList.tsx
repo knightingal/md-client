@@ -35,13 +35,13 @@ const GridContainerFunc = (props: {
     return state.flow1000Config.albumConfigs;
   })
 
-  const sectionDataList = useSelector((state: {
-    flow1000: {sectionList: Array<PicIndex>}
+  const {sectionDataList, searchKey} = useSelector((state: {
+    flow1000: {sectionList: Array<PicIndex>, searchKey:string}
   }) => {
-    return state.flow1000.sectionList;
+    return {sectionDataList: state.flow1000.sectionList, searchKey:state.flow1000.searchKey}
   })
 
-  const { searchKey, dispatch } = props;
+  const {  dispatch } = props;
   const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const initBySectionData = (subRest: PicIndex[]) => {
@@ -113,7 +113,7 @@ const GridContainerFunc = (props: {
     //     });
     // }
     // fecthSectionList();
-    dispatch(refreshSectionList())
+    dispatch(refreshSectionList(searchKey))
     dispatch({ type: 'title/resetTitle' });
   }, [searchKey, albumConfigs, dispatch])
 

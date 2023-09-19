@@ -98,16 +98,15 @@ export interface Device {
   appId: string | null;
 }
 
-export const refreshSectionList = createAsyncThunk<Array<PicIndex>,  void, {}>(
-  "flow1000/refresh",async () => {
+export const refreshSectionList = createAsyncThunk<Array<PicIndex>, string>(
+  "flow1000/refresh",async (searchKey: string) => {
     const battleShipPage = false;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
       : '/local1000/picIndexAjax?';
-    // TODO: searchKey
-    // if (searchKey != null && searchKey !== '') {
-    //   fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
-    // }
+    if (searchKey != null && searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
+    }
 
     return fetch(fetchUrl)
       .then((resp: Response) => resp.json())
