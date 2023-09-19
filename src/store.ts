@@ -1,7 +1,8 @@
-import { configureStore, PayloadAction } from '@reduxjs/toolkit'
+import { configureStore, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import usersReducer from './user/slice'
 
 const flow1000Slice = createSlice(Flow1000Module as any)
 
@@ -58,7 +59,8 @@ const store = configureStore({
     flow1000: flow1000Reducer,
     flow1000Config: flow1000ConfigReducer,
     flow1000Title: flow1000TitleReducer,
-  }
+    users: usersReducer
+  },
 })
 
 export default store;

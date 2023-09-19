@@ -1,3 +1,4 @@
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { Reducer, Action } from 'redux';
 
 // import { router } from "umi";
@@ -40,6 +41,9 @@ export interface Flow1000ModelType {
     setSeciontList: Reducer<Flow1000ModelState, SetSectionListAction>;
     inScrolling: Reducer<Flow1000ModelState, InScrollingAction>;
   };
+  extraReducers: (builder: ActionReducerMapBuilder<Flow1000ModelState>) => void;
+
+
 }
 
 interface WindowSizeState {
@@ -94,6 +98,20 @@ export interface Device {
   appId: string | null;
 }
 
+export const refreshSectionList = createAsyncThunk<Array<PicIndex>, string>(
+  "flow1000/refresh",async (searchKey: string) => {
+    const battleShipPage = false;
+    let fetchUrl = battleShipPage
+      ? '/local1000/picIndexAjax?album=ship'
+      : '/local1000/picIndexAjax?';
+    if (searchKey != null && searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
+    }
+
+    return fetch(fetchUrl)
+      .then((resp: Response) => resp.json())
+})
+
 const Flow1000Model: Flow1000ModelType = {
   namespace: "flow1000",
   name: "flow1000",
@@ -101,7 +119,20 @@ const Flow1000Model: Flow1000ModelType = {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
   state: {
-    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
+    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [
+      
+    ], scrolling: false
+  },
+  extraReducers(builder) {
+    builder.addCase(refreshSectionList.fulfilled, (state0, {payload}) => {
+      console.log("refreshSectionList.fulfilled", payload)
+      payload.forEach((picIndex: PicIndex, index: number) => {
+        picIndex.sectionIndex = picIndex.index;
+        picIndex.expanded = false;
+        picIndex.index = index;
+      })
+      state0.sectionList = payload
+    })
   },
   reducers: {
     setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
@@ -143,11 +174,7 @@ const Flow1000Model: Flow1000ModelType = {
       state0.scrolling = action.inScrolling;
       state0.expandImgIndex.forEach(imgIndex => state0.sectionList[imgIndex].expanded = false)
       state0.expandImgIndex = [];
-
       return state0;
-
-
-
     }
 
   }
