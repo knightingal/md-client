@@ -35,13 +35,13 @@ const GridContainerFunc = (props: {
     return state.flow1000Config.albumConfigs;
   })
 
-  const {sectionDataList, searchKey} = useSelector((state: {
-    flow1000: {sectionList: Array<PicIndex>, searchKey:string}
+  const {sectionDataList} = useSelector((state: {
+    flow1000: {sectionList: Array<PicIndex>, }
   }) => {
-    return {sectionDataList: state.flow1000.sectionList, searchKey:state.flow1000.searchKey}
+    return {sectionDataList: state.flow1000.sectionList, }
   })
 
-  const {  dispatch } = props;
+  const {searchKey,  dispatch } = props;
   const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const initBySectionData = (subRest: PicIndex[]) => {
@@ -81,39 +81,8 @@ const GridContainerFunc = (props: {
 
   const sectionList = initBySectionData(sectionDataList)
 
-
   useEffect(() => {
-    // const fecthSectionList = () => {
-    //   const battleShipPage = false;
-    //   // const battleShipPage = true;
-    //   let fetchUrl = battleShipPage
-    //     ? '/local1000/picIndexAjax?album=ship'
-    //     : '/local1000/picIndexAjax?';
-
-    //   if (searchKey != null && searchKey !== '') {
-    //     fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
-    //   }
-
-    //   fetch(fetchUrl)
-    //     .then((resp: Response) => resp.json())
-    //     .then((json: Array<PicIndex>) => {
-    //       let subRest: Array<PicIndex>;
-    //       subRest = json;
-    //       subRest.forEach((picIndex: PicIndex, index: number) => {
-    //         picIndex.sectionIndex = picIndex.index;
-    //         picIndex.expanded = false;
-    //         picIndex.index = index;
-    //       });
-
-    //       dispatch({
-    //         type: 'flow1000/setSeciontList',
-    //         sectionList: subRest,
-    //       });
-    //       initBySectionData(subRest);
-    //     });
-    // }
-    // fecthSectionList();
-    dispatch(refreshSectionList(searchKey))
+    dispatch(refreshSectionList())
     dispatch({ type: 'title/resetTitle' });
   }, [searchKey, albumConfigs, dispatch])
 

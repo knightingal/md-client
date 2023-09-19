@@ -98,8 +98,9 @@ export interface Device {
   appId: string | null;
 }
 
-export const refreshSectionList = createAsyncThunk<Array<PicIndex>, string>(
-  "flow1000/refresh",async (searchKey: string) => {
+export const refreshSectionList = createAsyncThunk<Array<PicIndex>, undefined>(
+  "flow1000/refresh",async (undefined,{getState}) => {
+    const searchKey = (getState() as any).flow1000.searchKey;
     const battleShipPage = false;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
@@ -119,9 +120,7 @@ const Flow1000Model: Flow1000ModelType = {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
   state: {
-    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [
-      
-    ], scrolling: false
+    height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
   extraReducers(builder) {
     builder.addCase(refreshSectionList.fulfilled, (state0, {payload}) => {
