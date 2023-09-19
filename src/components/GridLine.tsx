@@ -10,6 +10,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import SectionImgComponent from './SectionImgComponent';
 import { AlbumConfig } from '../store';
+import { useDispatch } from "react-redux";
+import { refreshSectionList } from "../models/flow1000";
 
 function AlbumCoverCard(props: {
   title: string;
@@ -23,6 +25,16 @@ function AlbumCoverCard(props: {
   album: string;
   clientStatus: string;
 }) {
+  const dispatch = useDispatch<any>();
+  const postDownloadSection = (sectionIndex: number) => {
+    fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
+      .then((resp: Response) => {
+        return resp.json();
+      })
+      .then((json: any) => {
+        dispatch(refreshSectionList())
+      });
+  }
   return (
     <Card >
       <CardHeader title={props.title} subheader={props.timeStamp} sx={{ whiteSpace: "nowrap" }} />
@@ -51,15 +63,6 @@ function AlbumCoverCard(props: {
   );
 }
 
-const postDownloadSection = (sectionIndex: number) => {
-  fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
-    .then((resp: Response) => {
-      return resp.json();
-    })
-    .then((json: any) => {
-      
-    });
-}
 
 
 export interface PicIndex {
