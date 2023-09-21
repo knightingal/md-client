@@ -9,19 +9,12 @@ import SectionContent from "./pages/flow1000/sectionContent"
 import { Provider } from 'react-redux'
 import store from './store'
 
-import {
-  createBrowserRouter, RouterProvider
-} from "react-router-dom"
-import UsersComponent from './user/UsersComponent';
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App></App>
-  },
-  {
-    path: "/user",
-    element:<UsersComponent/>
   },
   {
     path: "/flow1000",
