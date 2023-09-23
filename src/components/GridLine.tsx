@@ -55,8 +55,8 @@ function AlbumCoverCard(props: {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
-        <IconButton aria-label="download" style={ props.clientStatus === "NONE" ? {} :  {color:  "#1976d2"}}>
-          <DownloadIcon onClick={e => {postDownloadSection(props.sectionIndex)}}/>
+        <IconButton aria-label="download" onClick={() => {postDownloadSection(props.sectionIndex)}} >
+          <DownloadIcon style={ props.clientStatus === "NONE" ? {} : {color: "#1976d2"}} />
         </IconButton>
       </CardActions>
     </Card>
