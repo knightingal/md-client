@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import DownloadIcon from '@mui/icons-material/Download';
 import MenuIcon from '@mui/icons-material/Menu';
 import { connect, } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -29,6 +30,7 @@ export default connect(
 )((props: Flow1000Props) => {
 
   const title = useAppSelector((state) => state.flow1000Title.title);
+  const displaySyncBtn = useAppSelector((state) => state.flow1000Title.displaySyncBtn);
 
   // const classes = useStyles();
   useEffect(() => {
@@ -79,6 +81,17 @@ export default connect(
             >
               {title}
             </Typography>
+            { 
+              displaySyncBtn ? 
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+              >
+                <DownloadIcon />
+              </IconButton> : null
+            }
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
