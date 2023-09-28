@@ -10,15 +10,18 @@ export const flow1000TitleSlice = createSlice({
   initialState: {
     title: "Welcome to user Flow1000",
     displaySyncBtn: false,
+    sectionIndex: -1
   },
   reducers: {
-    setTitle: (state, action: PayloadAction<string>) => {
-      state.title = action.payload;
+    setTitle: (state, action: PayloadAction<{title:string, index:number}>) => {
+      state.title = action.payload.title;
       state.displaySyncBtn = true;
+      state.sectionIndex = action.payload.index;
     },
     resetTitle: (state) => {
-      state.title = "Welcome to user Flow1000"
+      state.title = "Welcome to user Flow1000";
       state.displaySyncBtn = false;
+      state.sectionIndex = -1;
     }
   }
 });

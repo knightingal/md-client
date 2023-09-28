@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import { Flow1000ModelState } from '../models/flow1000';
+import { Flow1000ModelState, refreshSectionList } from '../models/flow1000';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -30,7 +30,18 @@ export default connect(
 )((props: Flow1000Props) => {
 
   const title = useAppSelector((state) => state.flow1000Title.title);
+  const sectionIndex = useAppSelector((state) => state.flow1000Title.sectionIndex);
   const displaySyncBtn = useAppSelector((state) => state.flow1000Title.displaySyncBtn);
+
+  const postDownloadSection = () => {
+    fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
+      .then((resp: Response) => {
+        return resp.json();
+      })
+      .then((json: any) => {
+        // props.dispatch(refreshSectionList())
+      });
+  }
 
   // const classes = useStyles();
   useEffect(() => {
@@ -83,7 +94,7 @@ export default connect(
             </Typography>
             { 
               displaySyncBtn ? 
-              <IconButton
+              <IconButton onClick={() => postDownloadSection()}
                 edge="start"
                 color="inherit"
                 aria-label="menu"
