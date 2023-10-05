@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ReactNode, } from 'react';
 import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
 
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Flow1000ModelState, refreshSectionList } from '../../models/flow1000';
 import { AlbumConfig, ConfigState } from '../../store';
@@ -13,9 +13,7 @@ interface Flow1000Props {
   expandImgIndex: number[];
   children?: ReactNode;
   dispatch: Dispatch<any>;
-  scrollTop: number;
   searchKey: string;
-  sectionList: PicIndex[];
 }
 
 const LazyLoader: React.ComponentClass<LazyProps<
@@ -26,22 +24,21 @@ const GridContainerFunc = (props: {
   height: number;
   expandImgIndex: number[];
   searchKey: string
-  dispatch: Dispatch<any>;
-  scrollTop: number, subRest: PicIndex[]
 }) => {
-  const albumConfigs = useSelector((state: {
+
+  const {sectionList, scrollTop, albumConfigs} = useSelector((state: {
+    flow1000: {sectionList: Array<PicIndex>, scrollTop: number },
     flow1000Config: ConfigState,
-  }) => {
-    return state.flow1000Config.albumConfigs;
-  })
+  }) => ({
+      sectionList: state.flow1000.sectionList, 
+      scrollTop: state.flow1000.scrollTop, 
+      albumConfigs: state.flow1000Config.albumConfigs 
+    })
+  )    
 
-  const {sectionDataList} = useSelector((state: {
-    flow1000: {sectionList: Array<PicIndex>, }
-  }) => {
-    return {sectionDataList: state.flow1000.sectionList, }
-  })
+  const dispatch: Dispatch<any> = useDispatch<any>()
 
-  const {searchKey,  dispatch } = props;
+  const {searchKey } = props;
   const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const initBySectionData = (subRest: PicIndex[]) => {
@@ -79,7 +76,7 @@ const GridContainerFunc = (props: {
     return sectionList;
   }
 
-  const sectionList = initBySectionData(sectionDataList)
+  const gridDataList = initBySectionData(sectionList)
 
   useEffect(() => {
     dispatch(refreshSectionList())
@@ -105,8 +102,8 @@ const GridContainerFunc = (props: {
   return (
     <div style={{ height: `${props.height - 64}px` }} >
       <LazyLoader
-        dataList={sectionList}
-        scrollTop={props.scrollTop}
+        dataList={gridDataList}
+        scrollTop={scrollTop}
         height={props.height - 64}
         dispatchHandler={parentCompHandler}
       />
@@ -119,11 +116,9 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     height: flow1000.height,
     width: flow1000.width,
     expandImgIndex: flow1000.expandImgIndex,
-    scrollTop: flow1000.scrollTop,
     searchKey: flow1000.searchKey,
-    sectionList: flow1000.sectionList,
   };
 })(function (props: Flow1000Props) {
   console.log("GridContainer:" + props.height);
-  return <GridContainerFunc subRest={props.sectionList} scrollTop={props.scrollTop} height={props.height} expandImgIndex={props.expandImgIndex} dispatch={props.dispatch} searchKey={props.searchKey} />;
+  return <GridContainerFunc   height={props.height} expandImgIndex={props.expandImgIndex}  searchKey={props.searchKey} />;
 });
