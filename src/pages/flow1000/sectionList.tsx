@@ -119,6 +119,6 @@ export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
     searchKey: flow1000.searchKey,
   };
 })(function (props: Flow1000Props) {
-  console.log("GridContainer:" + props.height);
+  // console.log("GridContainer:" + props.height);
   return <GridContainerFunc   height={props.height} expandImgIndex={props.expandImgIndex}  searchKey={props.searchKey} />;
 });
