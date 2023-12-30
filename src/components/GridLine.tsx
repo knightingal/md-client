@@ -25,6 +25,7 @@ function AlbumCoverCard(props: {
   album: string;
   clientStatus: string;
 }) {
+  const moreAction = false;
   const dispatch = useDispatch<any>();
   const postDownloadSection = (sectionIndex: number) => {
     fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
@@ -49,12 +50,16 @@ function AlbumCoverCard(props: {
         album={props.album}
       />
       <CardActions disableSpacing={true}>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
+        {
+          moreAction ? <>
+          <IconButton aria-label="add to favorites">
+            <FavoriteIcon />
+          </IconButton>
+          <IconButton aria-label="share">
+            <ShareIcon />
+          </IconButton>
+          </> : <></>
+        }
         <IconButton aria-label="download" onClick={() => {postDownloadSection(props.sectionIndex)}} >
           <DownloadIcon style={ props.clientStatus === "NONE" ? {} : {color: "#1976d2"}} />
         </IconButton>
