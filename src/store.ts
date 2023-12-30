@@ -13,9 +13,9 @@ export const flow1000TitleSlice = createSlice({
     sectionIndex: -1
   },
   reducers: {
-    setTitle: (state, action: PayloadAction<{title:string, index:number}>) => {
+    setTitle: (state, action: PayloadAction<{title:string, index:number, displaySyncBtn:boolean}>) => {
       state.title = action.payload.title;
-      state.displaySyncBtn = true;
+      state.displaySyncBtn = action.payload.displaySyncBtn;
       state.sectionIndex = action.payload.index;
     },
     resetTitle: (state) => {

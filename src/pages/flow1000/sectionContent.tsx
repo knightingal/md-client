@@ -71,7 +71,7 @@ const Content = (props: {password: string, height: number}) => {
         .then((json: any) => {
           const sectionDetail: SectionDetail = json;
           const title = sectionDetail.dirName;
-          dispatch(setTitle({title, index}));
+          dispatch(setTitle({title, index, displaySyncBtn: true}));
           setSectionDetail(sectionDetail);
           let albumConfig = albumConfigs.find(config => config.name === sectionDetail.album);
           if (!albumConfig) {
