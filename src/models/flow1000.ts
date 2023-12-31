@@ -99,7 +99,7 @@ export interface Device {
 }
 
 export const refreshSectionList = createAsyncThunk<Array<PicIndex>, undefined>(
-  "flow1000/refresh",async (undefined,{getState}) => {
+  "flow1000/refresh", async (undefined, { getState }) => {
     const searchKey = (getState() as any).flow1000.searchKey;
     const battleShipPage = false;
     let fetchUrl = battleShipPage
@@ -122,7 +122,7 @@ const Flow1000Model: Flow1000ModelType = {
   state: {
     height: 0, width: 0, expandImgIndex: [], sectionIndex: -1, scrollTop: 0, searchKey: "", sectionList: [], scrolling: false
   },
-  extraReducers(builder) {
+  extraReducers: (builder: ActionReducerMapBuilder<Flow1000ModelState>) => {
     builder.addCase(refreshSectionList.fulfilled, (state0, {payload}) => {
       console.log("refreshSectionList.fulfilled", payload)
       payload.forEach((picIndex: PicIndex, index: number) => {
