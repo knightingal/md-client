@@ -42,30 +42,6 @@ export interface Flow1000ModelType {
     inScrolling: Reducer<Flow1000ModelState, InScrollingAction>;
   };
   extraReducers: (builder: ActionReducerMapBuilder<Flow1000ModelState>) => void;
-
-
-}
-
-interface WindowSizeState {
-  height: number;
-  width: number;
-  scrollTop: number;
-}
-
-interface ImgMouseOverState {
-  expandImgIndex: number[];
-}
-
-interface SectionContent {
-  sectionIndex: number;
-}
-
-interface SearchKey {
-  searchKey: string
-}
-
-interface SectionList {
-  sectionList: Array<PicIndex>
 }
 
 
@@ -81,12 +57,17 @@ interface PicIndex {
   clientStatus: string;
 }
 
-export interface Flow1000ModelState extends SectionList, Scrolling, WindowSizeState, ImgMouseOverState, SectionContent, SearchKey {
+export interface Flow1000ModelState {
+  height: number;
+  width: number;
+  scrollTop: number;
+  searchKey: string;
+  expandImgIndex: number[];
+  sectionIndex: number;
+  scrolling: boolean
+  sectionList: Array<PicIndex>
 }
 
-interface Scrolling {
-  scrolling: boolean
-}
 
 export interface Device {
   appKey: string;
