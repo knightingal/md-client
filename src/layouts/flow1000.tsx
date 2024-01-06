@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import { Flow1000ModelState, refreshSectionList } from '../models/flow1000';
+import { Flow1000ModelState, } from '../models/flow1000';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';

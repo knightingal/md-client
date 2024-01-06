@@ -115,8 +115,8 @@ const Flow1000Model: Flow1000ModelType = {
     })
   },
   reducers: {
-    setWindowSize(state: Flow1000ModelState | undefined, action: SetWindowSizeAction) {
-      return { ...(state as Flow1000ModelState), height: action.height, width: action.width };
+    setWindowSize: (state: Flow1000ModelState | undefined, action: SetWindowSizeAction) => {
+      return {...(state as Flow1000ModelState), height: action.height, width: action.width}
     },
     imgMouseOver(state: Flow1000ModelState | undefined, action: ImgMouseOverAction) {
       const state0 = (state as Flow1000ModelState);

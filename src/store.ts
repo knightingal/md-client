@@ -1,4 +1,4 @@
-import { configureStore, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { configureStore, PayloadAction, createAsyncThunk, SliceCaseReducers } from '@reduxjs/toolkit'
 import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
@@ -26,10 +26,69 @@ export const flow1000TitleSlice = createSlice({
   }
 });
 
+interface PicDetail {
+  sectionIndex: number;
+  name: string;
+  cover: string;
+  index: number;
+  coverWidth: number;
+  coverHeight: number;
+  expanded: boolean;
+  album: string;
+  clientStatus: string;
+}
+
+interface Flow1000State {
+  height: number;
+  width: number;
+  scrollTop: number;
+  searchKey: string;
+  expandImgIndex: number[];
+  sectionIndex: number;
+  scrolling: boolean
+  sectionList: PicDetail[];
+}
+
+interface Flow1000Reducer extends SliceCaseReducers<Flow1000State>{
+  // setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => void
+  // imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
+  // imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
+  // imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
+  // scrollTop: (state: Flow1000State, action: PayloadAction<{scrollTop:number}>) => void
+  // search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>) => void
+  // inScrolling: (state: Flow1000State, action: PayloadAction<{inScrolling: boolean}>) => void
+
+  setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>) => void
+}
+
+const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "content">({
+  name:"content",
+  initialState: {
+    height: 0, 
+    width: 0, 
+    expandImgIndex: [],
+    sectionIndex: -1, 
+    scrollTop: 0, 
+    searchKey: "", 
+    sectionList: [], 
+    scrolling: false
+  },
+  reducers: {
+    setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>): void => {
+      state.sectionList = action.payload
+    }
+  },
+  extraReducers: (builder) => {
+      
+  },
+})
+
+
 const flow1000TitleReducer = flow1000TitleSlice.reducer;
+const flow1000ContentReducer = flow1000ContentSlice.reducer;
 
 export const { setTitle, resetTitle } = flow1000TitleSlice.actions;
-
+export const { setSectionList, } = flow1000ContentSlice.actions;
 
 export interface AlbumConfig {
   name: string,
@@ -64,6 +123,7 @@ const store = configureStore({
     flow1000: flow1000Reducer,
     flow1000Config: flow1000ConfigReducer,
     flow1000Title: flow1000TitleReducer,
+    flow1000Content: flow1000ContentReducer,
   },
 })
 
