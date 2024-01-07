@@ -52,7 +52,7 @@ interface Flow1000State {
 interface Flow1000Reducer extends SliceCaseReducers<Flow1000State>{
   setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => void
   imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
-  // imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
+  imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   // imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   // scrollTop: (state: Flow1000State, action: PayloadAction<{scrollTop:number}>) => void
   // search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>) => void
@@ -84,6 +84,10 @@ const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "conten
     imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>): void => {
       state.sectionList[action.payload.imgIndex].expanded = true;
       state.expandImgIndex.push(action.payload.imgIndex);
+    },
+    imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>): void => {
+      state.sectionList[action.payload.imgIndex].expanded = false;
+      state.expandImgIndex = state.expandImgIndex.filter(item => item !== action.payload.imgIndex);
     },
   },
   extraReducers: (builder) => {
