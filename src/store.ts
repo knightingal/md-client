@@ -50,7 +50,7 @@ interface Flow1000State {
 }
 
 interface Flow1000Reducer extends SliceCaseReducers<Flow1000State>{
-  // setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => void
+  setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => void
   // imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   // imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   // imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
@@ -76,7 +76,11 @@ const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "conten
   reducers: {
     setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>): void => {
       state.sectionList = action.payload
-    }
+    },
+    setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => {
+      state.height = action.payload.height;
+      state.width = action.payload.width
+    },
   },
   extraReducers: (builder) => {
       
