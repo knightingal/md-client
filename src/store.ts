@@ -1,4 +1,4 @@
-import { configureStore, PayloadAction, createAsyncThunk, SliceCaseReducers } from '@reduxjs/toolkit'
+import { configureStore, PayloadAction, createAsyncThunk, SliceCaseReducers, ActionReducerMapBuilder } from '@reduxjs/toolkit'
 import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
@@ -61,6 +61,22 @@ interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
   setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
 }
 
+const refreshSectionList = createAsyncThunk<PicDetail[], undefined>(
+  "flow100content/refresh",async (undefined,{getState}) => {
+    const searchKey = (getState() as any).flow1000Content.searchKey;
+    const battleShipPage = false;
+    let fetchUrl = battleShipPage
+      ? '/local1000/picIndexAjax?album=ship'
+      : '/local1000/picIndexAjax?';
+    if (searchKey != null && searchKey !== '') {
+      fetchUrl = fetchUrl.concat("&searchKey=" + searchKey)
+    }
+
+    return fetch(fetchUrl)
+      .then((resp: Response) => resp.json())
+  }
+)
+
 const flow1000ContentSlice = createSlice<Flow1000ContentState, Flow1000Reducer, "content">({
   name:"content",
   initialState: {
@@ -109,9 +125,18 @@ const flow1000ContentSlice = createSlice<Flow1000ContentState, Flow1000Reducer, 
       state.expandImgIndex = [];
     },
   },
-  extraReducers: (builder) => {
-      
-  },
+  extraReducers: (builder: ActionReducerMapBuilder<Flow1000ContentState>) => {
+    builder.addCase(refreshSectionList.fulfilled, (state, {payload}) => {
+      console.log("refreshSectionList.fulfilled", payload)
+      payload.forEach((picIndex: PicDetail, index: number) => {
+        picIndex.sectionIndex = picIndex.index;
+        picIndex.expanded = false;
+        picIndex.index = index;
+      })
+      state.sectionList = payload;
+    })
+    
+  }
 })
 
 
