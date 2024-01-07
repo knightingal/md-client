@@ -55,7 +55,7 @@ interface Flow1000Reducer extends SliceCaseReducers<Flow1000State>{
   imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
   scrollTop: (state: Flow1000State, action: PayloadAction<{scrollTop:number}>) => void
-  // search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>) => void
+  search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>) => void
   // inScrolling: (state: Flow1000State, action: PayloadAction<{inScrolling: boolean}>) => void
 
   setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>) => void
@@ -100,6 +100,9 @@ const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "conten
       console.log(action)
       state.scrollTop = action.payload.scrollTop;
     },
+    search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>): void  => {
+      state.searchKey = action.payload.searchKey;
+    }
   },
   extraReducers: (builder) => {
       
