@@ -38,7 +38,7 @@ interface PicDetail {
   clientStatus: string;
 }
 
-interface Flow1000State {
+interface Flow1000ContentState {
   height: number;
   width: number;
   scrollTop: number;
@@ -49,19 +49,19 @@ interface Flow1000State {
   sectionList: PicDetail[];
 }
 
-interface Flow1000Reducer extends SliceCaseReducers<Flow1000State>{
-  setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => void
-  imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
-  imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
-  imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>) => void
-  scrollTop: (state: Flow1000State, action: PayloadAction<{scrollTop:number}>) => void
-  search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>) => void
-  inScrolling: (state: Flow1000State, action: PayloadAction<{inScrolling: boolean}>) => void
+interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
+  setWindowSize: (state: Flow1000ContentState, action: PayloadAction<{height: number; width: number;}>) => void
+  imgMouseOver: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+  imgMouseLeave: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+  imgClick: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+  scrollTop: (state: Flow1000ContentState, action: PayloadAction<{scrollTop:number}>) => void
+  search: (state: Flow1000ContentState, action: PayloadAction<{searchKey:string}>) => void
+  inScrolling: (state: Flow1000ContentState, action: PayloadAction<{inScrolling: boolean}>) => void
 
-  setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>) => void
+  setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
 }
 
-const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "content">({
+const flow1000ContentSlice = createSlice<Flow1000ContentState, Flow1000Reducer, "content">({
   name:"content",
   initialState: {
     height: 0, 
@@ -74,36 +74,36 @@ const flow1000ContentSlice = createSlice<Flow1000State, Flow1000Reducer, "conten
     scrolling: false
   },
   reducers: {
-    setSectionList: (state: Flow1000State, action: PayloadAction<Array<PicDetail>>): void => {
+    setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>): void => {
       state.sectionList = action.payload
     },
-    setWindowSize: (state: Flow1000State, action: PayloadAction<{height: number; width: number;}>) => {
+    setWindowSize: (state: Flow1000ContentState, action: PayloadAction<{height: number; width: number;}>) => {
       state.height = action.payload.height;
       state.width = action.payload.width
     },
-    imgMouseOver: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>): void => {
+    imgMouseOver: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>): void => {
       state.sectionList[action.payload.imgIndex].expanded = true;
       state.expandImgIndex.push(action.payload.imgIndex);
     },
-    imgMouseLeave: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>): void => {
+    imgMouseLeave: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>): void => {
       state.sectionList[action.payload.imgIndex].expanded = false;
       state.expandImgIndex = state.expandImgIndex.filter(item => item !== action.payload.imgIndex);
     },
-    imgClick: (state: Flow1000State, action: PayloadAction<{imgIndex:number}>): void => {
+    imgClick: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>): void => {
       console.log("imgClick");
       console.log(action);
       state.sectionIndex = action.payload.imgIndex;
       state.expandImgIndex = [];
     },
-    scrollTop: (state: Flow1000State, action: PayloadAction<{scrollTop:number}>): void => {
+    scrollTop: (state: Flow1000ContentState, action: PayloadAction<{scrollTop:number}>): void => {
       console.log("scrollTop");
       console.log(action)
       state.scrollTop = action.payload.scrollTop;
     },
-    search: (state: Flow1000State, action: PayloadAction<{searchKey:string}>): void  => {
+    search: (state: Flow1000ContentState, action: PayloadAction<{searchKey:string}>): void  => {
       state.searchKey = action.payload.searchKey;
     },
-    inScrolling: (state: Flow1000State, action: PayloadAction<{inScrolling: boolean}>): void => {
+    inScrolling: (state: Flow1000ContentState, action: PayloadAction<{inScrolling: boolean}>): void => {
       state.scrolling = action.payload.inScrolling;
       state.expandImgIndex.forEach(imgIndex => state.sectionList[imgIndex].expanded = false)
       state.expandImgIndex = [];
