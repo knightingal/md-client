@@ -38,7 +38,7 @@ interface PicDetail {
   clientStatus: string;
 }
 
-interface Flow1000ContentState {
+export interface Flow1000ContentState {
   height: number;
   width: number;
   scrollTop: number;
@@ -61,7 +61,7 @@ interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
   setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
 }
 
-const refreshSectionList = createAsyncThunk<PicDetail[], void, {state: RootState}>(
+export const refreshSectionList = createAsyncThunk<PicDetail[], void, {state: RootState}>(
   "flow100content/refresh", 
   async (_, { getState }) => {
     const searchKey = getState().flow1000Content.searchKey;
@@ -167,7 +167,11 @@ export interface ConfigState {
 }
 
 
-const flow1000ConfigSlice = createSlice({
+const flow1000ConfigSlice = createSlice<
+    ConfigState, 
+    {
+      initConfig: (state: ConfigState, action: PayloadAction<ConfigState>) => void
+    }, "flow1000Config">({
   name: "flow1000Config",
   initialState: {
     albumConfigs: []
@@ -195,7 +199,7 @@ const store = configureStore({
 
 export default store;
 
-type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>
 type AppDispatch = typeof store.dispatch;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
