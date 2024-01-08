@@ -11,7 +11,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import SectionImgComponent from './SectionImgComponent';
 import { AlbumConfig } from '../store';
 import { useDispatch } from "react-redux";
-import { refreshSectionList } from "../models/flow1000";
+import { refreshSectionList } from "../store";
 
 function AlbumCoverCard(props: {
   title: string;

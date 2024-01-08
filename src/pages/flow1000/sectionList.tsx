@@ -4,7 +4,7 @@ import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyL
 
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Flow1000ModelState, refreshSectionList } from '../../models/flow1000';
+import { Flow1000ContentState, RootState, refreshSectionList } from '../../store';
 import { AlbumConfig, ConfigState } from '../../store';
 import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
 interface Flow1000Props {
@@ -26,15 +26,11 @@ const GridContainerFunc = (props: {
   searchKey: string
 }) => {
 
-  const {sectionList, scrollTop, albumConfigs} = useSelector((state: {
-    flow1000: {sectionList: Array<PicIndex>, scrollTop: number },
-    flow1000Config: ConfigState,
-  }) => ({
-      sectionList: state.flow1000.sectionList, 
-      scrollTop: state.flow1000.scrollTop, 
-      albumConfigs: state.flow1000Config.albumConfigs 
-    })
-  )    
+  const {sectionList, scrollTop, albumConfigs} = useSelector((state: RootState) => ({
+    sectionList: state.flow1000Content.sectionList,
+    scrollTop: state.flow1000Content.scrollTop,
+    albumConfigs: state.flow1000Config.albumConfigs,
+  })) 
 
   const dispatch: Dispatch<any> = useDispatch<any>()
 
@@ -111,12 +107,12 @@ const GridContainerFunc = (props: {
   );
 }
 
-export default connect(({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+export default connect(({ flow1000Content }: { flow1000Content: Flow1000ContentState }) => {
   return {
-    height: flow1000.height,
-    width: flow1000.width,
-    expandImgIndex: flow1000.expandImgIndex,
-    searchKey: flow1000.searchKey,
+    height: flow1000Content.height,
+    width: flow1000Content.width,
+    expandImgIndex: flow1000Content.expandImgIndex,
+    searchKey: flow1000Content.searchKey,
   };
 })(function (props: Flow1000Props) {
   // console.log("GridContainer:" + props.height);
