@@ -61,9 +61,10 @@ interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
   setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
 }
 
-const refreshSectionList = createAsyncThunk<PicDetail[], undefined>(
-  "flow100content/refresh",async (undefined,{getState}) => {
-    const searchKey = (getState() as any).flow1000Content.searchKey;
+const refreshSectionList = createAsyncThunk<PicDetail[], void, {state: RootState}>(
+  "flow100content/refresh", 
+  async (_, { getState }) => {
+    const searchKey = getState().flow1000Content.searchKey;
     const battleShipPage = false;
     let fetchUrl = battleShipPage
       ? '/local1000/picIndexAjax?album=ship'
