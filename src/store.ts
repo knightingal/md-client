@@ -144,7 +144,16 @@ const flow1000TitleReducer = flow1000TitleSlice.reducer;
 const flow1000ContentReducer = flow1000ContentSlice.reducer;
 
 export const { setTitle, resetTitle } = flow1000TitleSlice.actions;
-export const { setSectionList, } = flow1000ContentSlice.actions;
+export const { 
+  setSectionList, 
+  setWindowSize,
+  imgMouseOver,
+  imgMouseLeave,
+  imgClick,
+  scrollTop,  
+  search,
+  inScrolling,
+} = flow1000ContentSlice.actions;
 
 export interface AlbumConfig {
   name: string,
