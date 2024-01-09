@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 
 import ImgComponent from '../../components/ImgComponent';
-import { Flow1000ModelState } from '../../models/flow1000';
 import { connect, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { AlbumConfig, ConfigState, setTitle, useAppDispatch } from '../../store';
+import { AlbumConfig, ConfigState, RootState, setTitle, useAppDispatch } from '../../store';
 
 class SectionDetail {
   dirName: string;
@@ -121,9 +120,9 @@ const Content = (props: {password: string, height: number}) => {
 }
 
 
-export default connect(({flow1000}: {flow1000: Flow1000ModelState}) => {
+export default connect(({flow1000Content}: RootState) => {
   const props = {
-    height: flow1000.height,
+    height: flow1000Content.height,
     password: ""
   }
   return props;

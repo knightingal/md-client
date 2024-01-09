@@ -107,7 +107,7 @@ const GridContainerFunc = (props: {
   );
 }
 
-export default connect(({ flow1000Content }: { flow1000Content: Flow1000ContentState }) => {
+export default connect(({ flow1000Content }: RootState) => {
   return {
     height: flow1000Content.height,
     width: flow1000Content.width,
