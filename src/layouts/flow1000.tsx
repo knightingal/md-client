@@ -1,5 +1,4 @@
 import { ReactNode, useEffect } from 'react';
-import { Flow1000ModelState, } from '../models/flow1000';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,7 +12,7 @@ import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AlbumConfig, initConfig, useAppSelector } from '../store';
+import { AlbumConfig, RootState, initConfig, useAppSelector } from '../store';
 
 interface Flow1000Props {
   height: number;
@@ -23,9 +22,9 @@ interface Flow1000Props {
 }
 
 export default connect(
-  ({ flow1000 }: { flow1000: Flow1000ModelState }) => {
+  ({ flow1000Content }: RootState ) => {
     console.log("flow1000 layout connecting")
-    return { height: flow1000.height, width: flow1000.width }
+    return { height: flow1000Content.height, width: flow1000Content.width }
   }
 )((props: Flow1000Props) => {
 
