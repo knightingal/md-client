@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
-import { Flow1000ModelState } from '../models/flow1000';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { useNavigate } from "react-router-dom";
-import { ConfigState } from '../store';
+import { ConfigState, RootState } from '../store';
 
 
 const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
@@ -234,16 +233,16 @@ interface InnerImgComponentProps extends ImgComponentProps {
 }
 
 
-const connCompFuncStateMapper = ({ flow1000 }: { flow1000: Flow1000ModelState }, ownProps: ImgComponentProps) => {
-  if (flow1000.sectionList[ownProps.index]) {
+const connCompFuncStateMapper = ({ flow1000Content }: RootState, ownProps: ImgComponentProps) => {
+  if (flow1000Content.sectionList[ownProps.index]) {
     return {
-      expanded: flow1000.sectionList[ownProps.index].expanded,
-      scrolling: flow1000.scrolling
+      expanded: flow1000Content.sectionList[ownProps.index].expanded,
+      scrolling: flow1000Content.scrolling
     }
   } else {
     return {
       expanded: false,
-      scrolling: flow1000.scrolling
+      scrolling: flow1000Content.scrolling
     }
   }
 };
