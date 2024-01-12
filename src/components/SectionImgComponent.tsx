@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { decryptArray } from '../lib/decryptoArray';
 
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { useNavigate } from "react-router-dom";
-import { ConfigState, RootState } from '../store';
+import { ConfigState, RootState, imgMouseLeave, imgMouseOver } from '../store';
 
 
 const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
@@ -52,20 +52,14 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
     if (props.scrolling) {
       return;
     }
-    props.dispatch({
-      type: 'flow1000/imgMouseOver',
-      imgIndex: props.index,
-    });
+    imgMouseOver({imgIndex: props.index})
   }
 
   const onMouseMove = (e: React.MouseEvent) => {
     if (props.scrolling) {
       return;
     }
-    props.dispatch({
-      type: 'flow1000/imgMouseOver',
-      imgIndex: props.index,
-    });
+    imgMouseOver({imgIndex: props.index})
   }
 
   const onClick = (e: React.MouseEvent) => {
@@ -170,15 +164,11 @@ const ExpandImg = ({
     }, 0)
   }, [expandHeight, expandHeightNum, topNum])
 
-  const dispacther = useDispatch();
 
   const navigate = useNavigate();
 
   const onClick = (e: React.MouseEvent) => {
-    dispacther({
-      type: 'flow1000/imgMouseLeave',
-      imgIndex: index,
-    });
+    imgMouseLeave({imgIndex: index})
     navigate("/flow1000/content/" + sectionIndex)
   }
 
@@ -197,11 +187,7 @@ const ExpandImg = ({
       setExpandTop(top);
       setCurrentHeight(height);
       setTimeout(() => {
-        dispacther({
-          type: 'flow1000/imgMouseLeave',
-          imgIndex: index,
-        });
-
+        imgMouseLeave({imgIndex: index})
       }, 500);
 
     }}

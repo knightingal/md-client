@@ -12,7 +12,7 @@ import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AlbumConfig, RootState, initConfig, useAppSelector } from '../store';
+import { AlbumConfig, RootState, initConfig, search, setWindowSize, useAppSelector } from '../store';
 
 interface Flow1000Props {
   height: number;
@@ -47,11 +47,7 @@ export default connect(
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
     console.log("flow1000 useEffect:" + height)
-    props.dispatch({
-      type: 'flow1000/setWindowSize',
-      height: height,
-      width: width
-    });
+    setWindowSize({height: height, width: width})
     // eslint-disable-next-line
   }, []);
 
@@ -65,11 +61,7 @@ export default connect(
   }, [])
 
   const onSearch = (value: string) => {
-    props.dispatch({
-      type: "flow1000/search",
-      searchKey: value
-    })
-
+    search({searchKey: value})
   }
   return (
     <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>

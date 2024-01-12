@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, } from 'react';
 import { ReactNode, } from 'react';
 import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
 
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Flow1000ContentState, RootState, refreshSectionList } from '../../store';
-import { AlbumConfig, ConfigState } from '../../store';
+import { RootState, refreshSectionList } from '../../store';
+import { AlbumConfig, scrollTop as scrollTopAction, inScrolling as inScrollingAction } from '../../store';
 import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
 interface Flow1000Props {
   height: number;
@@ -82,17 +82,11 @@ const GridContainerFunc = (props: {
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
-      dispatch({
-        type: 'flow1000/scrollTop',
-        scrollTop: scrollTop,
-      });
+      scrollTopAction({scrollTop: scrollTop})
     },
 
     inScrolling: (inScrolling: boolean) => {
-      dispatch({
-        type: 'flow1000/inScrolling',
-        inScrolling,
-      });
+      inScrollingAction({inScrolling: inScrolling})
     }
   }
   return (
