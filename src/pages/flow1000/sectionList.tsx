@@ -82,11 +82,11 @@ const GridContainerFunc = (props: {
 
   const parentCompHandler: ParentCompHandler = {
     refreshScrollTop: (scrollTop: number) => {
-      scrollTopAction({scrollTop: scrollTop})
+      dispatch(scrollTopAction({scrollTop: scrollTop}))
     },
 
     inScrolling: (inScrolling: boolean) => {
-      inScrollingAction({inScrolling: inScrolling})
+      dispatch(inScrollingAction({inScrolling: inScrolling}))
     }
   }
   return (
