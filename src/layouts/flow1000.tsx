@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DownloadIcon from '@mui/icons-material/Download';
 import MenuIcon from '@mui/icons-material/Menu';
-import { connect, } from 'react-redux';
+import { connect, useDispatch, } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
@@ -31,6 +31,7 @@ export default connect(
   const title = useAppSelector((state) => state.flow1000Title.title);
   const sectionIndex = useAppSelector((state) => state.flow1000Title.sectionIndex);
   const displaySyncBtn = useAppSelector((state) => state.flow1000Title.displaySyncBtn);
+  const dispatch = useDispatch()
 
   const postDownloadSection = () => {
     fetch(`/local1000/downloadSection?id=${sectionIndex}`, {method:"POST"})
@@ -47,7 +48,7 @@ export default connect(
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
     console.log("flow1000 useEffect:" + height)
-    setWindowSize({height: height, width: width})
+    dispatch(setWindowSize({height: height, width: width}))
     // eslint-disable-next-line
   }, []);
 
@@ -61,7 +62,7 @@ export default connect(
   }, [])
 
   const onSearch = (value: string) => {
-    search({searchKey: value})
+    dispatch(search({searchKey: value}))
   }
   return (
     <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
