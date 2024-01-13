@@ -1,9 +1,7 @@
 import { configureStore, PayloadAction, createAsyncThunk, SliceCaseReducers, ActionReducerMapBuilder } from '@reduxjs/toolkit'
-import Flow1000Module from './models/flow1000'
 import { createSlice } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-const flow1000Slice = createSlice(Flow1000Module as any)
 
 export const flow1000TitleSlice = createSlice({
   name: "title",
@@ -185,12 +183,10 @@ const flow1000ConfigSlice = createSlice<
 
 export const { initConfig, } = flow1000ConfigSlice.actions;
 
-const flow1000Reducer = flow1000Slice.reducer;
 const flow1000ConfigReducer = flow1000ConfigSlice.reducer;
 
 const store = configureStore({
   reducer: {
-    flow1000: flow1000Reducer,
     flow1000Config: flow1000ConfigReducer,
     flow1000Title: flow1000TitleReducer,
     flow1000Content: flow1000ContentReducer,
