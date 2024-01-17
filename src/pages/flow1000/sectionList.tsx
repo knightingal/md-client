@@ -1,30 +1,25 @@
 import React, { useEffect, } from 'react';
-import { ReactNode, } from 'react';
 import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
 
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState, refreshSectionList } from '../../store';
 import { AlbumConfig, scrollTop as scrollTopAction, inScrolling as inScrollingAction } from '../../store';
 import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
-interface Flow1000Props {
-  height: number;
-  width: number;
-  expandImgIndex: number[];
-  children?: ReactNode;
-  dispatch: Dispatch<any>;
-  searchKey: string;
-}
+// interface Flow1000Props {
+//   height: number;
+//   width: number;
+//   expandImgIndex: number[];
+//   children?: ReactNode;
+//   dispatch: Dispatch<any>;
+//   searchKey: string;
+// }
 
 const LazyLoader: React.ComponentClass<LazyProps<
   GridLineBean
 >> = lazyLoader(GridLine, 'SectionList');
 
-const GridContainerFunc = (props: {
-  height: number;
-  expandImgIndex: number[];
-  searchKey: string
-}) => {
+const GridContainerFunc = () => {
 
   const {sectionList, scrollTop, albumConfigs} = useSelector((state: RootState) => ({
     sectionList: state.flow1000Content.sectionList,
@@ -34,7 +29,10 @@ const GridContainerFunc = (props: {
 
   const dispatch: Dispatch<any> = useDispatch<any>()
 
-  const {searchKey } = props;
+  const {searchKey, height } = useSelector((state: RootState) => ({
+    searchKey: state.flow1000Content.searchKey,
+    height: state.flow1000Content.height
+  }))
   const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const initBySectionData = (subRest: PicIndex[]) => {
@@ -90,25 +88,15 @@ const GridContainerFunc = (props: {
     }
   }
   return (
-    <div style={{ height: `${props.height - 64}px` }} >
+    <div style={{ height: `${height - 64}px` }} >
       <LazyLoader
         dataList={gridDataList}
         scrollTop={scrollTop}
-        height={props.height - 64}
+        height={height - 64}
         dispatchHandler={parentCompHandler}
       />
     </div>
   );
 }
 
-export default connect(({ flow1000Content }: RootState) => {
-  return {
-    height: flow1000Content.height,
-    width: flow1000Content.width,
-    expandImgIndex: flow1000Content.expandImgIndex,
-    searchKey: flow1000Content.searchKey,
-  };
-})(function (props: Flow1000Props) {
-  // console.log("GridContainer:" + props.height);
-  return <GridContainerFunc   height={props.height} expandImgIndex={props.expandImgIndex}  searchKey={props.searchKey} />;
-});
+export default GridContainerFunc;
