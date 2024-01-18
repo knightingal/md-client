@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { lazyLoader, LazyProps, HeightType, ParentCompHandler } from '../../components/LazyLoader';
 
 import ImgComponent from '../../components/ImgComponent';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { AlbumConfig, ConfigState, RootState, setTitle, useAppDispatch } from '../../store';
 
@@ -33,9 +33,14 @@ class ImgDetail implements HeightType {
   }
 }
 
-const Content = (props: {password: string, height: number}) => {
+const Content = () => {
   const { sectionId } = useParams();
   const dispatch = useAppDispatch();
+
+
+  const {height } = useSelector((state: RootState) => ({
+    height: state.flow1000Content.height
+  }))
 
   const divRefs = React.useRef<HTMLDivElement>(null);
 
@@ -115,16 +120,10 @@ const Content = (props: {password: string, height: number}) => {
 
   return <div ref={divRefs}>
     <LazyLoader dispatchHandler={prarentCompHandler}
-      height={props.height - 64} dataList={sectionDetail.pics} scrollTop={0} />
+      height={height - 64} dataList={sectionDetail.pics} scrollTop={0} />
   </div>
 }
 
 
-export default connect(({flow1000Content}: RootState) => {
-  const props = {
-    height: flow1000Content.height,
-    password: ""
-  }
-  return props;
-})(Content);
+export default Content;
 
