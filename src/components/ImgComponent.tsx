@@ -39,6 +39,7 @@ const ImgComponentFunc = (props: ImgComponentProps) => {
       fetchImgByUrl(props.src);
       setUrl(null)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.src])
 
   return <img alt=""

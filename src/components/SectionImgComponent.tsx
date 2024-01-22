@@ -47,6 +47,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
     if (props.src !== null && props.mount === true) {
       fetchImgByUrl(props.src);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.mount, props.src])
 
   const onMouseOver = (e: React.MouseEvent) => {

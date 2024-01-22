@@ -59,6 +59,7 @@ export default connect(
         const albumConfigs: Array<AlbumConfig> = json;
         props.dispatch(initConfig({albumConfigs: albumConfigs}))
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSearch = (value: string) => {
