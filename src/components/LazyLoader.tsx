@@ -27,6 +27,15 @@ export interface LazyProps<ITEM_TYPE extends HeightType,> {
   dispatchHandler: ParentCompHandler
 }
 
+export function lazyLoaderFun<
+  ITEM_TYPE extends HeightType
+>(WrappedComponent: (props: WrappedProps<ITEM_TYPE>) => JSX.Element,
+  className: string,
+  preLoadOffSet: number = 1
+) {
+
+}
+
 
 export function lazyLoader<
   ITEM_TYPE extends HeightType
