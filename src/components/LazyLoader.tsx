@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 
 interface WrappedProps<ITEM_TYPE> {
   item: ITEM_TYPE;
@@ -39,6 +40,7 @@ export function lazyLoaderFun<
         return value.height;
       },
     );
+    const {height, scrollTop, dataList} = props 
     const itemHeightStep = itemHeightList.map(
       (value: number, index: number, array: Array<number>): number => {
         if (index === 0) {
@@ -49,15 +51,67 @@ export function lazyLoaderFun<
           .reduce((value: number, current: number): number => value + current);
       },
     );
-    const [currentButtonPicIndex, setCurrentButtonPicIndex] = React.useState<number | null>(null)
-    const [currentTopPicIndex, setCurrentTopPicIndex] = React.useState<number | null>(null)
-    const [mount, setMount] = React.useState<boolean>(true)
+    const [currentButtonPicIndex, setCurrentButtonPicIndex] = useState<number | null>(null)
+    const [currentTopPicIndex, setCurrentTopPicIndex] = useState<number | null>(null)
+    const [mount, setMount] = useState<boolean>(true)
 
-    const divRefs = React.createRef();
-    const lastTimeStampe = -1;
-    const scrollHeight = 0;
+    const divRefs = createRef();
+    const lastTimeStampe = useRef(-1);
+    const scrollHeight = useRef(0);
+    const prevHeight = useRef(height)
+    const prevDataList = useRef(dataList)
+
+    function checkPostionInPic(postion: number): number {
+      return (
+        itemHeightStep.filter(height => {
+          return height < postion;
+        }).length - 1
+      );
+    }
+
+    useEffect(() => {
+      const divElement = divRefs.current as HTMLDivElement;
+      if (scrollHeight.current <= divElement.clientHeight
+        && divElement.scrollHeight > divElement.clientHeight) {
+        (divRefs.current as HTMLDivElement).scrollTo(0, scrollTop);
+      }
+      scrollHeight.current = divElement.scrollHeight
+      if (prevHeight.current !== height) {
+        setCurrentButtonPicIndex(checkPostionInPic(divElement.clientHeight));
+        prevHeight.current = height;
+      }
+    }, [height, scrollTop])
+
+    useEffect(() => {
+      const divElement = divRefs.current as HTMLDivElement;
+      if (dataList.length !== prevDataList.current.length) {
+        const itemHeightList: Array<number> = dataList.map(
+          (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
+            return value.height;
+          },
+        );
+        const itemHeightStep = itemHeightList.map(
+          (value: number, index: number, array: Array<number>): number => {
+            if (index === 0) {
+              return 0;
+            }
+            const subArray = array.slice(0, index);
+            return subArray.reduce((value: number, current: number): number => value + current);
+          },
+        );
+        if (divElement != null) {
+          const scrollTop: number = divElement.scrollTop;
+          const clientHeight: number = divElement.clientHeight;
+          setCurrentTopPicIndex(checkPostionInPic(scrollTop));
+          setCurrentButtonPicIndex(checkPostionInPic(scrollTop + clientHeight));
+        }
+        prevDataList.current = dataList
+      }
+    }, [dataList])
+
   }
 }
+
 
 
 export function lazyLoader<
