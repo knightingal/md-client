@@ -33,7 +33,30 @@ export function lazyLoaderFun<
   className: string,
   preLoadOffSet: number = 1
 ) {
+  function LazyLoader(props: LazyProps<ITEM_TYPE>) {
+    const itemHeightList: Array<number> = props.dataList.map(
+      (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
+        return value.height;
+      },
+    );
+    const itemHeightStep = itemHeightList.map(
+      (value: number, index: number, array: Array<number>): number => {
+        if (index === 0) {
+          return 0;
+        }
+        return array
+          .slice(0, index)
+          .reduce((value: number, current: number): number => value + current);
+      },
+    );
+    const [currentButtonPicIndex, setCurrentButtonPicIndex] = React.useState<number | null>(null)
+    const [currentTopPicIndex, setCurrentTopPicIndex] = React.useState<number | null>(null)
+    const [mount, setMount] = React.useState<boolean>(true)
 
+    const divRefs = React.createRef();
+    const lastTimeStampe = -1;
+    const scrollHeight = 0;
+  }
 }
 
 
