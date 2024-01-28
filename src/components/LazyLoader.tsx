@@ -109,6 +109,48 @@ export function lazyLoaderFun<
       }
     }, [dataList])
 
+
+    const TopPadding = () => {
+      if (
+        itemHeightStep != null &&
+        currentTopPicIndex != null &&
+        dataList != null
+      ) {
+        // 这里有个bug： 滚轴滑动到最顶端时，currentTopPicIndex会=-1，这会导致sectionItemHeightStep[-1]取值异常，
+        // react就不会去更新topPadding的高度，在滑动速度很快时，顶端就会留下一块空白
+        // 所以这里为了修复这个问题，对currentTopPicIndex的值做了判定，<0时，topPadding高度设置为0
+        const currentTopPicIndex1: number = currentTopPicIndex - preLoadOffSet;
+        if (currentTopPicIndex1 < 0) {
+          return <div style={{ height: '0px' }} />;
+        }
+        if (dataList.length === 0) {
+          return <div style={{ height: '0px' }} />;
+        }
+        const topPaddingHeight = itemHeightStep[currentTopPicIndex];
+        return <div style={{ height: `${topPaddingHeight}px` }} />;
+      }
+      return null;
+    }
+
+    const BottomPadding = () => {
+      if (itemHeightStep != null && currentButtonPicIndex != null) {
+        const currentButtonPicIndex1 = currentButtonPicIndex + preLoadOffSet;
+        if (currentButtonPicIndex1 + 1 >= dataList.length) {
+          return <div style={{ height: '0px' }} />;
+        }
+        return (
+          <div
+            style={{
+              height: `${itemHeightStep[itemHeightStep.length - 1] +
+                dataList[dataList.length - 1].height -
+                itemHeightStep[currentButtonPicIndex + 1]}px`,
+            }}
+          />
+        );
+      }
+      return null;
+    }
+
   }
 }
 
