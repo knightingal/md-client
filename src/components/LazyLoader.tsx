@@ -1,5 +1,7 @@
+import { AnyAction } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { createRef, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface WrappedProps<ITEM_TYPE> {
   item: ITEM_TYPE;
@@ -34,7 +36,7 @@ export function lazyLoaderFun<
   className: string,
   preLoadOffSet: number = 1
 ) {
-  function LazyLoader(props: LazyProps<ITEM_TYPE>) {
+  return (props: LazyProps<ITEM_TYPE>) =>  {
     const itemHeightList: Array<number> = props.dataList.map(
       (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
         return value.height;
@@ -54,8 +56,9 @@ export function lazyLoaderFun<
     const [currentButtonPicIndex, setCurrentButtonPicIndex] = useState<number | null>(null)
     const [currentTopPicIndex, setCurrentTopPicIndex] = useState<number | null>(null)
     const [mount, setMount] = useState<boolean>(true)
+    const dispatchHandler = useDispatch<any>();
 
-    const divRefs = createRef();
+    const divRefs: React.RefObject<HTMLDivElement> = createRef();
     const lastTimeStampe = useRef(-1);
     const scrollHeight = useRef(0);
     const prevHeight = useRef(height)
@@ -150,7 +153,78 @@ export function lazyLoaderFun<
       }
       return null;
     }
+    const scrollHandler = (e: React.UIEvent) => {
+      if (mount === true) {
+        setMount(false);
+      }
+      lastTimeStampe.current = e.timeStamp;
+      const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
+      dispatchHandler.refreshScrollTop(scrollTop);
+      dispatchHandler.inScrolling(true);
+      const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
+      // calculate the index of top picture after scroll
+      const refreshTopPicIndex = checkPostionInPic(scrollTop);
+      setTimeout(
+        (timeStamp: number) => {
+          if (lastTimeStampe.current === timeStamp) {
+            setMount(true)
+            dispatchHandler.inScrolling(false);
+          }
+        },
+        300,
+        e.timeStamp,
+      );
 
+      if (refreshTopPicIndex !== currentTopPicIndex
+        && refreshTopPicIndex !== dataList.length) {
+        setCurrentTopPicIndex(refreshTopPicIndex)
+      }
+      // calculate the index of button picture after scroll
+      const refreshButtonPicIndex = checkPostionInPic(scrollTop + clientHeight);
+      if (refreshButtonPicIndex !== currentButtonPicIndex
+        && refreshButtonPicIndex !== dataList.length) {
+        setCurrentTopPicIndex(refreshButtonPicIndex)
+      }
+    }
+
+    return (
+        <div
+          className={className}
+          onScroll={e => scrollHandler(e)}
+          ref={divRefs}
+          style={{
+            height: `${height}px`,
+            willChange: 'transform',
+            overflowY: 'scroll',
+            overflowX: 'hidden',
+          }}
+        >
+          <TopPadding  />
+          {dataList
+            .map((itemBean: ITEM_TYPE, index: number) => {
+              if (
+                currentButtonPicIndex != null &&
+                currentTopPicIndex != null
+              ) {
+                const display =
+                  index >= currentTopPicIndex - preLoadOffSet &&
+                  index <= currentButtonPicIndex + preLoadOffSet;
+                return display ? (
+                  <WrappedComponent
+                    key={index}
+                    item={itemBean}
+                    mount={mount}
+                  />
+                ) : null;
+              }
+              return null;
+            })
+            .filter((value: JSX.Element | null, index: number, array: (JSX.Element | null)[]) => {
+              return value != null;
+            })}
+          <BottomPadding  />
+        </div>
+    );
   }
 }
 
