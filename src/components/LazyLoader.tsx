@@ -129,7 +129,7 @@ export function lazyLoaderFun<
         if (dataList.length === 0) {
           return <div style={{ height: '0px' }} />;
         }
-        const topPaddingHeight = itemHeightStep[currentTopPicIndex];
+        const topPaddingHeight = itemHeightStep[currentTopPicIndex1];
         return <div style={{ height: `${topPaddingHeight}px` }} />;
       }
       return null;
@@ -146,7 +146,7 @@ export function lazyLoaderFun<
             style={{
               height: `${itemHeightStep[itemHeightStep.length - 1] +
                 dataList[dataList.length - 1].height -
-                itemHeightStep[currentButtonPicIndex + 1]}px`,
+                itemHeightStep[currentButtonPicIndex1 + 1]}px`,
             }}
           />
         );
@@ -183,7 +183,7 @@ export function lazyLoaderFun<
       const refreshButtonPicIndex = checkPostionInPic(scrollTop + clientHeight);
       if (refreshButtonPicIndex !== currentButtonPicIndex
         && refreshButtonPicIndex !== dataList.length) {
-        setCurrentTopPicIndex(refreshButtonPicIndex)
+        setCurrentButtonPicIndex(refreshButtonPicIndex)
       }
     }
 
