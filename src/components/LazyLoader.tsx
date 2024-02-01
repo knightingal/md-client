@@ -1,4 +1,3 @@
-import { AnyAction } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -37,12 +36,12 @@ export function lazyLoaderFun<
   preLoadOffSet: number = 1
 ) {
   return (props: LazyProps<ITEM_TYPE>) =>  {
-    const itemHeightList: Array<number> = props.dataList.map(
+    const {height, scrollTop, dataList} = props 
+    const itemHeightList: Array<number> = dataList.map(
       (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
         return value.height;
       },
     );
-    const {height, scrollTop, dataList} = props 
     const itemHeightStep = itemHeightList.map(
       (value: number, index: number, array: Array<number>): number => {
         if (index === 0) {
@@ -62,7 +61,6 @@ export function lazyLoaderFun<
     const lastTimeStampe = useRef(-1);
     const scrollHeight = useRef(0);
     const prevHeight = useRef(height)
-    const prevDataList = useRef(dataList)
 
     function checkPostionInPic(postion: number): number {
       return (
@@ -80,36 +78,21 @@ export function lazyLoaderFun<
       }
       scrollHeight.current = divElement.scrollHeight
       if (prevHeight.current !== height) {
-        setCurrentButtonPicIndex(checkPostionInPic(divElement.clientHeight));
+        setCurrentButtonPicIndex(checkPostionInPic(divElement.clientHeight + divElement.scrollTop));
         prevHeight.current = height;
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [height, scrollTop])
 
     useEffect(() => {
       const divElement = divRefs.current as HTMLDivElement;
-      if (dataList.length !== prevDataList.current.length) {
-        const itemHeightList: Array<number> = dataList.map(
-          (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
-            return value.height;
-          },
-        );
-        const itemHeightStep = itemHeightList.map(
-          (value: number, index: number, array: Array<number>): number => {
-            if (index === 0) {
-              return 0;
-            }
-            const subArray = array.slice(0, index);
-            return subArray.reduce((value: number, current: number): number => value + current);
-          },
-        );
-        if (divElement != null) {
-          const scrollTop: number = divElement.scrollTop;
-          const clientHeight: number = divElement.clientHeight;
-          setCurrentTopPicIndex(checkPostionInPic(scrollTop));
-          setCurrentButtonPicIndex(checkPostionInPic(scrollTop + clientHeight));
-        }
-        prevDataList.current = dataList
+      if (divElement != null) {
+        const scrollTop: number = divElement.scrollTop;
+        const clientHeight: number = divElement.clientHeight;
+        setCurrentTopPicIndex(checkPostionInPic(scrollTop));
+        setCurrentButtonPicIndex(checkPostionInPic(scrollTop + clientHeight));
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataList])
 
 
