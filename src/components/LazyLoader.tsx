@@ -29,13 +29,19 @@ export interface LazyProps<ITEM_TYPE extends HeightType,> {
   dispatchHandler: ParentCompHandler
 }
 
+export interface FunLazyProps<ITEM_TYPE extends HeightType,> {
+  dataList: Array<ITEM_TYPE>;
+  scrollTop: number;
+  height: number;
+}
+
 export function lazyLoaderFun<
   ITEM_TYPE extends HeightType
 >(WrappedComponent: (props: WrappedProps<ITEM_TYPE>) => JSX.Element,
   className: string,
   preLoadOffSet: number = 1
 ) {
-  return (props: LazyProps<ITEM_TYPE>) =>  {
+  return (props: FunLazyProps<ITEM_TYPE>) =>  {
     const {height, scrollTop, dataList} = props 
     const itemHeightList: Array<number> = dataList.map(
       (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
@@ -55,12 +61,13 @@ export function lazyLoaderFun<
     const [currentButtonPicIndex, setCurrentButtonPicIndex] = useState<number | null>(null)
     const [currentTopPicIndex, setCurrentTopPicIndex] = useState<number | null>(null)
     const [mount, setMount] = useState<boolean>(true)
-    const dispatchHandler = useDispatch<any>();
+    // const dispatchHandler = useDispatch<any>();
 
-    const divRefs: React.RefObject<HTMLDivElement> = createRef();
+    const divRefs: React.RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
     const lastTimeStampe = useRef(-1);
     const scrollHeight = useRef(0);
     const prevHeight = useRef(height)
+    const prevDataList = useRef(dataList)
 
     function checkPostionInPic(postion: number): number {
       return (
@@ -69,6 +76,11 @@ export function lazyLoaderFun<
         }).length - 1
       );
     }
+    useEffect(() => {
+      setCurrentButtonPicIndex(
+        checkPostionInPic((divRefs.current as HTMLDivElement).clientHeight + (divRefs.current as HTMLDivElement).scrollTop)
+      )
+    }, [itemHeightStep, divRefs])
 
     useEffect(() => {
       const divElement = divRefs.current as HTMLDivElement;
@@ -137,26 +149,26 @@ export function lazyLoaderFun<
       return null;
     }
     const scrollHandler = (e: React.UIEvent) => {
-      if (mount === true) {
-        setMount(false);
-      }
+      // if (mount === true) {
+      //   setMount(false);
+      // }
       lastTimeStampe.current = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
-      dispatchHandler.refreshScrollTop(scrollTop);
-      dispatchHandler.inScrolling(true);
+      // dispatchHandler.refreshScrollTop(scrollTop);
+      // dispatchHandler.inScrolling(true);
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
       const refreshTopPicIndex = checkPostionInPic(scrollTop);
-      setTimeout(
-        (timeStamp: number) => {
-          if (lastTimeStampe.current === timeStamp) {
-            setMount(true)
-            dispatchHandler.inScrolling(false);
-          }
-        },
-        300,
-        e.timeStamp,
-      );
+      // setTimeout(
+      //   (timeStamp: number) => {
+      //     if (lastTimeStampe.current === timeStamp) {
+      //       setMount(true)
+      //       dispatchHandler.inScrolling(false);
+      //     }
+      //   },
+      //   300,
+      //   e.timeStamp,
+      // );
 
       if (refreshTopPicIndex !== currentTopPicIndex
         && refreshTopPicIndex !== dataList.length) {
@@ -180,6 +192,7 @@ export function lazyLoaderFun<
             willChange: 'transform',
             overflowY: 'scroll',
             overflowX: 'hidden',
+            backgroundColor: "gray"
           }}
         >
           <TopPadding  />
