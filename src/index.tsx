@@ -10,11 +10,16 @@ import { Provider } from 'react-redux'
 import store from './store'
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import LazyTestPage from './layouts/LazyTestPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App></App>
+  },
+  {
+    path: "/lazy-test",
+    element: <LazyTestPage />
   },
   {
     path: "/flow1000",
