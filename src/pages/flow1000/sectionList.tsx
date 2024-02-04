@@ -1,5 +1,5 @@
 import React, { useEffect, } from 'react';
-import { lazyLoader, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
+import { FunLazyProps, lazyLoader, lazyLoaderFun, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -15,9 +15,7 @@ import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
 //   searchKey: string;
 // }
 
-const LazyLoader: React.ComponentClass<LazyProps<
-  GridLineBean
->> = lazyLoader(GridLine, 'SectionList');
+const LazyLoader = lazyLoaderFun<GridLineBean>(GridLine, 'SectionList');
 
 const GridContainerFunc = () => {
 
@@ -78,22 +76,12 @@ const GridContainerFunc = () => {
   }, [searchKey, albumConfigs, dispatch])
 
 
-  const parentCompHandler: ParentCompHandler = {
-    refreshScrollTop: (scrollTop: number) => {
-      dispatch(scrollTopAction({scrollTop: scrollTop}))
-    },
-
-    inScrolling: (inScrolling: boolean) => {
-      dispatch(inScrollingAction({inScrolling: inScrolling}))
-    }
-  }
   return (
     <div style={{ height: `${height - 64}px` }} >
       <LazyLoader
         dataList={gridDataList}
         scrollTop={scrollTop}
         height={height - 64}
-        dispatchHandler={parentCompHandler}
       />
     </div>
   );

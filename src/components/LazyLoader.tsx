@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { scrollTop as scrollTopAction, inScrolling as inScrollingAction } from '../store';
 interface WrappedProps<ITEM_TYPE> {
   item: ITEM_TYPE;
   mount: boolean;
@@ -61,13 +62,12 @@ export function lazyLoaderFun<
     const [currentButtonPicIndex, setCurrentButtonPicIndex] = useState<number | null>(null)
     const [currentTopPicIndex, setCurrentTopPicIndex] = useState<number | null>(null)
     const [mount, setMount] = useState<boolean>(true)
-    // const dispatchHandler = useDispatch<any>();
+    const dispatchHandler = useDispatch<any>();
 
     const divRefs: React.RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
     const lastTimeStampe = useRef(-1);
     const scrollHeight = useRef(0);
     const prevHeight = useRef(height)
-    const prevDataList = useRef(dataList)
 
     function checkPostionInPic(postion: number): number {
       return (
@@ -154,21 +154,22 @@ export function lazyLoaderFun<
       // }
       lastTimeStampe.current = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
-      // dispatchHandler.refreshScrollTop(scrollTop);
-      // dispatchHandler.inScrolling(true);
+
+      dispatchHandler(scrollTopAction({scrollTop: scrollTop}))
+      dispatchHandler(inScrollingAction({inScrolling: true}))
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
       const refreshTopPicIndex = checkPostionInPic(scrollTop);
-      // setTimeout(
-      //   (timeStamp: number) => {
-      //     if (lastTimeStampe.current === timeStamp) {
-      //       setMount(true)
-      //       dispatchHandler.inScrolling(false);
-      //     }
-      //   },
-      //   300,
-      //   e.timeStamp,
-      // );
+      setTimeout(
+        (timeStamp: number) => {
+          if (lastTimeStampe.current === timeStamp) {
+            setMount(true)
+            dispatchHandler(inScrollingAction({inScrolling: false}))
+          }
+        },
+        300,
+        e.timeStamp,
+      );
 
       if (refreshTopPicIndex !== currentTopPicIndex
         && refreshTopPicIndex !== dataList.length) {
