@@ -1,19 +1,11 @@
-import React, { useEffect, } from 'react';
-import { FunLazyProps, lazyLoader, lazyLoaderFun, LazyProps, ParentCompHandler } from '../../components/LazyLoader';
+import { useEffect, } from 'react';
+import { lazyLoaderFun, } from '../../components/LazyLoader';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState, refreshSectionList } from '../../store';
-import { AlbumConfig, scrollTop as scrollTopAction, inScrolling as inScrollingAction } from '../../store';
+import { AlbumConfig,} from '../../store';
 import { GridLine, GridLineBean, PicIndex } from '../../components/GridLine';
-// interface Flow1000Props {
-//   height: number;
-//   width: number;
-//   expandImgIndex: number[];
-//   children?: ReactNode;
-//   dispatch: Dispatch<any>;
-//   searchKey: string;
-// }
 
 const LazyLoader = lazyLoaderFun<GridLineBean>(GridLine, 'SectionList');
 
