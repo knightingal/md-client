@@ -193,7 +193,6 @@ export function lazyLoaderFun<
             willChange: 'transform',
             overflowY: 'scroll',
             overflowX: 'hidden',
-            backgroundColor: "gray"
           }}
         >
           <TopPadding  />
