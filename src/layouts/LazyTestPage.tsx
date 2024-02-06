@@ -1,4 +1,4 @@
-import { HeightType, lazyLoaderFun } from "../components/LazyLoader"
+import { HeightType, ParentCompHandler, lazyLoaderFun } from "../components/LazyLoader"
 
 const ListItem = (props: {item: ItemProps, mount: boolean}) => {
   return <div style={{height: "32px"}}>item {props.item.text}</div>
@@ -35,8 +35,14 @@ const LazyTestPage = () => {
 
   const LazyLoader = lazyLoaderFun<ItemProps>(ListItem, "TestLazy", 1)
 
+  const parentCompHandler: ParentCompHandler = {
+    refreshScrollTop: (_: number) => void {
+    },
+    inScrolling: (_: boolean) => void {
+    }
+  }
   return <div>
-    <LazyLoader height={240} dataList={dataList} scrollTop={0} />
+    <LazyLoader height={240} dataList={dataList} scrollTop={0} dispatchHandler={parentCompHandler}/>
   </div>
 }
 

@@ -12,6 +12,7 @@ import store from './store'
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import LazyTestPage from './layouts/LazyTestPage';
+import SectionContentFun from './pages/flow1000/sectionContentFun';
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/flow1000/content/:sectionId",
-        element: <SectionContent />
+        element: <SectionContentFun />
       }
     ]
   }

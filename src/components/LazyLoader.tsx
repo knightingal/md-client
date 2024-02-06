@@ -34,6 +34,7 @@ export interface FunLazyProps<ITEM_TYPE extends HeightType,> {
   dataList: Array<ITEM_TYPE>;
   scrollTop: number;
   height: number;
+  dispatchHandler: ParentCompHandler
 }
 
 export function lazyLoaderFun<
@@ -43,7 +44,7 @@ export function lazyLoaderFun<
   preLoadOffSet: number = 1
 ) {
   return (props: FunLazyProps<ITEM_TYPE>) =>  {
-    const {height, scrollTop, dataList} = props 
+    const {height, scrollTop, dataList, dispatchHandler} = props 
     const itemHeightList: Array<number> = dataList.map(
       (value: ITEM_TYPE, index: number, array: Array<ITEM_TYPE>): number => {
         return value.height;
@@ -62,7 +63,6 @@ export function lazyLoaderFun<
     const [currentButtonPicIndex, setCurrentButtonPicIndex] = useState<number | null>(null)
     const [currentTopPicIndex, setCurrentTopPicIndex] = useState<number | null>(null)
     const [mount, setMount] = useState<boolean>(true)
-    const dispatchHandler = useDispatch<any>();
 
     const divRefs: React.RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
     const lastTimeStampe = useRef(-1);
@@ -155,8 +155,8 @@ export function lazyLoaderFun<
       lastTimeStampe.current = e.timeStamp;
       const scrollTop: number = (e.target as HTMLDivElement).scrollTop;
 
-      dispatchHandler(scrollTopAction({scrollTop: scrollTop}))
-      dispatchHandler(inScrollingAction({inScrolling: true}))
+      dispatchHandler.refreshScrollTop(scrollTop)
+      dispatchHandler.inScrolling(true)
       const clientHeight: number = (e.target as HTMLDivElement).clientHeight;
       // calculate the index of top picture after scroll
       const refreshTopPicIndex = checkPostionInPic(scrollTop);
@@ -164,7 +164,7 @@ export function lazyLoaderFun<
         (timeStamp: number) => {
           if (lastTimeStampe.current === timeStamp) {
             setMount(true)
-            dispatchHandler(inScrollingAction({inScrolling: false}))
+            dispatchHandler.inScrolling(false)
           }
         },
         300,
