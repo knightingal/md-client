@@ -4,9 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Flow1000 from "./layouts/flow1000"
-import SectionList from "./pages/flow1000/sectionList"
 import SectionListFun from "./pages/flow1000/sectionListFun"
-import SectionContent from "./pages/flow1000/sectionContent"
 import { Provider } from 'react-redux'
 import store from './store'
 
@@ -27,10 +25,6 @@ const router = createBrowserRouter([
     path: "/flow1000",
     element: <Flow1000 />,
     children: [
-      {
-        path: "/flow1000/sectionList",
-        element: <SectionList />
-      },
       {
         path: "/flow1000/sectionListFun",
         element: <SectionListFun />
