@@ -72,6 +72,7 @@ export function lazyLoaderFun<
       setCurrentButtonPicIndex(
         checkPostionInPic((divRefs.current as HTMLDivElement).clientHeight + (divRefs.current as HTMLDivElement).scrollTop)
       )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemHeightStep, divRefs])
 
     useEffect(() => {
