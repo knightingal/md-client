@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { lazyLoader, LazyProps, HeightType, ParentCompHandler, lazyLoaderFun } from '../../components/LazyLoader';
+import { HeightType, ParentCompHandler, lazyLoaderFun } from '../../components/LazyLoader';
 
 import ImgComponent from '../../components/ImgComponent';
 import { useSelector } from 'react-redux';
@@ -109,7 +109,7 @@ const Content = () => {
       album={sectionDetail.album}
       width={props.item.width}
       height={props.item.height}
-      src={`/linux1000/${albumConfig.baseUrl}/${sectionDetail.dirName}/${props.item.name}${albumConfig.encrypted ? ".bin" : ""}`}
+      src={`/linux1000/${albumConfig.baseUrl}/${sectionDetail.dirName}/${props.item.name}`}
       password="yjmK14040842$000"
     />
   }
