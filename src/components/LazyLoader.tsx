@@ -77,10 +77,7 @@ export function lazyLoaderFun<
 
     useEffect(() => {
       const divElement = divRefs.current as HTMLDivElement;
-      if (scrollHeight.current <= divElement.clientHeight
-        && divElement.scrollHeight > divElement.clientHeight) {
-        (divRefs.current as HTMLDivElement).scrollTo(0, scrollTop);
-      }
+      (divRefs.current as HTMLDivElement).scrollTo(0, scrollTop);
       scrollHeight.current = divElement.scrollHeight
       if (prevHeight.current !== height) {
         setCurrentButtonPicIndex(checkPostionInPic(divElement.clientHeight + divElement.scrollTop));
@@ -97,6 +94,7 @@ export function lazyLoaderFun<
         setCurrentTopPicIndex(checkPostionInPic(scrollTop));
         setCurrentButtonPicIndex(checkPostionInPic(scrollTop + clientHeight));
       }
+      (divRefs.current as HTMLDivElement).scrollTo(0, scrollTop);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataList])
 
