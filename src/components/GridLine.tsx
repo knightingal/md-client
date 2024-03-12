@@ -94,7 +94,7 @@ class SectionInfo {
   clientStatus: string;
 
   constructor(value: PicIndex, baseUrl: string, ecrypted: boolean) {
-    this.imgSrc = `/linux1000/${baseUrl}/${value.name}/${value.cover}${ecrypted ? ".bin" : ""}`;
+    this.imgSrc = `/linux1000/${baseUrl}/${value.name}/${value.cover}`;
     this.title = value.name.substring(14);
     this.timeStamp = value.name.substring(0, 14);
     this.sectionIndex = value.sectionIndex;
