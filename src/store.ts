@@ -47,17 +47,17 @@ export interface Flow1000ContentState {
   sectionList: PicDetail[];
 }
 
-interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
-  setWindowSize: (state: Flow1000ContentState, action: PayloadAction<{height: number; width: number;}>) => void
-  imgMouseOver: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
-  imgMouseLeave: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
-  imgClick: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
-  scrollTop: (state: Flow1000ContentState, action: PayloadAction<{scrollTop:number}>) => void
-  search: (state: Flow1000ContentState, action: PayloadAction<{searchKey:string}>) => void
-  inScrolling: (state: Flow1000ContentState, action: PayloadAction<{inScrolling: boolean}>) => void
+// interface Flow1000Reducer extends SliceCaseReducers<Flow1000ContentState>{
+//   setWindowSize: (state: Flow1000ContentState, action: PayloadAction<{height: number; width: number;}>) => void
+//   imgMouseOver: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+//   imgMouseLeave: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+//   imgClick: (state: Flow1000ContentState, action: PayloadAction<{imgIndex:number}>) => void
+//   scrollTop: (state: Flow1000ContentState, action: PayloadAction<{scrollTop:number}>) => void
+//   search: (state: Flow1000ContentState, action: PayloadAction<{searchKey:string}>) => void
+//   inScrolling: (state: Flow1000ContentState, action: PayloadAction<{inScrolling: boolean}>) => void
 
-  setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
-}
+//   setSectionList: (state: Flow1000ContentState, action: PayloadAction<Array<PicDetail>>) => void
+// }
 
 export const refreshSectionList = createAsyncThunk<PicDetail[], void, {state: RootState}>(
   "flow100content/refresh", 
@@ -76,7 +76,7 @@ export const refreshSectionList = createAsyncThunk<PicDetail[], void, {state: Ro
   }
 )
 
-const flow1000ContentSlice = createSlice<Flow1000ContentState, Flow1000Reducer, "content">({
+const flow1000ContentSlice = createSlice({
   name:"content",
   initialState: {
     height: 0, 
@@ -85,7 +85,7 @@ const flow1000ContentSlice = createSlice<Flow1000ContentState, Flow1000Reducer, 
     sectionIndex: -1, 
     scrollTop: 0, 
     searchKey: "", 
-    sectionList: [], 
+    sectionList: Array<PicDetail>(), 
     scrolling: false
   },
   reducers: {
@@ -165,14 +165,10 @@ export interface ConfigState {
 }
 
 
-const flow1000ConfigSlice = createSlice<
-    ConfigState, 
-    {
-      initConfig: (state: ConfigState, action: PayloadAction<ConfigState>) => void
-    }, "flow1000Config">({
+const flow1000ConfigSlice = createSlice({
   name: "flow1000Config",
   initialState: {
-    albumConfigs: []
+    albumConfigs: Array<AlbumConfig>()
   },
   reducers: {
     initConfig: (state: ConfigState, action: PayloadAction<ConfigState>) => {

@@ -3,7 +3,7 @@ import { decryptArray } from '../lib/decryptoArray';
 
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { ConfigState, RootState, imgMouseLeave, imgMouseOver } from '../store';
 
 
@@ -22,7 +22,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
     url: null,
   });
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const fetchImgByUrl = (url: string) => {
     console.log("fetch " + url);
@@ -65,7 +65,7 @@ const ImgComponentFunc = (props: InnerImgComponentProps): JSX.Element => {
   }
 
   const onClick = (e: React.MouseEvent) => {
-    navigate("/flow1000/content/" + props.sectionIndex)
+    // navigate("/flow1000/content/" + props.sectionIndex)
   }
 
   let imgHeight: string;
@@ -141,7 +141,8 @@ const ExpandImg = ({
   top,
   expandWidth,
   expandHeightNum,
-  sectionIndex, topNum,
+  sectionIndex, 
+  topNum,
   index
 }: {
   index: number,
@@ -168,11 +169,11 @@ const ExpandImg = ({
   }, [expandHeight, expandHeightNum, topNum])
 
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const onClick = (e: React.MouseEvent) => {
     dispatch(imgMouseLeave({imgIndex: index}))
-    navigate("/flow1000/content/" + sectionIndex)
+    // navigate("/flow1000/content/" + sectionIndex)
   }
 
   return <img alt=""
