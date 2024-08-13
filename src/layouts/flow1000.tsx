@@ -15,18 +15,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AlbumConfig, RootState, initConfig, search, setWindowSize, useAppSelector } from '../store';
 
 interface Flow1000Props {
-  height: number;
-  width: number;
   children?: ReactNode;
-  dispatch: Dispatch<any>;
 }
 
-export default connect(
-  ({ flow1000Content }: RootState ) => {
-    console.log("flow1000 layout connecting")
-    return { height: flow1000Content.height, width: flow1000Content.width }
-  }
-)((props: Flow1000Props) => {
+const Flow1000 = (props: Flow1000Props) => {
 
   const title = useAppSelector((state) => state.flow1000Title.title);
   const sectionIndex = useAppSelector((state) => state.flow1000Title.sectionIndex);
@@ -57,7 +49,7 @@ export default connect(
       .then((resp: Response) => resp.json())
       .then((json: Array<AlbumConfig>) => {
         const albumConfigs: Array<AlbumConfig> = json;
-        props.dispatch(initConfig({albumConfigs: albumConfigs}))
+        dispatch(initConfig({albumConfigs: albumConfigs}))
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -115,7 +107,9 @@ export default connect(
       </div>
     </div>
   );
-});
+};
+
+export default Flow1000;
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
