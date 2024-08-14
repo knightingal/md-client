@@ -6,19 +6,15 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DownloadIcon from '@mui/icons-material/Download';
 import MenuIcon from '@mui/icons-material/Menu';
-import { connect, useDispatch, } from 'react-redux';
-import { Dispatch } from 'redux';
+import { useDispatch, } from 'react-redux';
 import { Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AlbumConfig, RootState, initConfig, search, setWindowSize, useAppSelector } from '../store';
+import { AlbumConfig, initConfig, search, setWindowSize, useAppSelector } from '../store';
 
-interface Flow1000Props {
-  children?: ReactNode;
-}
 
-const Flow1000 = (props: Flow1000Props) => {
+const Flow1000 = () => {
 
   const title = useAppSelector((state) => state.flow1000Title.title);
   const sectionIndex = useAppSelector((state) => state.flow1000Title.sectionIndex);
