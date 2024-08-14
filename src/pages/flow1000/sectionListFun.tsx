@@ -11,19 +11,15 @@ const LazyLoader = lazyLoaderFun<GridLineBean>(GridLine, 'SectionList');
 
 const GridContainerFunc = () => {
 
-  const {sectionList, scrollTop, albumConfigs} = useSelector((state: RootState) => ({
-    sectionList: state.flow1000Content.sectionList,
-    scrollTop: state.flow1000Content.scrollTop,
-    albumConfigs: state.flow1000Config.albumConfigs,
-  })) 
+  const sectionList = useSelector((state: RootState) => state.flow1000Content.sectionList);
+  const scrollTop = useSelector((state: RootState) => state.flow1000Content.scrollTop);
+  const albumConfigs = useSelector((state: RootState) => state.flow1000Config.albumConfigs);
+  const searchKey = useSelector((state: RootState) => state.flow1000Content.searchKey);
+  const height = useSelector((state: RootState) => state.flow1000Content.height);
+  const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const dispatch: Dispatch<any> = useDispatch<any>()
 
-  const {searchKey, height } = useSelector((state: RootState) => ({
-    searchKey: state.flow1000Content.searchKey,
-    height: state.flow1000Content.height
-  }))
-  const albumConfigMap = new Map(albumConfigs.map(config => [config.name, config]))
 
   const initBySectionData = (subRest: PicIndex[]) => {
     const getConfigMap: (album: string) => AlbumConfig = (album: string): AlbumConfig => {
